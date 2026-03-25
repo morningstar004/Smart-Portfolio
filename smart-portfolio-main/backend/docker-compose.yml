@@ -1,0 +1,41 @@
+services:
+  # ─────────────────────────────────────────────────────────────────────────
+  # Smart Portfolio Application
+  # ─────────────────────────────────────────────────────────────────────────
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: smart-portfolio-app
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env
+    depends_on:
+      db:
+        condition: service_healthy
+
+  # ─────────────────────────────────────────────────────────────────────────
+  # PostgreSQL with pgvector (Required for AI)
+  # ─────────────────────────────────────────────────────────────────────────
+  db:
+    image: ankane/pgvector:v0.5.1
+    container_name: smart-portfolio-db
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=portfolio
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=smart_portfolio
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U portfolio -d smart_portfolio"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:

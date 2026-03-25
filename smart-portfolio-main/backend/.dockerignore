@@ -1,0 +1,74 @@
+# =============================================================================
+# Smart Portfolio — .dockerignore
+# =============================================================================
+# Exclude files that are not needed in the Docker build context to keep the
+# build fast and the context small.
+
+# Version control
+.git
+.gitignore
+
+# IDE / Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+*.iml
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Environment files (secrets must be injected at runtime, not baked into images)
+.env
+.env.*
+!.env.example
+
+# Build artifacts
+bin/
+out/
+build/
+dist/
+
+# Test and coverage artifacts
+*.test
+*.out
+coverage/
+coverage.html
+
+# Documentation (not needed in the runtime image)
+README.md
+LICENSE
+CHANGELOG.md
+
+# Docker files (avoid recursive builds)
+Dockerfile
+docker-compose.yml
+docker-compose.*.yml
+.dockerignore
+
+# Makefile (build convenience, not needed in the image)
+Makefile
+
+# Go workspace files
+go.work
+go.work.sum
+
+# Air live reload config
+.air.toml
+tmp/
+temp/
+
+# Delve debugger
+__debug_bin*
+
+# Logs
+*.log
+logs/
+
+# Original Java backend (if present in parent directory)
+../smart-portfolio-backend/
+
+# Vendor directory (we download fresh in the build stage)
+vendor/

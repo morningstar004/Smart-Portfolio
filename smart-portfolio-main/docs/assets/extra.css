@@ -1,0 +1,204 @@
+/* =============================================================================
+   Smart Portfolio — Clean & Modern UI (Tailwind Inspired)
+   ============================================================================= */
+
+/* ---------- Tailwind Color Variables ---------- */
+:root {
+  --tw-slate-50: #f8fafc;
+  --tw-slate-100: #f1f5f9;
+  --tw-slate-200: #e2e8f0;
+  --tw-slate-700: #334155;
+  --tw-slate-800: #1e293b;
+  --tw-slate-900: #0f172a;
+  
+  --tw-orange-50: #fff7ed;
+  --tw-orange-100: #ffedd5;
+  --tw-orange-500: #f97316;
+  --tw-orange-600: #ea580c;
+
+  --tw-blue-500: #3b82f6;
+  --tw-emerald-500: #10b981;
+  
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+}
+
+/* ==========================================================================
+   Global Tweaks
+   ========================================================================== */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Make headings tighter and more modern */
+.md-typeset h1, .md-typeset h2, .md-typeset h3 {
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  color: var(--tw-slate-900);
+}
+
+.md-typeset h1 { font-size: 2rem; }
+.md-typeset h2 { font-size: 1.5rem; }
+.md-typeset h3 { font-size: 1.25rem; }
+
+.md-typeset a {
+  color: var(--tw-orange-600);
+  text-decoration: none;
+  transition: color 0.15s ease-in-out;
+}
+
+.md-typeset a:hover {
+  color: var(--tw-orange-500);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* Custom Admonitions using Tailwind-like styles */
+.md-typeset .admonition, .md-typeset details {
+  border-radius: var(--radius-md);
+  border-width: 0;
+  border-left-width: 4px;
+  box-shadow: var(--shadow-sm);
+  background-color: var(--tw-slate-50);
+}
+
+.md-typeset pre {
+  border-radius: var(--radius-md);
+  border: 1px solid var(--tw-slate-200);
+  box-shadow: var(--shadow-sm);
+}
+
+/* ==========================================================================
+   LANDING PAGE — Hero Section
+   ========================================================================== */
+.hero {
+  text-align: center;
+  padding: 4rem 1rem;
+  max-width: 48rem;
+  margin: 0 auto;
+}
+
+.hero h1 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  line-height: 1.2;
+  margin-bottom: 1rem;
+  letter-spacing: -0.05em;
+  background: none;
+  -webkit-text-fill-color: currentcolor;
+  color: var(--tw-slate-900);
+}
+
+.hero p {
+  font-size: 1.1rem;
+  color: var(--tw-slate-700);
+  margin-bottom: 2rem;
+  line-height: 1.6;
+}
+
+.hero .md-button {
+  margin: 0.5rem;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  transition: all 0.2s ease;
+  box-shadow: var(--shadow-sm);
+}
+
+.hero .md-button--primary {
+  background-color: var(--tw-orange-600);
+  color: white;
+  border: none;
+}
+
+.hero .md-button--primary:hover {
+  background-color: var(--tw-orange-500);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+/* ==========================================================================
+   LANDING PAGE — Feature Grid
+   ========================================================================== */
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin: 3rem 0;
+}
+
+.feature-card {
+  background-color: var(--tw-slate-50);
+  border: 1px solid var(--tw-slate-200);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  transition: box-shadow 0.2s ease-in-out, transform 0.2s ease-in-out, border-color 0.2s ease-in-out;
+}
+
+.feature-card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+  border-color: var(--tw-orange-100);
+}
+
+.feature-card h3 {
+  margin-top: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--tw-slate-900);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: none;
+}
+
+.feature-card p {
+  font-size: 0.95rem;
+  color: var(--tw-slate-700);
+  line-height: 1.5;
+  margin-bottom: 0;
+}
+
+.feature-card h3 .twemoji {
+  color: var(--tw-orange-500);
+}
+
+/* Remove gradient border from footer */
+.md-footer {
+  border-top: 1px solid var(--tw-slate-200);
+}
+
+/* ==========================================================================
+   Mermaid Diagrams — Scrollable & Legible
+   ========================================================================== */
+.md-typeset .mermaid {
+  overflow-x: auto;
+  margin: 2rem 0;
+  display: block;
+}
+
+.md-typeset .mermaid svg {
+  min-width: 800px !important;
+  max-width: none !important;
+  height: auto !important;
+  margin: 0 auto;
+  display: block;
+}
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+@media screen and (max-width: 600px) {
+  .hero {
+    padding: 2rem 1rem;
+  }
+  .hero h1 {
+    font-size: 2rem;
+  }
+  .hero p {
+    font-size: 1rem;
+  }
+}

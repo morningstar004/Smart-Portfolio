@@ -1,0 +1,39 @@
+---
+import ContactForm from "./solid/ContactForm";
+---
+
+<section id="contact" data-bg-layer="contact" class="min-h-[calc(100svh-4rem)] scroll-mt-16 snap-start bg-transparent py-8 md:py-10 flex items-center">
+  <div class="max-w-7xl mx-auto w-full px-4 md:px-8">
+    <div class="flex flex-col lg:flex-row gap-8 lg:gap-12 items-stretch">
+      <!-- Info -->
+      <div class="w-full lg:w-1/3 space-y-6 md:space-y-8 flex flex-col justify-center">
+        <div class="space-y-2">
+          <h2 class="text-[10px] font-mono text-muted-foreground tracking-[0.2em] uppercase">// COMMUNICATION_CHANNEL</h2>
+          <h3 class="text-3xl font-mono font-bold tracking-tighter italic">DIRECT_MESSAGE</h3>
+        </div>
+        <div class="space-y-3 md:space-y-4">
+          <a href="mailto:ZRishu@hotmail.com" class="block p-4 border border-border bg-card hover:border-brand-green transition-all group">
+            <span class="text-[9px] font-mono text-muted-foreground block mb-1 uppercase tracking-widest">EMAIL_STATION</span>
+            <span class="text-sm font-mono text-foreground group-hover:text-brand-green transition-colors">ZRISHU@HOTMAIL.COM</span>
+          </a>
+          <a href="https://github.com/ZRishu" target="_blank" class="block p-4 border border-border bg-card hover:border-brand-green transition-all group">
+            <span class="text-[9px] font-mono text-muted-foreground block mb-1 uppercase tracking-widest">GITHUB_REPOSITORY</span>
+            <span class="text-sm font-mono text-foreground group-hover:text-brand-green transition-colors">GITHUB.COM/ZRISHU</span>
+          </a>
+          <a href="https://linkedin.com/in/ZRishu" target="_blank" class="block p-4 border border-border bg-card hover:border-brand-green transition-all group">
+            <span class="text-[9px] font-mono text-muted-foreground block mb-1 uppercase tracking-widest">PROFESSIONAL_NETWORK</span>
+            <span class="text-sm font-mono text-foreground group-hover:text-brand-green transition-colors">LINKEDIN.COM/IN/ZRISHU</span>
+          </a>
+          <a href="https://x.com/ragebyt" target="_blank" class="block p-4 border border-border bg-card hover:border-brand-green transition-all group">
+            <span class="text-[9px] font-mono text-muted-foreground block mb-1 uppercase tracking-widest">SOCIAL_CIRCLE</span>
+            <span class="text-sm font-mono text-foreground group-hover:text-brand-green transition-colors">X.COM/RAGEBYT</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="w-full lg:w-2/3 border border-border p-6 md:p-10 bg-card flex items-center">
+        <ContactForm client:load />
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,101 @@
+---
+import MotionLink from "./react/MotionLink";
+import SponsorButton from "./react/SponsorButton";
+
+interface Props {
+  showSectionNav?: boolean;
+}
+
+const navLinks: { href: string; label: string }[] = [
+  { href: "#about", label: "ABOUT" },
+  { href: "#experience", label: "EXPERIENCE" },
+  { href: "#projects", label: "PROJECTS" },
+  { href: "#contact", label: "CONTACT" },
+];
+
+const { showSectionNav = true } = Astro.props;
+---
+
+<header class="sticky top-0 z-50 w-full bg-background/80 backdrop-blur-sm border-b border-border">
+  <div class="max-w-7xl mx-auto px-4 md:px-8 h-16 flex items-center justify-between">
+    <div class="flex items-center gap-8">
+      <a href="/" class="font-mono font-bold text-xl tracking-tighter hover:text-brand-green transition-colors">
+        ZR_SYSTEMS<span class="text-brand-orange">.v1</span>
+      </a>
+      {showSectionNav && (
+        <nav class="hidden md:flex items-center border-l border-border h-16">
+          {navLinks.map((link) => (
+            <a 
+              href={link.href} 
+              class="px-4 lg:px-5 h-full flex items-center text-[10px] lg:text-[11px] font-mono tracking-widest text-muted-foreground hover:text-foreground hover:bg-muted transition-all border-r border-border"
+            >
+              {link.label}
+            </a>
+          ))}
+        </nav>
+      )}
+    </div>
+
+    <div class="flex items-center gap-4">
+      <SponsorButton client:load />
+      {showSectionNav ? (
+        <MotionLink
+          client:load
+          href="#chat"
+          className="px-4 py-1.5 bg-foreground text-background font-mono text-[10px] font-bold tracking-widest hover:bg-brand-green hover:text-white transition-all uppercase"
+        >
+          EXEC_AI_CHAT
+        </MotionLink>
+      ) : (
+        <MotionLink
+          client:load
+          href="/"
+          className="px-4 py-1.5 bg-foreground text-background font-mono text-[10px] font-bold tracking-widest hover:bg-brand-green hover:text-white transition-all uppercase"
+        >
+          RETURN_HOME
+        </MotionLink>
+      )}
+      
+      <!-- Mobile Menu Toggle -->
+      <button 
+        id="nav-toggle"
+        class="md:hidden p-2 text-muted-foreground hover:text-foreground"
+        aria-label="Toggle Menu"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" x2="21" y1="12" y2="12"/><line x1="3" x2="21" y1="6" y2="6"/><line x1="3" x2="21" y1="18" y2="18"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Mobile Menu -->
+  {showSectionNav && (
+    <div id="mobile-menu" class="hidden md:hidden border-b border-border bg-background flex flex-col">
+      {navLinks.map((link) => (
+        <a 
+          href={link.href} 
+          class="px-8 py-4 text-xs font-mono tracking-widest border-b border-border text-muted-foreground hover:text-foreground hover:bg-muted transition-all"
+        >
+          {link.label}
+        </a>
+      ))}
+    </div>
+  )}
+</header>
+
+<script>
+  function initNav(): void {
+    const toggle = document.getElementById("nav-toggle");
+    const menu = document.getElementById("mobile-menu");
+    if (!toggle || !menu) return;
+
+    toggle.addEventListener("click", () => {
+      menu.classList.toggle("hidden");
+    });
+
+    menu.querySelectorAll("a").forEach(a => {
+      a.addEventListener("click", () => menu.classList.add("hidden"));
+    });
+  }
+
+  initNav();
+</script>

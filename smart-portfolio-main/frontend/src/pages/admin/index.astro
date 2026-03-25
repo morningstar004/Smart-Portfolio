@@ -1,0 +1,148 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Header from "../../components/Header.astro";
+import Footer from "../../components/Footer.astro";
+---
+<Layout title="ADMIN_SYSTEM | ZR_SYSTEMS" description="Admin terminal for professional data ingestion.">
+  <Header showSectionNav={false} />
+  <main data-bg-layer="admin" class="flex-grow min-h-[calc(100svh-4rem)] flex items-center bg-transparent">
+    <div class="max-w-5xl mx-auto w-full px-4 md:px-8 py-8 md:py-10">
+      <div class="mb-8 md:mb-10">
+        <h2 class="text-[10px] font-mono text-muted-foreground tracking-[0.2em] uppercase">// ADMINISTRATIVE_INTERFACE</h2>
+        <h1 class="text-3xl font-mono font-bold tracking-tighter italic">DATA_INGESTION_TERMINAL</h1>
+      </div>
+      
+      <div class="bg-card/90 backdrop-blur-sm border border-border p-6 md:p-10 relative overflow-hidden shadow-[0_24px_80px_rgba(0,0,0,0.08)] dark:shadow-[0_24px_80px_rgba(0,0,0,0.35)]">
+        <div class="absolute inset-0 pointer-events-none bg-[linear-gradient(120deg,transparent_0%,transparent_58%,rgba(0,0,0,0.035)_58%,rgba(0,0,0,0.035)_59%,transparent_59%)] dark:bg-[linear-gradient(120deg,transparent_0%,transparent_58%,rgba(255,255,255,0.04)_58%,rgba(255,255,255,0.04)_59%,transparent_59%)]"></div>
+        <div class="absolute top-4 left-6 flex gap-1.5">
+          <div class="w-2.5 h-2.5 bg-brand-red"></div>
+          <div class="w-2.5 h-2.5 bg-brand-orange"></div>
+          <div class="w-2.5 h-2.5 bg-brand-green"></div>
+        </div>
+
+        <div class="relative mt-6 space-y-6 md:space-y-8">
+          <div class="space-y-2">
+            <h2 class="text-[11px] font-mono text-brand-orange uppercase tracking-widest">>> SYSTEM_COMMAND: INGEST_RESUME_PDF</h2>
+            <p class="text-xs font-mono text-muted-foreground leading-relaxed uppercase">Upload your latest professional document to update the AI's neural knowledge base.</p>
+          </div>
+          
+          <form id="ingest-form" class="space-y-6 md:space-y-8">
+            <div class="space-y-2 group">
+              <label for="admin-key" class="text-[10px] font-mono text-muted-foreground uppercase tracking-widest">>> ACCESS_KEY_REQUIRED</label>
+              <input 
+                type="password" 
+                id="admin-key" 
+                required 
+                placeholder="ENTER_SECURE_KEY..."
+                class="w-full bg-transparent border-b border-border focus:border-brand-orange focus:outline-none py-2 text-sm font-mono text-foreground placeholder:text-muted-foreground transition-colors" 
+              />
+            </div>
+            
+            <div class="space-y-2 group">
+              <label for="resume-file" class="text-[10px] font-mono text-muted-foreground uppercase tracking-widest">>> BINARY_SOURCE_PDF</label>
+              <input 
+                type="file" 
+                id="resume-file" 
+                accept="application/pdf" 
+                required 
+                class="w-full bg-transparent border border-dashed border-border p-6 md:p-8 text-xs font-mono text-muted-foreground file:bg-foreground file:text-background file:border-none file:px-4 file:py-2 file:mr-4 file:font-bold hover:border-brand-green transition-all" 
+              />
+            </div>
+
+            <div id="ingest-status" class="text-[10px] font-mono text-muted-foreground uppercase tracking-widest min-h-[1.5rem]"></div>
+
+            <button 
+              type="submit" 
+              id="ingest-submit"
+              class="px-8 py-3 bg-foreground text-background font-mono text-xs font-bold tracking-[0.2em] transition-all uppercase border border-border"
+            >
+              EXECUTE_INGESTION
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </main>
+  <Footer />
+</Layout>
+
+<script>
+  import { apiUrl } from "../../lib/public-api";
+
+  function initIngestion(): void {
+    const form = document.getElementById("ingest-form") as HTMLFormElement | null;
+    const statusEl = document.getElementById("ingest-status");
+    const submitBtn = document.getElementById("ingest-submit") as HTMLButtonElement | null;
+
+    if (!form || !statusEl || !submitBtn) return;
+
+    // Ready state hover logic
+    const validate = () => {
+      const key = (document.getElementById("admin-key") as HTMLInputElement).value;
+      const file = (document.getElementById("resume-file") as HTMLInputElement).files?.[0];
+      return key.trim() !== "" && file !== undefined;
+    };
+
+    submitBtn.addEventListener("mouseenter", () => {
+      if (validate()) {
+        submitBtn.classList.add("bg-brand-green", "text-white");
+        submitBtn.classList.remove("bg-foreground", "text-background");
+      }
+    });
+
+    submitBtn.addEventListener("mouseleave", () => {
+      submitBtn.classList.remove("bg-brand-green", "text-white");
+      submitBtn.classList.add("bg-foreground", "text-background");
+    });
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      
+      submitBtn.disabled = true;
+      const originalText = submitBtn.innerText;
+      submitBtn.innerText = "EXECUTING...";
+      
+      statusEl.textContent = ">> INITIATING_PIPELINE...";
+      statusEl.className = "text-[10px] font-mono text-brand-orange uppercase tracking-widest";
+
+      const key = (document.getElementById("admin-key") as HTMLInputElement).value;
+      const fileInput = document.getElementById("resume-file") as HTMLInputElement;
+      const file = fileInput.files?.[0];
+
+      if (!file) {
+        statusEl.textContent = ">> ERROR: NO_SOURCE_FILE";
+        statusEl.className = "text-[10px] font-mono text-brand-red uppercase tracking-widest";
+        submitBtn.disabled = false;
+        submitBtn.innerText = originalText;
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append("file", file);
+
+      try {
+        const res = await fetch(apiUrl("/api/ingest"), {
+          method: "POST",
+          headers: {
+            "X-Admin-Key": key
+          },
+          body: formData,
+        });
+
+        if (!res.ok) throw new Error(`HTTP_${res.status}`);
+
+        statusEl.textContent = ">> SUCCESS: NEURAL_DATA_INGESTED_ACK_200";
+        statusEl.className = "text-[10px] font-mono text-brand-green uppercase tracking-widest font-bold";
+        form.reset();
+      } catch (err) {
+        statusEl.textContent = `>> FATAL_ERROR: ${String(err).toUpperCase()}`;
+        statusEl.className = "text-[10px] font-mono text-brand-red uppercase tracking-widest";
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerText = originalText;
+      }
+    });
+  }
+
+  initIngestion();
+</script>

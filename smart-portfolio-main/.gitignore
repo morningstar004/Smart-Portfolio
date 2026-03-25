@@ -1,0 +1,45 @@
+# ─── OS & editor artifacts ────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+*~
+*.swp
+*.swo
+
+# ─── IDEs ─────────────────────────────────────────────────────────────────────
+.vscode/
+.idea/
+*.iml
+
+# ─── Go ───────────────────────────────────────────────────────────────────────
+backend/bin/
+backend/out/
+backend/build/
+backend/dist/
+backend/*.exe
+backend/*.test
+backend/*.out
+backend/coverage/
+backend/go.work
+backend/go.work.sum
+backend/vendor/
+backend/tmp/
+
+# ─── Environment / secrets ────────────────────────────────────────────────────
+.env
+.env.*
+!.env.example
+
+# ─── Logs ─────────────────────────────────────────────────────────────────────
+*.log
+logs/
+
+# ─── Frontend (bun / build artifacts) ────────────────────────────────────────
+frontend/node_modules/
+frontend/.astro/
+frontend/dist/
+frontend/package-lock.json
+
+# ─── MkDocs ───────────────────────────────────────────────────────────────────
+site/
+.cache/

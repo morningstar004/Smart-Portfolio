@@ -1,0 +1,128 @@
+# =============================================================================
+# Smart Portfolio — MkDocs Configuration
+# =============================================================================
+# Build:   mkdocs build
+# Serve:   mkdocs serve
+# Deploy:  Automatic via GitHub Actions (.github/workflows/docs.yml)
+# =============================================================================
+
+site_name: Smart Portfolio
+site_description: A full-stack developer portfolio with AI-powered resume chat, project showcase, contact form, and sponsorship payments.
+site_url: https://zrishu.github.io/smart-portfolio/
+repo_url: https://github.com/ZRishu/smart-portfolio
+repo_name: ZRishu/smart-portfolio
+edit_uri: edit/main/docs/
+
+theme:
+  name: material
+  language: en
+  icon:
+    repo: fontawesome/brands/github
+  favicon: assets/favicon.png
+  features:
+    - navigation.instant
+    - navigation.instant.progress
+    - navigation.tracking
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - navigation.footer
+    - search.suggest
+    - search.highlight
+    - search.share
+    - content.code.copy
+    - content.code.annotate
+    - content.tabs.link
+    - toc.follow
+  palette:
+    scheme: default
+    primary: white
+    accent: orange
+  font:
+    text: Inter
+    code: JetBrains Mono
+
+plugins:
+  - search
+  - minify:
+      minify_html: true
+
+markdown_extensions:
+  - abbr
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - md_in_html
+  - tables
+  - toc:
+      permalink: true
+      toc_depth: 3
+  - pymdownx.arithmatex:
+      generic: true
+  - pymdownx.betterem:
+      smart_enable: all
+  - pymdownx.caret
+  - pymdownx.details
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.keys
+  - pymdownx.mark
+  - pymdownx.smartsymbols
+  - pymdownx.snippets
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.tilde
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/ZRishu/smart-portfolio
+      name: GitHub Repository
+  generator: false
+
+extra_css:
+  - assets/extra.css
+
+copyright: Copyright &copy; 2026 ZRishu
+
+nav:
+  - Welcome: index.md
+  - Getting Started:
+      - Quick Start: guide/index.md
+      - Prerequisites: guide/prerequisites.md
+      - Running Locally: guide/running.md
+      - Frontend Integration: frontend.md
+  - Architecture:
+      - System Design: architecture/index.md
+      - Backend: architecture/backend.md
+      - Modules: architecture/modules.md
+      - Database: architecture/database.md
+  - Deployment & CI/CD:
+      - Testing: guide/testing.md
+      - Building: guide/building.md
+      - Deployment: guide/deploying.md
+      - CI/CD Pipelines: guide/cicd.md
+  - API Reference:
+      - Overview: api/index.md
+      - AI Chat: api/chat.md
+      - Projects: api/projects.md
+      - Contact: api/contact.md
+      - Ingestion: api/ingestion.md
+      - Admin: api/admin.md
+      - Webhooks: api/webhooks.md

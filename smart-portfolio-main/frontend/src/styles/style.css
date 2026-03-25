@@ -1,0 +1,251 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@plugin "@tailwindcss/forms";
+@custom-variant dark (&:where(.dark, .dark *));
+
+html,
+body {
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+#projects-grid,
+#chat-messages {
+  scroll-behavior: smooth;
+}
+
+@theme {
+  --animate-cursor-blink: blink 1s step-end infinite;
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary-accent: var(--primary-accent);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary-accent: var(--secondary-accent);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-info: var(--info);
+  --color-info-foreground: var(--info-foreground);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-error: var(--error);
+  --color-error-foreground: var(--error-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-outline: var(--outline);
+  
+  /* High-Performance Technical Accents (Standardized Green) */
+  --color-brand-orange: #ff8c00;
+  --color-brand-green: #00a354;
+  --color-brand-red: #ff3e3e;
+
+  --radius-xs: 0;
+  --radius-sm: 0;
+  --radius-md: 0;
+  --radius-lg: 0;
+  --radius-xl: 0;
+  --radius-2xl: 0;
+  --radius-3xl: 0;
+}
+
+:root {
+  --background: #ffffff;
+  --foreground: #000000;
+  --card: #fafafa;
+  --card-foreground: #09090b;
+  --popover: #ffffff;
+  --popover-foreground: #09090b;
+  --primary: #000000;
+  --primary-foreground: #ffffff;
+  --primary-accent: #18181b;
+  --secondary: #f4f4f5;
+  --secondary-foreground: #09090b;
+  --secondary-accent: #e4e4e7;
+  --muted: #f4f4f5;
+  --muted-foreground: #71717a;
+  --accent: #00a354;
+  --accent-foreground: #ffffff;
+  --info: #0ea5e9;
+  --info-foreground: #ffffff;
+  --success: #00a354;
+  --success-foreground: #ffffff;
+  --warning: #ff8c00;
+  --warning-foreground: #ffffff;
+  --error: #ff3e3e;
+  --error-foreground: #ffffff;
+  --border: #e4e4e7;
+  --input: #ffffff;
+  --outline: #e4e4e7;
+  --radius: 0;
+  --cursor-color: #00a354;
+  --cursor-glow: rgba(0, 163, 84, 0.35);
+  --selection-bg: #00a354;
+  --selection-text: #ffffff;
+}
+
+.dark {
+  --background: #000000;
+  --foreground: #ffffff;
+  --card: #09090b;
+  --card-foreground: #fafafa;
+  --popover: #09090b;
+  --popover-foreground: #fafafa;
+  --primary: #ffffff;
+  --primary-foreground: #000000;
+  --primary-accent: #e4e4e7;
+  --secondary: #18181b;
+  --secondary-foreground: #fafafa;
+  --secondary-accent: #27272a;
+  --muted: #18181b;
+  --muted-foreground: #a1a1aa;
+  --accent: #00a354;
+  --accent-foreground: #000000;
+  --info: #38bdf8;
+  --info-foreground: #0c4a6e;
+  --success: #00a354;
+  --success-foreground: #14532d;
+  --warning: #ff8c00;
+  --warning-foreground: #78350f;
+  --error: #ff3e3e;
+  --error-foreground: #7f1d1d;
+  --border: #27272a;
+  --input: #18181b;
+  --outline: #27272a;
+  --cursor-color: #ff8c00;
+  --cursor-glow: rgba(255, 140, 0, 0.35);
+  --selection-bg: #ff8c00;
+  --selection-text: #111111;
+}
+
+.app-scrollbar,
+html,
+body {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.app-scrollbar::-webkit-scrollbar,
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  display: none;
+}
+
+.custom-scroll-host {
+  position: relative;
+}
+
+.custom-scrollbar {
+  position: absolute;
+  z-index: 30;
+  user-select: none;
+  touch-action: none;
+  opacity: 1;
+  transition: opacity 140ms ease;
+}
+
+.custom-scrollbar.is-hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.custom-scrollbar-track {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: color-mix(in srgb, var(--background) 88%, var(--foreground) 12%);
+  border: 1px solid var(--border);
+}
+
+.custom-scrollbar-thumb {
+  position: absolute;
+  background: color-mix(in srgb, var(--foreground) 72%, var(--background) 28%);
+  border: 1px solid var(--border);
+  transition: background-color 140ms ease, opacity 140ms ease;
+}
+
+.custom-scrollbar:hover .custom-scrollbar-thumb,
+.custom-scrollbar-thumb.is-dragging {
+  background: var(--foreground);
+}
+
+.custom-scrollbar-vertical {
+  top: 0;
+  right: 0;
+  width: 12px;
+  height: 100%;
+}
+
+.custom-scrollbar-vertical .custom-scrollbar-thumb {
+  left: 0;
+  width: 100%;
+  min-height: 32px;
+}
+
+.custom-scrollbar-horizontal {
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 12px;
+}
+
+.custom-scrollbar-horizontal .custom-scrollbar-thumb {
+  top: 0;
+  height: 100%;
+  min-width: 48px;
+}
+
+#page-scrollbar {
+  position: fixed;
+  top: 4rem;
+  right: 10px;
+  width: 12px;
+  height: calc(100svh - 4rem - 10px);
+  z-index: 40;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-outline/50 rounded-none!;
+  }
+  body {
+    @apply bg-background text-foreground font-mono antialiased;
+  }
+  button {
+    @apply cursor-pointer;
+  }
+  ::selection {
+    background: var(--selection-bg);
+    color: var(--selection-text);
+  }
+  input, textarea {
+    @apply border-border focus:border-brand-orange! focus:ring-0! outline-none!;
+  }
+}

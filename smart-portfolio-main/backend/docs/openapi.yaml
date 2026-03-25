@@ -1,0 +1,1101 @@
+openapi: "3.0.3"
+
+info:
+  title: Smart Portfolio API
+  description: |
+    REST API for a personal developer portfolio with AI-powered resume chat (RAG),
+    contact form with Discord notifications, project showcase management, and
+    Razorpay sponsorship payments.
+
+    ## Authentication
+
+    Admin-protected endpoints require one of:
+    - `X-Admin-Key` header with the configured `ADMIN_API_KEY`
+    - `Authorization: Bearer <ADMIN_API_KEY>` header
+
+    When `ADMIN_API_KEY` is not set, admin endpoints are accessible without authentication
+    (suitable for local development only).
+
+    ## Response Envelope
+
+    Every endpoint returns a consistent JSON envelope:
+
+    ```json
+    {
+      "success": true,
+      "data": { ... }
+    }
+    ```
+
+    Error responses:
+
+    ```json
+    {
+      "success": false,
+      "error": {
+        "code": 400,
+        "message": "title is required; description is required"
+      }
+    }
+    ```
+
+    ## SSE Streaming
+
+    `POST /api/chat/stream` returns a `text/event-stream` response.
+    Each LLM token is sent as `data: <token>\n\n`.
+    A final `event: done\ndata: \n\n` frame signals stream completion.
+  version: "1.0.0"
+  contact:
+    name: ZRishu
+    url: https://github.com/ZRishu/smart-portfolio
+  license:
+    name: MIT
+
+tags:
+  - name: Health
+    description: Liveness and readiness probes
+  - name: Projects
+    description: Portfolio project CRUD
+  - name: Contact
+    description: Contact form messages
+  - name: Chat
+    description: AI-powered resume chat (RAG)
+  - name: Ingestion
+    description: Resume ingestion for RAG pipeline (admin)
+  - name: Webhooks
+    description: Third-party payment webhooks
+  - name: Admin
+    description: Admin dashboard, stats, and management
+
+components:
+  securitySchemes:
+    AdminApiKey:
+      type: apiKey
+      in: header
+      name: X-Admin-Key
+      description: Admin API key passed via the X-Admin-Key header
+    BearerAuth:
+      type: http
+      scheme: bearer
+      description: Admin API key passed as a Bearer token
+
+  schemas:
+    APIResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        data:
+          description: Response payload (present on success)
+        error:
+          $ref: "#/components/schemas/APIError"
+
+    APIError:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 400
+        message:
+          type: string
+          example: "title is required"
+
+    Project:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: "d290f1ee-6c54-4b01-90e6-d701748f0851"
+        title:
+          type: string
+          example: "Smart Portfolio"
+        description:
+          type: string
+          example: "A full-stack portfolio with AI chat"
+        tech_stack:
+          type: string
+          nullable: true
+          example: "Go, PostgreSQL, pgvector"
+        github_url:
+          type: string
+          nullable: true
+          example: "https://github.com/ZRishu/smart-portfolio"
+        live_url:
+          type: string
+          nullable: true
+          example: "https://portfolio.example.com"
+        created_at:
+          type: string
+          format: date-time
+      required:
+        - id
+        - title
+        - description
+        - created_at
+
+    ProjectRequest:
+      type: object
+      properties:
+        title:
+          type: string
+          minLength: 1
+          example: "Smart Portfolio"
+        description:
+          type: string
+          minLength: 1
+          example: "A full-stack portfolio with AI chat"
+        tech_stack:
+          type: string
+          nullable: true
+          example: "Go, PostgreSQL, pgvector"
+        github_url:
+          type: string
+          nullable: true
+          example: "https://github.com/ZRishu/smart-portfolio"
+        live_url:
+          type: string
+          nullable: true
+          example: "https://portfolio.example.com"
+      required:
+        - title
+        - description
+
+    ContactMessage:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        sender_name:
+          type: string
+          example: "Jane Doe"
+        sender_email:
+          type: string
+          format: email
+          example: "jane@example.com"
+        message_body:
+          type: string
+          example: "Hello! I loved your portfolio."
+        is_read:
+          type: boolean
+        submitted_at:
+          type: string
+          format: date-time
+
+    ContactMessageRequest:
+      type: object
+      properties:
+        sender_name:
+          type: string
+          minLength: 1
+          example: "Jane Doe"
+        sender_email:
+          type: string
+          format: email
+          example: "jane@example.com"
+        message_body:
+          type: string
+          minLength: 1
+          example: "Hello! I loved your portfolio."
+      required:
+        - sender_name
+        - sender_email
+        - message_body
+
+    ContactMessageResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        sender_name:
+          type: string
+        submitted_at:
+          type: string
+          format: date-time
+
+    ChatRequest:
+      type: object
+      properties:
+        question:
+          type: string
+          minLength: 1
+          example: "What skills does the portfolio owner have?"
+      required:
+        - question
+
+    ChatResponse:
+      type: object
+      properties:
+        answer:
+          type: string
+          example: "Based on the resume, the owner has expertise in Go, PostgreSQL..."
+        cached:
+          type: boolean
+          description: Whether the response came from the semantic cache
+
+    IngestResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "Successfully ingested resume.pdf"
+        pages:
+          type: integer
+          example: 3
+        chunks:
+          type: integer
+          example: 12
+
+    IngestTextRequest:
+      type: object
+      properties:
+        text:
+          type: string
+          minLength: 1
+          description: Raw resume text to ingest
+        source_name:
+          type: string
+          description: Label for the text source (defaults to "manual-text-input")
+          example: "resume-v2"
+      required:
+        - text
+
+    ClearVectorStoreResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "Cleared 12 documents from vector store"
+        deleted:
+          type: integer
+          example: 12
+
+    Sponsor:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        sponsor_name:
+          type: string
+          example: "Alice Smith"
+        email:
+          type: string
+          format: email
+        amount:
+          type: number
+          format: double
+          example: 500.00
+        currency:
+          type: string
+          example: "INR"
+        status:
+          type: string
+          example: "SUCCESS"
+        razorpay_payment_id:
+          type: string
+          example: "pay_ABC123"
+        created_at:
+          type: string
+          format: date-time
+
+    DashboardStats:
+      type: object
+      properties:
+        projects:
+          type: integer
+          format: int64
+        contact_messages:
+          type: object
+          properties:
+            total:
+              type: integer
+              format: int64
+            unread:
+              type: integer
+              format: int64
+        sponsors:
+          type: object
+          properties:
+            total_sponsors:
+              type: integer
+              format: int64
+            total_amount:
+              type: number
+              format: double
+            currency:
+              type: string
+        vector_store:
+          type: object
+          properties:
+            documents:
+              type: integer
+              format: int64
+        semantic_cache:
+          type: object
+          properties:
+            entries:
+              type: integer
+              format: int64
+        outbox_pending:
+          type: integer
+          format: int64
+
+    DeepHealthResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [healthy, unhealthy]
+        database:
+          type: string
+          enum: [connected, unreachable]
+        latency_ms:
+          type: integer
+          format: int64
+
+    HealthResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: "ok"
+
+  responses:
+    BadRequest:
+      description: Validation error or malformed request
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/APIResponse"
+          example:
+            success: false
+            error:
+              code: 400
+              message: "title is required; description is required"
+
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/APIResponse"
+          example:
+            success: false
+            error:
+              code: 404
+              message: "project not found"
+
+    Unauthorized:
+      description: Missing authentication
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/APIResponse"
+          example:
+            success: false
+            error:
+              code: 401
+              message: "authentication required — provide X-Admin-Key header or Authorization: Bearer <key>"
+
+    Forbidden:
+      description: Invalid API key
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/APIResponse"
+          example:
+            success: false
+            error:
+              code: 403
+              message: "invalid API key"
+
+    TooManyRequests:
+      description: Rate limit exceeded
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/APIResponse"
+          example:
+            success: false
+            error:
+              code: 429
+              message: "rate limit exceeded — please slow down and try again shortly"
+
+    InternalError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/APIResponse"
+          example:
+            success: false
+            error:
+              code: 500
+              message: "an internal error occurred — please try again later"
+
+paths:
+  /healthz:
+    get:
+      tags: [Health]
+      summary: Liveness probe
+      description: Returns a simple OK response. Used by load balancers and orchestrators for liveness checks.
+      operationId: healthcheck
+      responses:
+        "200":
+          description: Server is alive
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthResponse"
+              example:
+                status: "ok"
+
+  /api/projects:
+    get:
+      tags: [Projects]
+      summary: List all projects
+      description: Returns every portfolio project ordered by creation date descending. Results are served from an in-memory cache when available.
+      operationId: listProjects
+      responses:
+        "200":
+          description: List of projects
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Project"
+        "500":
+          $ref: "#/components/responses/InternalError"
+
+    post:
+      tags: [Projects]
+      summary: Create a project
+      description: Creates a new portfolio project. Invalidates the project list cache.
+      operationId: createProject
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProjectRequest"
+      responses:
+        "201":
+          description: Project created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: "#/components/schemas/Project"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "500":
+          $ref: "#/components/responses/InternalError"
+
+  /api/projects/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: Project UUID
+
+    get:
+      tags: [Projects]
+      summary: Get a project by ID
+      operationId: getProject
+      responses:
+        "200":
+          description: Project found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: "#/components/schemas/Project"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalError"
+
+    put:
+      tags: [Projects]
+      summary: Update a project
+      description: Replaces all mutable fields of the project. Invalidates the project list cache.
+      operationId: updateProject
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProjectRequest"
+      responses:
+        "200":
+          description: Project updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: "#/components/schemas/Project"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalError"
+
+    delete:
+      tags: [Projects]
+      summary: Delete a project
+      description: Permanently removes a project. Invalidates the project list cache.
+      operationId: deleteProject
+      responses:
+        "204":
+          description: Project deleted
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalError"
+
+  /api/contact:
+    post:
+      tags: [Contact]
+      summary: Submit a contact message
+      description: |
+        Persists a new contact form submission and fires an asynchronous Discord notification.
+        This is a public endpoint — no authentication required.
+      operationId: submitContact
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ContactMessageRequest"
+      responses:
+        "201":
+          description: Message submitted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: "#/components/schemas/ContactMessageResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "500":
+          $ref: "#/components/responses/InternalError"
+
+    get:
+      tags: [Contact]
+      summary: List all contact messages
+      description: Returns every contact message ordered by submission date descending. Intended for admin dashboard use.
+      operationId: listContactMessages
+      security:
+        - AdminApiKey: []
+        - BearerAuth: []
+      responses:
+        "200":
+          description: List of messages
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/ContactMessage"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "500":
+          $ref: "#/components/responses/InternalError"
+
+  /api/contact/unread:
+    get:
+      tags: [Contact]
+      summary: List unread contact messages
+      description: Returns only unread messages ordered by submission date descending.
+      operationId: listUnreadContactMessages
+      security:
+        - AdminApiKey: []
+        - BearerAuth: []
+      responses:
+        "200":
+          description: List of unread messages
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/ContactMessage"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "500":
+          $ref: "#/components/responses/InternalError"
+
+  /api/contact/{id}/read:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: Contact message UUID
+
+    patch:
+      tags: [Contact]
+      summary: Mark a message as read
+      operationId: markContactMessageRead
+      security:
+        - AdminApiKey: []
+        - BearerAuth: []
+      responses:
+        "200":
+          description: Message marked as read
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                        example: "contact message marked as read"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+  /api/contact/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: Contact message UUID
+
+    delete:
+      tags: [Contact]
+      summary: Delete a contact message
+      operationId: deleteContactMessage
+      security:
+        - AdminApiKey: []
+        - BearerAuth: []
+      responses:
+        "204":
+          description: Message deleted
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+  /api/chat:
+    post:
+      tags: [Chat]
+      summary: Ask a question (JSON response)
+      description: |
+        Runs the full RAG pipeline: embed the question → check semantic cache → vector similarity search → LLM generation.
+        Returns the complete answer as a single JSON response.
+      operationId: askQuestion
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ChatRequest"
+      responses:
+        "200":
+          description: Answer generated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: "#/components/schemas/ChatResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "500":
+          $ref: "#/components/responses/InternalError"
+
+  /api/chat/stream:
+    post:
+      tags: [Chat]
+      summary: Ask a question (SSE streaming)
+      description: |
+        Same RAG pipeline as `POST /api/chat`, but streams the answer token-by-token
+        using Server-Sent Events (SSE).
+
+        **Response format:** `text/event-stream`
+
+        Each token is sent as:
+        ```
+        data: <token text>\n\n
+        ```
+
+        Stream completion:
+        ```
+        event: done\ndata: \n\n
+        ```
+
+        **Note:** Use `fetch` with `ReadableStream`, not `EventSource` (which only supports GET).
+      operationId: streamQuestion
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ChatRequest"
+      responses:
+        "200":
+          description: SSE token stream
+          content:
+            text/event-stream:
+              schema:
+                type: string
+                description: Server-Sent Events stream
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "500":
+          $ref: "#/components/responses/InternalError"
+
+  /api/ingest:
+    post:
+      tags: [Ingestion]
+      summary: Upload a PDF resume
+      description: |
+        Accepts a multipart/form-data file upload containing a `.pdf` file.
+        The PDF is parsed, split into overlapping text chunks, embedded via the Jina API,
+        and stored in pgvector for RAG retrieval.
+
+        **Max file size:** 20 MB
+      operationId: ingestPDF
+      security:
+        - AdminApiKey: []
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: PDF file to ingest
+              required:
+                - file
+      responses:
+        "200":
+          description: PDF ingested successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: "#/components/schemas/IngestResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "422":
+          description: Unprocessable PDF (no extractable text or no pages)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/APIResponse"
+        "500":
+          $ref: "#/components/responses/InternalError"
+
+    delete:
+      tags: [Ingestion]
+      summary: Clear vector store
+      description: Removes all document embeddings from the resume_embeddings table. Use before re-ingesting a new resume version.
+      operationId: clearVectorStore
+      security:
+        - AdminApiKey: []
+        - BearerAuth: []
+      responses:
+        "200":
+          description: Vector store cleared
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: "#/components/schemas/ClearVectorStoreResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "500":
+          $ref: "#/components/responses/InternalError"
+
+  /api/ingest/text:
+    post:
+      tags: [Ingestion]
+      summary: Ingest raw text
+      description: |
+        Accepts raw resume text via JSON body. The text is chunked, embedded, and stored
+        in pgvector for RAG retrieval.
+
+        **Max text size:** 5 MB
+      operationId: ingestText
+      security:
+        - AdminApiKey: []
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/IngestTextRequest"
+      responses:
+        "200":
+          description: Text ingested successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: "#/components/schemas/IngestResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "422":
+          description: Unprocessable text (empty or zero chunks)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/APIResponse"
+        "500":
+          $ref: "#/components/responses/InternalError"
+
+  /api/webhooks/razorpay:
+    post:
+      tags: [Webhooks]
+      summary: Razorpay payment webhook
+      description: |
+        Receives Razorpay webhook events. The raw request body is verified against the
+        `X-Razorpay-Signature` header using HMAC-SHA256.
+
+        Only `payment.captured` events are processed. The sponsor and outbox event are
+        inserted atomically in a single database transaction (transactional outbox pattern).
+
+        Duplicate webhook deliveries are safely ignored via a UNIQUE constraint on the event ID.
+      operationId: razorpayWebhook
+      parameters:
+        - name: X-Razorpay-Signature
+          in: header
+          required: true
+          schema:
+            type: string
+          description: HMAC-SHA256 signature of the request body
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              description: Razorpay webhook event payload
+      responses:
+        "200":
+          description: Webhook processed (or acknowledged)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "500":
+          $ref: "#/components/responses/InternalError"
+
+  /api/admin/health:
+    get:
+      tags: [Admin]
+      summary: Deep health check
+      description: Pings the database and returns connectivity status with round-trip latency.
+      operationId: deepHealthCheck
+      security:
+        - AdminApiKey: []
+        - BearerAuth: []
+      responses:
+        "200":
+          description: System is healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: "#/components/schemas/DeepHealthResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "503":
+          description: Database unreachable
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: "#/components/schemas/DeepHealthResponse"
+
+  /api/admin/stats:
+    get:
+      tags: [Admin]
+      summary: Dashboard statistics
+      description: Aggregates counts from all modules into a single response for the admin dashboard.
+      operationId: dashboardStats
+      security:
+        - AdminApiKey: []
+        - BearerAuth: []
+      responses:
+        "200":
+          description: Aggregate statistics
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: "#/components/schemas/DashboardStats"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "500":
+          $ref: "#/components/responses/InternalError"
+
+  /api/admin/sponsors:
+    get:
+      tags: [Admin]
+      summary: List all sponsors
+      description: Returns every sponsor ordered by creation date descending, with payment details.
+      operationId: listSponsors
+      security:
+        - AdminApiKey: []
+        - BearerAuth: []
+      responses:
+        "200":
+          description: List of sponsors
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Sponsor"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "500":
+          $ref: "#/components/responses/InternalError"

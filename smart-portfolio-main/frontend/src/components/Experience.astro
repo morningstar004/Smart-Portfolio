@@ -1,0 +1,45 @@
+---
+import ExperienceList, { type ExperienceItem } from "./solid/ExperienceList";
+
+const fallbackExperience = [
+  {
+    company: "SYSTEM_NODE_ALPHA",
+    role: "BACKEND_ENGINEER",
+    period: "2023_PRESENT",
+    summary:
+      "Built backend services and API workflows focused on Java, distributed systems, and production-grade integrations.",
+    stack: ["JAVA", "SPRING_BOOT", "POSTGRESQL", "DOCKER"],
+  },
+  {
+    company: "SYSTEM_NODE_BETA",
+    role: "SOFTWARE_ENGINEER",
+    period: "2021_2023",
+    summary:
+      "Worked across service development, data pipelines, and deployment automation with an emphasis on reliability and scalability.",
+    stack: ["GO", "PYTHON", "KAFKA", "KUBERNETES"],
+  },
+ ] satisfies ExperienceItem[];
+---
+
+<section id="experience" data-bg-layer="experience" class="min-h-[calc(100svh-4rem)] scroll-mt-16 snap-start border-b border-border bg-transparent py-8 md:py-10 flex items-center">
+  <div class="max-w-7xl mx-auto w-full px-4 md:px-8">
+    <div class="mb-8 md:mb-10 flex justify-between items-end gap-4">
+      <div class="space-y-2">
+        <h2 class="text-[10px] font-mono text-muted-foreground tracking-[0.2em] uppercase">// EXECUTION_HISTORY</h2>
+        <h3 class="text-3xl font-mono font-bold tracking-tighter italic">SYSTEM_EXPERIENCE_LOG</h3>
+      </div>
+      <div class="hidden sm:block text-[10px] font-mono text-muted-foreground">
+        STATUS: <span class="text-brand-green">RESUME_SYNC_ACTIVE</span>
+      </div>
+    </div>
+
+    <div class="custom-scroll-host pr-4">
+      <ExperienceList client:load items={fallbackExperience} />
+      <div class="custom-scrollbar custom-scrollbar-vertical" data-scrollbar-for="experience-list" data-scrollbar-orientation="vertical">
+        <div class="custom-scrollbar-track">
+          <div class="custom-scrollbar-thumb"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

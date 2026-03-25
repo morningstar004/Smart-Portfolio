@@ -1,0 +1,75 @@
+---
+import AchievementsGrid, { type AchievementItem } from "./solid/AchievementsGrid";
+import ProjectsGrid from "./solid/ProjectsGrid";
+
+const fallbackAchievements = [
+  {
+    title: "HIGH_IMPACT_DELIVERY",
+    metric: "SCALABLE_SYSTEMS",
+    description: "Delivered backend features oriented around performance, reliability, and maintainable service design.",
+  },
+  {
+    title: "STACK_DEPTH",
+    metric: "MULTI_LANGUAGE",
+    description: "Built across Java, Go, Python, databases, containers, and cloud-native deployment workflows.",
+  },
+  {
+    title: "AI_ENABLEMENT",
+    metric: "RESUME_GROUNDED_AGENT",
+    description: "Integrated conversational interfaces grounded in structured professional data and backend services.",
+  },
+  {
+    title: "OPERATIONS_MINDSET",
+    metric: "PRODUCTION_READY",
+    description: "Focused on automation, deployment hygiene, and service observability as part of engineering delivery.",
+  },
+ ] satisfies AchievementItem[];
+---
+
+<section id="projects" data-bg-layer="projects" class="min-h-[calc(100svh-4rem)] scroll-mt-16 snap-start border-b border-border bg-transparent py-8 md:py-10 flex items-center">
+  <div class="max-w-7xl mx-auto w-full px-4 md:px-8">
+    <div class="grid grid-cols-1 xl:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)] gap-8 xl:gap-10 items-start">
+      <div>
+        <div class="mb-6 md:mb-8 flex justify-between items-end gap-4">
+          <div class="space-y-2">
+            <h2 class="text-[10px] font-mono text-muted-foreground tracking-[0.2em] uppercase">// SOURCE_CODE_REGISTRY</h2>
+            <h3 class="text-3xl font-mono font-bold tracking-tighter italic">SELECTED_WORKS</h3>
+          </div>
+          <div class="hidden sm:block text-[10px] font-mono text-muted-foreground">
+            STATUS: <span class="text-brand-orange animate-pulse">FETCHING_REMOTE_DATA...</span>
+          </div>
+        </div>
+
+        <div class="custom-scroll-host pb-4">
+          <ProjectsGrid client:load />
+          <div class="custom-scrollbar custom-scrollbar-horizontal" data-scrollbar-for="projects-grid" data-scrollbar-orientation="horizontal">
+            <div class="custom-scrollbar-track">
+              <div class="custom-scrollbar-thumb"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="mb-6 md:mb-8 flex justify-between items-end gap-4">
+          <div class="space-y-2">
+            <h2 class="text-[10px] font-mono text-muted-foreground tracking-[0.2em] uppercase">// ACHIEVEMENT_MATRIX</h2>
+            <h3 class="text-3xl font-mono font-bold tracking-tighter italic">PERFORMANCE_HIGHLIGHTS</h3>
+          </div>
+          <div class="hidden sm:block text-[10px] font-mono text-muted-foreground">
+            MODE: <span class="text-brand-orange">SIGNAL_EXTRACTION</span>
+          </div>
+        </div>
+
+        <div class="custom-scroll-host pr-4">
+          <AchievementsGrid client:load items={fallbackAchievements} />
+          <div class="custom-scrollbar custom-scrollbar-vertical" data-scrollbar-for="achievement-grid" data-scrollbar-orientation="vertical">
+            <div class="custom-scrollbar-track">
+              <div class="custom-scrollbar-thumb"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

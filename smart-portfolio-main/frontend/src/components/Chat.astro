@@ -1,0 +1,221 @@
+---
+---
+
+<section id="chat" data-bg-layer="chat" class="min-h-[calc(100svh-4rem)] scroll-mt-16 snap-start border-b border-border bg-transparent py-8 md:py-10 flex items-center">
+  <div class="max-w-7xl mx-auto w-full px-4 md:px-8">
+    <div class="flex flex-col lg:flex-row gap-8 lg:gap-12 items-stretch">
+      <!-- Info Pane -->
+      <div class="w-full lg:w-1/3 space-y-6 md:space-y-8 flex flex-col justify-center">
+        <div class="space-y-2">
+          <h2 class="text-[10px] font-mono text-muted-foreground tracking-[0.2em] uppercase">// NEURAL_INTERFACE</h2>
+          <h3 class="text-3xl font-mono font-bold tracking-tighter italic">AI_AGENT_ZR</h3>
+        </div>
+        <p class="text-[11px] font-mono leading-relaxed text-muted-foreground uppercase">
+          CONNECTED_TO: <span class="text-brand-orange">RESUME_DATA_CORE_V1</span><br/>
+          MODEL: GROQ_LLAMA_3_70B<br/>
+          STATUS: <span id="connection-status" class="text-brand-green">ONLINE_READY</span>
+        </p>
+        <div class="p-6 border border-border bg-card">
+          <p class="text-[10px] font-mono text-muted-foreground leading-relaxed uppercase">
+            <span class="text-brand-green">></span> Ask specific questions about system architecture, tech stacks, or professional history. The agent is grounded in the uploaded resume context.
+          </p>
+        </div>
+      </div>
+
+      <!-- Chat Interface -->
+      <div class="w-full lg:w-2/3 border border-border flex flex-col h-[min(56svh,34rem)] md:h-[min(60svh,36rem)] bg-background relative">
+        <div class="flex items-center justify-between px-6 py-3 border-b border-border bg-muted">
+          <span class="text-[10px] font-mono tracking-widest text-muted-foreground uppercase">SESSION_ID: {Math.random().toString(36).substring(7).toUpperCase()}</span>
+          <div class="flex gap-1.5">
+            <div class="w-2.5 h-2.5 bg-brand-red"></div>
+            <div class="w-2.5 h-2.5 bg-brand-orange"></div>
+            <div class="w-2.5 h-2.5 bg-brand-green"></div>
+          </div>
+        </div>
+
+        <div class="custom-scroll-host flex-grow min-h-0 pr-4">
+          <div id="chat-messages" class="app-scrollbar h-full overflow-y-auto p-6 md:p-8 space-y-6">
+            <div class="flex gap-4">
+              <span class="text-[10px] font-mono text-brand-green mt-1">[BOT]</span>
+              <div class="text-sm font-mono text-foreground leading-relaxed max-w-xl">
+                SYSTEM_READY. HOW CAN I ASSIST YOUR INQUIRY?
+              </div>
+            </div>
+          </div>
+          <div class="custom-scrollbar custom-scrollbar-vertical" data-scrollbar-for="chat-messages" data-scrollbar-orientation="vertical">
+            <div class="custom-scrollbar-track">
+              <div class="custom-scrollbar-thumb"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-4 md:p-6 border-t border-border">
+          <form id="chat-form" class="flex gap-4">
+            <span class="text-[10px] font-mono text-muted-foreground mt-3">>></span>
+            <input 
+              type="text" 
+              id="chat-input"
+              placeholder="ENTER_QUERY_HERE..." 
+              class="flex-grow bg-transparent border-none focus:ring-0 text-sm font-mono text-foreground placeholder:text-muted-foreground"
+              autocomplete="off"
+              required
+            />
+            <button 
+              type="submit" 
+              id="chat-submit"
+              class="px-6 py-2 bg-foreground text-background font-mono text-[10px] font-bold tracking-widest transition-all uppercase"
+            >
+              EXECUTE
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .streaming::after {
+    content: "▋";
+    animation: blink 1s step-end infinite;
+    display: inline-block;
+    width: 6px;
+    height: 12px;
+    margin-left: 4px;
+    background-color: var(--foreground);
+    vertical-align: middle;
+  }
+  @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+</style>
+
+<script>
+  import { apiUrl } from "../lib/public-api";
+
+  function initChat(): void {
+    const form = document.getElementById("chat-form") as HTMLFormElement | null;
+    const input = document.getElementById("chat-input") as HTMLInputElement | null;
+    const messages = document.getElementById("chat-messages");
+    const submitBtn = document.getElementById("chat-submit") as HTMLButtonElement | null;
+    const connStatus = document.getElementById("connection-status");
+
+    if (!form || !input || !messages || !submitBtn) return;
+
+    let isStreaming = false;
+
+    // Validation logic for hover effect
+    submitBtn.addEventListener("mouseenter", () => {
+      if (input.value.trim() !== "" && !isStreaming) {
+        submitBtn.classList.add("bg-brand-green", "text-white");
+        submitBtn.classList.remove("bg-foreground", "text-background");
+      }
+    });
+
+    submitBtn.addEventListener("mouseleave", () => {
+      submitBtn.classList.remove("bg-brand-green", "text-white");
+      submitBtn.classList.add("bg-foreground", "text-background");
+    });
+
+    function addMessage(role: "USR" | "BOT", text: string): HTMLElement | null {
+      const wrapper = document.createElement("div");
+      wrapper.className = "flex gap-4";
+      
+      const roleTag = document.createElement("span");
+      roleTag.className = `text-[10px] font-mono mt-1 ${role === 'USR' ? 'text-brand-orange' : 'text-brand-green'}`;
+      roleTag.textContent = `[${role}]`;
+      
+      const content = document.createElement("div");
+      content.className = `text-sm font-mono leading-relaxed max-w-xl whitespace-pre-wrap ${role === 'USR' ? 'text-muted-foreground' : 'text-foreground'}`;
+      content.textContent = text;
+      
+      wrapper.appendChild(roleTag);
+      wrapper.appendChild(content);
+      messages!.appendChild(wrapper);
+      messages!.scrollTop = messages!.scrollHeight;
+      
+      return role === 'BOT' ? content : null;
+    }
+
+    async function handleSubmit(e: Event): Promise<void> {
+      e.preventDefault();
+      if (isStreaming) return;
+
+      const question = input!.value.trim();
+      if (!question) return;
+
+      addMessage("USR", question.toUpperCase());
+      input!.value = "";
+      isStreaming = true;
+      submitBtn!.disabled = true;
+      submitBtn!.textContent = "WAIT...";
+
+      const botContent = addMessage("BOT", "");
+      if (!botContent) return;
+      botContent.classList.add("streaming");
+
+      try {
+        const response = await fetch(apiUrl("/api/chat/stream"), {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ question }),
+        });
+
+        if (!response.ok || !response.body) throw new Error();
+
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+        let fullText = "";
+        let buffer = "";
+
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+
+          buffer += decoder.decode(value, { stream: true });
+          const lines = buffer.split("\n");
+          buffer = lines.pop() ?? "";
+
+          for (const line of lines) {
+            const trimmed = line.trim();
+            if (!trimmed) continue;
+
+            if (trimmed.startsWith("event: done")) {
+              break;
+            }
+
+            if (trimmed.startsWith("data: ")) {
+              let text = trimmed.slice(6);
+              // Unescape "\\n" sequence sent by the backend.
+              text = text.replace(/\\n/g, '\n');
+              fullText += text;
+              botContent.textContent = fullText;
+              messages!.scrollTop = messages!.scrollHeight;
+            }
+          }
+        }
+        
+        if (connStatus) {
+          connStatus.textContent = "ONLINE_READY";
+          connStatus.className = "text-brand-green";
+        }
+      } catch {
+        botContent.textContent = "ERROR: INTERFACE_TIMEOUT__OR_CONNECTION_FAILURE.";
+        if (connStatus) {
+          connStatus.textContent = "OFFLINE_FAILURE";
+          connStatus.className = "text-brand-red";
+        }
+      } finally {
+        botContent.classList.remove("streaming");
+        isStreaming = false;
+        submitBtn!.disabled = false;
+        submitBtn!.textContent = "EXECUTE";
+        input!.focus();
+      }
+    }
+
+    form.addEventListener("submit", (e: Event) => {
+      void handleSubmit(e);
+    });
+  }
+
+  initChat();
+</script>
