@@ -49,10 +49,10 @@ const buildStamp = new Date().toLocaleString('en-GB', {
       if (html.classList.contains("dark")) return;
 
       if (typeof (window as any).toggleTheme === 'function') {
-        (window as any).toggleTheme(e, "dark");
+        (window as any).toggleTheme(e, "dark"); 
       }
     });
   }
 
-  initDarkModeRestore();
+  initDarkModeRestore(); 
 </script>

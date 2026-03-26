@@ -17,7 +17,7 @@
         </p>
         <div class="p-6 border border-border bg-card">
           <p class="text-[10px] font-mono text-muted-foreground leading-relaxed uppercase">
-            <span class="text-brand-green">></span> Ask specific questions about system architecture, tech stacks, or professional history. The agent is grounded in the uploaded resume context.
+            <span class="text-brand-green"></span> Ask specific questions about system architecture, tech stacks, or professional history. The agent is grounded in the uploaded resume context.
           </p>
         </div>
       </div>
@@ -51,7 +51,7 @@
 
         <div class="p-4 md:p-6 border-t border-border">
           <form id="chat-form" class="flex gap-4">
-            <span class="text-[10px] font-mono text-muted-foreground mt-3">>></span>
+            <span class="text-[10px] font-mono text-muted-foreground mt-3"></span>
             <input 
               type="text" 
               id="chat-input"
@@ -171,8 +171,8 @@
           if (done) break;
 
           buffer += decoder.decode(value, { stream: true });
-          const lines = buffer.split("\n");
-          buffer = lines.pop() ?? "";
+          const lines = buffer.split(" \n");
+          buffer = lines.pop() ?? " ";
 
           for (const line of lines) {
             const trimmed = line.trim();
