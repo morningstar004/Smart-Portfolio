@@ -17,7 +17,7 @@ const { showSectionNav = true } = Astro.props;
 ---
 
 <header class="sticky top-0 z-50 w-full">
-  <div class="">
+  <div class="flex items-center justify-between py-4 px-6">
     <div class="gap-8">
       <a href="/" class="profile name">
         
@@ -56,46 +56,5 @@ const { showSectionNav = true } = Astro.props;
         </MotionLink>
       )}
       
-      <!-- Mobile Menu Toggle -->
-      <button 
-        id="nav-toggle"
-        class=""
-        aria-label="Toggle Menu"
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" x2="21" y1="12" y2="12"/><line x1="3" x2="21" y1="6" y2="6"/><line x1="3" x2="21" y1="18" y2="18"/></svg>
-      </button>
-    </div>
-  </div>
-
-  <!-- Mobile Menu -->
-  {showSectionNav && (
-    <div id="mobile-menu" class="hidden md:hidden border-b border-border bg-background flex flex-col">
-      {navLinks.map((link) => (
-        <a 
-          href={link.href} 
-          class="px-8 py-4 text-xs font-mono tracking-widest border-b border-border text-muted-foreground hover:text-foreground hover:bg-muted transition-all"
-        >
-          {link.label}
-        </a>
-      ))}
-    </div>
-  )}
+      
 </header>
-
-<script>
-  function initNav(): void {
-    const toggle = document.getElementById("nav-toggle");
-    const menu = document.getElementById("mobile-menu");
-    if (!toggle || !menu) return;
-
-    toggle.addEventListener("click", () => {
-      menu.classList.toggle("hidden");
-    });
-
-    menu.querySelectorAll("a").forEach(a => {
-      a.addEventListener("click", () => menu.classList.add("hidden"));
-    });
-  }
-
-  initNav();
-</script>
