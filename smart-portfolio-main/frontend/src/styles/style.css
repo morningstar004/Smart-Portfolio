@@ -3,18 +3,22 @@
 @plugin "@tailwindcss/forms";
 @custom-variant dark (&:where(.dark, .dark *));
 
-html,
-body {
+/* html, */
+/* body {
   scroll-behavior: smooth;
   scrollbar-width: none;
   -ms-overflow-style: none;
+} */
+
+body{
+  background-color: #E7FAEB;
 }
 
-#projects-grid,
+/* #projects-grid,
 #chat-messages {
   scroll-behavior: smooth;
-}
-
+} */
+/* 
 @theme {
   --animate-cursor-blink: blink 1s step-end infinite;
 
@@ -22,7 +26,7 @@ body {
     0%, 100% { opacity: 1; }
     50% { opacity: 0; }
   }
-}
+} */
 
 @theme inline {
   --color-background: var(--background);
@@ -68,7 +72,7 @@ body {
 }
 
 :root {
-  --background: #ffffff;
+  --background: #EAF5EB;
   --foreground: #000000;
   --card: #fafafa;
   --card-foreground: #09090b;
@@ -102,7 +106,7 @@ body {
   --selection-text: #ffffff;
 }
 
-.dark {
+/* .dark {
   --background: #000000;
   --foreground: #ffffff;
   --card: #09090b;
@@ -134,16 +138,16 @@ body {
   --cursor-glow: rgba(255, 140, 0, 0.35);
   --selection-bg: #ff8c00;
   --selection-text: #111111;
-}
+} */
 
-.app-scrollbar,
+/* .app-scrollbar,
 html,
 body {
   scrollbar-width: none;
   -ms-overflow-style: none;
-}
+} */
 
-.app-scrollbar::-webkit-scrollbar,
+/* .app-scrollbar::-webkit-scrollbar,
 html::-webkit-scrollbar,
 body::-webkit-scrollbar {
   display: none;
@@ -248,4 +252,4 @@ body::-webkit-scrollbar {
   input, textarea {
     @apply border-border focus:border-brand-orange! focus:ring-0! outline-none!;
   }
-}
+} */
