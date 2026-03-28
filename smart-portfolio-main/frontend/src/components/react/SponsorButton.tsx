@@ -108,30 +108,36 @@ export default function SponsorButton() {
   return (
     <motion.button
       ref={buttonRef}
-      whileTap={{ scale: 0.9 }}
+      /* Subtle lift without scaling */
+      whileHover={{}}
+      whileTap={{ scale: 0.96 }}
       transition={{ duration: 0.2, ease: "easeIn" }}
-      className="relative px-7 py-4 rounded-full overflow-hidden 
-             text-white font-mono text-[14px] font-bold tracking-[0.01em]
-             backdrop-blur-[24px] border-2 border-white/60 border-b-2 border-b-white/20
-             border-r-white/20 shadow-lg
-             flex items-center gap-2 uppercase transition-all opacity-90 "
+      className="group relative px-8 py-4 rounded-full overflow-hidden 
+             text-white font-mono text-[14px] font-bold tracking-[0.05em]
+             backdrop-blur-[20px] border-b-[#ffffff]/50 border-t-[#ffffff] 
+             flex items-center justify-center uppercase transition-all duration-300
+             hover:border-r-[#ffffff]/50 hover:border-l-[#ffffff]/50 hover:border-b-opacity-30 hover:border-t-opacity-30"
       style={{
         background: `radial-gradient(ellipse at center, 
       rgba(8, 8, 8, 1) 0%, 
-      rgba(75, 76, 75, 0.9) 45%, 
-      rgba(134, 135, 134, 0.8) 70%, 
-      rgba(188, 188, 188, 0.7) 100%
+      rgba(75, 76, 75, 0.9) 35%, 
+      rgba(134, 135, 134, 0.8) 60%, 
+      rgba(188, 188, 188, 0.7) 80%,
+      rgba(255, 255, 255, 0.6) 100%
     )`,
       }}
       type="button"
     >
-      {/* The "Frosted Grain" Texture Overlay */}
-      <div className="absolute inset-0 opacity-[0.5] pointer-events-none bg-[url('https://grainy-gradients.vercel.app/noise.svg')] brightness-50 contrast-50"></div>
+      {/* SUBTLE HOVER GLOW: A soft light that follows the mouse (simplified to a brightness shift) */}
+      <div className="absolute inset-0 opacity-0 transition-opacity duration-500 bg-white pointer-events-none" />
 
-      {/* Top Specular Highlight (Makes the glass look thick) */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[90%] h-[1px] bg-gradient-to-r from-transparent via-white/50 to-transparent"></div>
+      {/* GRAIN TEXTURE: Keeps the "thick frost" look */}
+      <div className="absolute inset-0 opacity-[0.2] pointer-events-none bg-[url('https://grainy-gradients.vercel.app/noise.svg')] brightness-75 contrast-75"></div>
 
-      <span className="relative z-10 drop-shadow-md">SPONSOR ME</span>
+      {/* TOP RIM LIGHT: Fixed highlight to define the edge */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[85%] h-[1px] bg-gradient-to-r from-transparent via-white/30 to-transparent"></div>
+
+      <span className="relative z-10 drop-shadow-sm">SPONSOR ME</span>
     </motion.button>
   );
 }

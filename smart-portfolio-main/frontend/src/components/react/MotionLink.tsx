@@ -15,9 +15,7 @@ export default function MotionLink({
     <motion.a
       href={href}
       className={className}
-      whileHover={{ y: -1, scale: 1.01 }}
-      whileTap={{ scale: 0.99 }}
-      transition={{ duration: 0.16, ease: "easeOut" }}
+      transition={{ duration: 0.16, ease: "easeIn" }}
     >
       {children}
     </motion.a>
