@@ -19,9 +19,13 @@ async function ensureRazorpayLoaded(): Promise<void> {
     );
     if (existing) {
       existing.addEventListener("load", () => resolve(), { once: true });
-      existing.addEventListener("error", () => reject(new Error("RAZORPAY_SCRIPT_LOAD_FAILED")), {
-        once: true,
-      });
+      existing.addEventListener(
+        "error",
+        () => reject(new Error("RAZORPAY_SCRIPT_LOAD_FAILED")),
+        {
+          once: true,
+        },
+      );
       return;
     }
 
@@ -30,9 +34,13 @@ async function ensureRazorpayLoaded(): Promise<void> {
     script.async = true;
     script.dataset.razorpayCheckout = "true";
     script.addEventListener("load", () => resolve(), { once: true });
-    script.addEventListener("error", () => reject(new Error("RAZORPAY_SCRIPT_LOAD_FAILED")), {
-      once: true,
-    });
+    script.addEventListener(
+      "error",
+      () => reject(new Error("RAZORPAY_SCRIPT_LOAD_FAILED")),
+      {
+        once: true,
+      },
+    );
     document.head.appendChild(script);
   });
 }
@@ -47,7 +55,7 @@ export default function SponsorButton() {
     const handleClick = async () => {
       const originalText = button.innerText;
       button.disabled = true;
-      button.innerText = "INITIALIZING...";
+      button.innerText = "SPONSOR ME";
 
       try {
         await ensureRazorpayLoaded();
@@ -100,13 +108,30 @@ export default function SponsorButton() {
   return (
     <motion.button
       ref={buttonRef}
-      whileHover={{ y: -1, scale: 1.01 }}
-      whileTap={{ scale: 0.99 }}
-      transition={{ duration: 0.16, ease: "easeOut" }}
-      className="hidden sm:flex items-center gap-2 px-4 py-1.5 border border-border font-mono text-[10px] tracking-widest hover:bg-[#ec4899] hover:text-white transition-all"
+      whileTap={{ scale: 0.9 }}
+      transition={{ duration: 0.2, ease: "easeIn" }}
+      className="relative px-7 py-4 rounded-full overflow-hidden 
+             text-white font-mono text-[14px] font-bold tracking-[0.01em]
+             backdrop-blur-[24px] border-2 border-white/60 border-b-2 border-b-white/20
+             border-r-white/20 shadow-lg
+             flex items-center gap-2 uppercase transition-all opacity-90 "
+      style={{
+        background: `radial-gradient(ellipse at center, 
+      rgba(8, 8, 8, 1) 0%, 
+      rgba(75, 76, 75, 0.9) 45%, 
+      rgba(134, 135, 134, 0.8) 70%, 
+      rgba(188, 188, 188, 0.7) 100%
+    )`,
+      }}
       type="button"
     >
-      SPONSOR_ME
+      {/* The "Frosted Grain" Texture Overlay */}
+      <div className="absolute inset-0 opacity-[0.5] pointer-events-none bg-[url('https://grainy-gradients.vercel.app/noise.svg')] brightness-50 contrast-50"></div>
+
+      {/* Top Specular Highlight (Makes the glass look thick) */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[90%] h-[1px] bg-gradient-to-r from-transparent via-white/50 to-transparent"></div>
+
+      <span className="relative z-10 drop-shadow-md">SPONSOR ME</span>
     </motion.button>
   );
 }
