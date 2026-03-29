@@ -1,74 +1,60 @@
 ---
 const techStack = [
-  "Java", "Spring Boot", "Go", "Python", "C", "Rust", "React", "PostgreSQL", "MongoDB", "Docker", "Kubernetes", "Kafka", "Github Actions", "Git"
+  "Java",
+  "Spring Boot",
+  "Go",
+  "Python",
+  "C",
+  "Rust",
+  "React",
+  "PostgreSQL",
+  "MongoDB",
+  "Docker",
+  "Kubernetes",
+  "Kafka",
+  "Github Actions",
+  "Git",
 ];
 ---
 
-<section id="about" data-bg-layer="about" class="min-h-[calc(100svh-4rem)] scroll-mt-16 snap-start border-b border-border bg-transparent py-8 md:py-10 flex items-center">
-  <div class="max-w-7xl mx-auto w-full px-4 md:px-8">
-    <div class="flex flex-col lg:flex-row gap-8 lg:gap-12 items-center">
+<section id="about" data-bg-layer="about" class="">
+  <div class="">
+    <div class="">
       <!-- Left: Identity & Core Details -->
-      <div class="w-full lg:w-1/3">
-        <div class="border border-border p-6 md:p-8 flex flex-col items-center lg:items-start bg-card">
+      <div class="">
+        <div class="">
           <!-- Profile Picture with Mode Toggle -->
-          <div 
-            id="profile-trigger"
-            class="w-40 h-40 md:w-48 md:h-48 border border-border bg-muted mb-6 md:mb-8 flex items-center justify-center grayscale relative cursor-pointer group overflow-hidden"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="text-zinc-500 group-hover:opacity-0 transition-opacity"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-            
-            <!-- Hover Overlay -->
-            <div id="hover-overlay" class="absolute inset-0 bg-brand-green opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center p-4 text-center">
-              <span id="toggle-text" class="text-[10px] font-mono text-black font-bold tracking-tighter uppercase leading-tight">
+          <div id="profile-trigger" class="">
+            <!-- Hover Overlay
+            <div id="hover-overlay" class="">
+              <span id="toggle-text" class="">
                 LET_THERE_BE_LIGHT
               </span>
             </div>
-          </div>
-
-          <div class="space-y-4 w-full">
-            <div class="border-b border-border pb-2 flex justify-between items-end">
-              <span class="text-[10px] font-mono text-muted-foreground tracking-tighter uppercase">IDENTITY_NAME</span>
-              <span class="font-mono text-sm font-bold text-brand-green" id="hero-name">Rishu</span>
-            </div>
-            <div class="border-b border-border pb-2 flex justify-between items-end">
-              <span class="text-[10px] font-mono text-muted-foreground tracking-tighter uppercase">PRIMARY_ROLE</span>
-              <span class="font-mono text-sm">BACKEND_DEV</span>
-            </div>
-            <div class="border-b border-border pb-2 flex justify-between items-end">
-              <span class="text-[10px] font-mono text-muted-foreground tracking-tighter uppercase">SPECIALIZATION</span>
-              <span class="font-mono text-sm text-muted-foreground">JAVA_ECOSYSTEM</span>
-            </div>
-            <div class="border-b border-border pb-2 flex justify-between items-end">
-              <span class="text-[10px] font-mono text-muted-foreground tracking-tighter uppercase">LOCATION</span>
-              <span class="font-mono text-sm text-muted-foreground">REMOTE_INDIA</span>
-            </div>
-            <div class="border-b border-border pb-2 flex justify-between items-end gap-4">
-              <span class="text-[10px] font-mono text-muted-foreground tracking-tighter uppercase">EDUCATION</span>
-              <span class="font-mono text-sm text-muted-foreground text-right">BTECH_CSE</span>
-            </div>
+          </div> -->
           </div>
         </div>
       </div>
 
       <!-- Right: Summary & Tech -->
-      <div class="w-full lg:w-2/3 space-y-8 md:space-y-10">
-        <div class="space-y-4 md:space-y-6">
-          <h2 class="text-[10px] font-mono text-muted-foreground tracking-[0.2em] uppercase">// SYSTEM_SUMMARY</h2>
-          <div id="hero-tagline" class="text-lg md:text-2xl leading-relaxed font-light text-foreground max-w-2xl">
-            <span class="text-brand-orange"></span> Initializing professional data...
-            <span class="inline-block w-2 h-5 bg-foreground animate-pulse align-middle ml-1"></span>
+      <div class="">
+        <div class="">
+          <div id="hero-tagline" class="">
+            <span class=""></span> Initializing professional data...
+            <span class=""></span>
           </div>
         </div>
 
-        <div class="space-y-4 md:space-y-6">
-          <h2 class="text-[10px] font-mono text-muted-foreground tracking-[0.2em] uppercase">// TECHNICAL_CAPABILITIES</h2>
-          <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-px bg-border border border-border">
-            {techStack.map(tech => (
-              <div class="bg-background p-3 md:p-4 text-[10px] md:text-[11px] font-mono tracking-wider text-muted-foreground hover:text-foreground hover:bg-muted transition-all flex items-center gap-2 group/tech">
-                <span class="w-1.5 h-1.5 bg-brand-red opacity-0 group-hover/tech:opacity-100 transition-opacity"></span>
-                {tech.toUpperCase()}
-              </div>
-            ))}
+        <div class="">
+          <div class="">
+            {
+              techStack.map((tech) => (
+                <div class="">
+                  <span class="" />
+                  {tech.toUpperCase()}
+                </div>
+              ))
+            }
           </div>
         </div>
       </div>
@@ -89,7 +75,8 @@ const techStack = [
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          question: "What is the full name of the person in this resume? Reply with ONLY the name, nothing else.",
+          question:
+            "What is the full name of the person in this resume? Reply with ONLY the name, nothing else.",
         }),
       });
 
@@ -104,7 +91,8 @@ const techStack = [
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          question: "Write a brief professional summary in under 30 words of the person in this resume. Write in first person. Do not use markdown, keep it as plain text. Focus only on core technical expertise.",
+          question:
+            "Write a brief professional summary in under 30 words of the person in this resume. Write in first person. Do not use markdown, keep it as plain text. Focus only on core technical expertise.",
         }),
       });
 
@@ -126,7 +114,7 @@ const techStack = [
 
     // Listen for global theme changes to update UI
     document.addEventListener("theme-changed", (e: any) => {
-      if (e.detail.theme === 'light') {
+      if (e.detail.theme === "light") {
         hoverOverlay.classList.remove("group-hover:opacity-100");
         trigger.style.cursor = "default";
       } else {
@@ -144,7 +132,7 @@ const techStack = [
 
     trigger.addEventListener("click", (e) => {
       if (!html.classList.contains("dark")) return;
-      if (typeof (window as any).toggleTheme === 'function') {
+      if (typeof (window as any).toggleTheme === "function") {
         (window as any).toggleTheme(e, "light");
       }
     });
