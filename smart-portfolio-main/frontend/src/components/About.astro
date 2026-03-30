@@ -1,5 +1,5 @@
 ---
-  import MorphingText from "./react/MorphingText"
+import MorphingText from "./react/MorphingText";
 // const techStack = [
 //   "Java",
 //   "Spring Boot",
@@ -94,30 +94,49 @@
     </div>
   </div>
 
-  <div class="w-1/3 flex flex-col items-center justify-center">
-    <!-- 
-    1. We remove 'overflow-hidden' from this div so the head can stick out.
-    2. We keep the 'rounded-full' and 'bg-amber-400' to create the background circle.
-  -->
+  <div id="profile-trigger" class="w-1/3 flex flex-col items-center justify-center cursor-none">
+    <!-- Custom Cursor Border (Optional visual aid) -->
     <div
-      class="relative w-52 h-52 right-30 top-5 rounded-full bg-amber-400 border-8 border-white shadow-2xl z-10"
-      id="profile-trigger"
+      id="custom-cursor"
+      class="fixed w-32 h-32  border-gray-500 rounded-full pointer-events-none opacity-0 z-50 -translate-x-1/2 -translate-y-1/2 mix-blend-difference transition-opacity duration-300 border-[0.5px]"
     >
+    </div>
+
+    <div
+      class="relative w-52 h-52 right-30 top-5 rounded-full bg-amber-400 border-8 border-white shadow-2xl z-10 "
+      
+    >
+      <!-- BASE IMAGE (Pranjal) -->
       <img
+        id="profile-img-base"
         src="/profile.png"
         alt="Profile Picture"
         class="profile-pop-out rotate-6 absolute bottom-5 left-1/2 w-[125%] max-w-none z-20"
+        style="clip-path: circle(0% at 50% 50%);"
       />
-    </div>
-    <div class= "mt-10 flex flex-col translate-x-10">
-        <div class=" font-semibold text-gray-700 text-xl intro">
-          Hi! I am
-        </div>
-        <div class="text-3xl text-amber-400 font-bold myName">
-          Pranjal kumar.
-        </div>
+
+      <!-- REVEAL IMAGE (Spider-man) -->
+      <!-- We wrap it in a div that will be clipped -->
+      <div
+        id="reveal-container"
+        class="absolute inset-0 z-30 pointer-events-none"
+        style="clip-path: circle(0% at 50% 50%);"
+      >
+        <img
+          id="profile-img-reveal"
+          src="/Spider-man.png"
+          alt="Spider-man reveal"
+          class="profile-pop-out-spider rotate-10 absolute top-[-120px] z-[-1]  left-[100px] w-[120%] max-w-none"
+        />
+      </div>
     </div>
 
+    <div class="mt-10 flex flex-col translate-x-10">
+      <div class="font-semibold text-gray-700 text-xl intro">Hi! I am</div>
+      <div id="name-display" class="text-3xl text-amber-400 font-bold myName">
+        Pranjal kumar.
+      </div>
+    </div>
   </div>
 </section>
 
@@ -197,6 +216,52 @@
     });
   }
 
+  function initSpiderReveal() {
+    const trigger = document.getElementById("profile-trigger");
+    const revealContainer = document.getElementById("reveal-container");
+    const nameDisplay = document.getElementById("name-display");
+    const customCursor = document.getElementById("custom-cursor");
+
+    if (!trigger || !revealContainer || !nameDisplay || !customCursor) return;
+
+    const originalName = "Pranjal kumar.";
+    const spiderName = "Spider-man";
+
+    const handleMove = (e: MouseEvent) => {
+      // 1. Move the visual custom cursor (Global coordinates)
+      customCursor.style.left = `${e.clientX}px`;
+      customCursor.style.top = `${e.clientY}px`;
+
+      // 2. Update the Reveal Mask (Local coordinates)
+      const rect = trigger.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+
+      // Update the circle mask size and position
+      // 80px is the radius of the "flashlight"
+      revealContainer.style.clipPath = `circle(100px at ${x}px ${y}px)`;
+    };
+
+    trigger.addEventListener("mouseenter", () => {
+      customCursor.style.opacity = "1";
+      nameDisplay.textContent = spiderName;
+      nameDisplay.classList.replace("text-amber-400", "text-red-600");
+      document.body.style.cursor = "none";
+    });
+
+    trigger.addEventListener("mousemove", handleMove);
+
+    trigger.addEventListener("mouseleave", () => {
+      customCursor.style.opacity = "0";
+      revealContainer.style.clipPath = `circle(0% at 50% 50%)`;
+      nameDisplay.textContent = originalName;
+      nameDisplay.classList.replace("text-red-600", "text-amber-400");
+      document.body.style.cursor = "default";
+    });
+  }
+
+  initSpiderReveal();
+
   loadHero();
   initModeToggle();
 </script>
@@ -253,6 +318,17 @@
     /* Fine-tune this to adjust how high the head sits */
     transform: translateX(-46%) translateY(21%);
   }
+  .profile-pop-out-spider {
+    /* 
+       THE MAGIC LINE:
+       - The first four values (inset) mean: clip 0% from sides/bottom, but -100% from top (allowing it to grow).
+       - 'round 50%' creates the circular clipping at the bottom.
+    */
+    clip-path: inset(-100% 0% 22% 0% round 100%);
+
+    /* Fine-tune this to adjust how high the head sits */
+    transform: translateX(-47%) translateY(20%);
+  }
 
   .profession {
     /* This creates the "portal" look - text fades in/out at edges */
@@ -270,5 +346,30 @@
     filter: blur(8px) contrast(1.2);
     transform: scaleY(1.1) skewX(-2deg);
     opacity: 0.5;
+  }
+  #reveal-container {
+    /* Transition the clip-path size for smoothness when entering/leaving */
+    transition: clip-path 0.25s ease-out;
+    /* Important: keep the container overflow visible so the head can still pop out */
+    overflow: visible;
+  }
+
+  #custom-cursor {
+    mix-blend-difference: difference;
+    background-color: rgba(135, 49, 49, 0.1);
+    backdrop-filter: blur(1px);
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+
+  #profile-trigger {
+    /* Ensure the trigger is the reference point for cursor logic */
+    position: relative;
+    overflow: visible;
+  }
+
+  .myName {
+    transition: color 0.3s ease, transform 0.3s ease;
   }
 </style>
