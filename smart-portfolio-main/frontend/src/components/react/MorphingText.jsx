@@ -66,7 +66,7 @@ const MorphingText = () => {
               absolute left-0 top-1/2 -translate-y-1/2 text-black
               text-[105px] font-exterbold uppercase tracking-tighter leading-none
               transition-all duration-1800 ease-linear whitespace-nowrap 
-              max-lg:text-[75px] max-md:text-[50px] max-sm:text-[28px]
+              max-lg:text-[75px] max-md:text-[50px] max-sm:text-[28px] max-lg:left-8 max-md:items-center max-md:justify-center
               ${i === index ? 'opacity-100 scale-100' : 'opacity-0 scale-100'}
             `}
             style={{ 
