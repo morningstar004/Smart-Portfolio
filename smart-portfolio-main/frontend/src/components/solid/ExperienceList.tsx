@@ -59,27 +59,26 @@ export default function ExperienceList(props: ExperienceListProps) {
   }
 
   return (
-    <div id="experience-list" class="app-scrollbar ">
+    <div id="experience-list" class="app-scrollbar mt-6">
       <For each={items()}>
         {(item) => (
-          <article class="bg-card ">
-            <div class="">
+          <article class="article border-t gap-1 mb-8 flex flex-col justify-center" style="border-top: 2px solid; border-image: linear-gradient(to right, transparent, #EB9A6C, transparent) 1;">
+            <div class="flex justify-between mx-42 mt-2">
               <div class="">
-                <span class="">NODE</span>
-                <h4 class="">{item.company}</h4>
+                <h4 class="text-lg font-semibold font-sans">{item.company}</h4>
               </div>
-              <span class="">{item.period}</span>
+              <span class="text-sm font-extralight">{item.period}</span>
             </div>
 
-            <div class="">
-              <p class="">{item.role}</p>
-              <p class="">{item.summary}</p>
+            <div class="mx-42 items-end flex flex-col">
+              <p class="font-medium text-end text-[#ff4d00]">{item.role}</p>
+              <p class="text-gray-600 pl-20 max-w-130 text-end ">{item.summary}</p>
             </div>
 
-            <div class="">
+            <div class="mx-42 mt-2 flex gap-2 flex-wrap">
               <For each={item.stack ?? []}>
                 {(tech) => (
-                  <span class="">
+                  <span class="bg-[#fe5f1be2] text-white text-xs font-semibold px-2 py-1 rounded">
                     {tech}
                   </span>
                 )}
@@ -91,3 +90,4 @@ export default function ExperienceList(props: ExperienceListProps) {
     </div>
   );
 }
+
