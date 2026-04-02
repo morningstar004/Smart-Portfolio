@@ -112,11 +112,12 @@ export default function SponsorButton() {
       whileHover={{}}
       whileTap={{ scale: 0.96 }}
       transition={{ duration: 0.2, ease: "easeIn" }}
-      className="group relative px-8 py-4 rounded-full overflow-hidden 
-             text-white font-mono text-[14px] font-bold tracking-[0.05em]
-             backdrop-blur-[20px] border-b-[#ffffff]/50 border-t-[#ffffff] 
-             flex items-center justify-center uppercase transition-all duration-300
-             hover:border-r-[#ffffff]/50 hover:border-l-[#ffffff]/50 hover:border-b-opacity-30 hover:border-t-opacity-30"
+      className="group relative px-8 py-4 rounded-full overflow-hidden
+text-white font-mono text-[14px] font-bold tracking-[0.05em]
+backdrop-blur-[20px] border-b-[#ffffff]/50 border-t-[#ffffff]
+flex items-center justify-center uppercase transition-all duration-300
+hover:border-r-[#ffffff]/50 hover:border-l-[#ffffff]/50 hover:border-b-opacity-30 hover:border-t-opacity-30
+max-md:px-5 max-md:py-2.5 max-md:text-[12px] max-sm:px-3.5 max-sm:py-2 max-sm:text-[10px] max-sm:hidden max-sm:tracking-normal"
       style={{
         background: `radial-gradient(ellipse at center, 
       rgba(8, 8, 8, 1) 0%, 
@@ -137,7 +138,7 @@ export default function SponsorButton() {
       {/* TOP RIM LIGHT: Fixed highlight to define the edge */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[85%] h-[1px] bg-gradient-to-r from-transparent via-white/30 to-transparent"></div>
 
-      <span className="relative z-10 drop-shadow-sm">SPONSOR ME</span>
+      <span className="relative z-10 drop-shadow-sm max-md:text-[10px] px-1">SPONSOR ME</span>
     </motion.button>
   );
 }
