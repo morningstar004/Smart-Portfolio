@@ -21,17 +21,30 @@ const fallbackExperience = [
  ] satisfies ExperienceItem[];
 ---
 
-<section id="experience" data-bg-layer="experience" class="">
+<section id="experience" data-bg-layer="experience" class="mt-14">
   <div class="">
-    
+    <div class="headtop text-center">
+      <h3 class="font-semibold text-[#ec7a3d]">my journey</h3> 
+      <h2 class="text-4xl font-semibold tracking-tight text-gray-900 mb-8">
+        Experience
+      </h2>
+    </div>
 
     <div class="custom-scroll-host pr-4">
       <ExperienceList client:load items={fallbackExperience} />
-      <div class="custom-scrollbar custom-scrollbar-vertical" data-scrollbar-for="experience-list" data-scrollbar-orientation="vertical">
-        <div class="custom-scrollbar-track">
-          <div class="custom-scrollbar-thumb"></div>
-        </div>
+      <div class="" data-scrollbar-for="experience-list" data-scrollbar-orientation="vertical">
+        
       </div>
     </div>
   </div>
 </section>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Aldrich&family=Bebas+Neue&family=Boldonse&family=Caveat+Brush&family=Comfortaa:wght@300..700&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Lilita+One&family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Raleway:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+
+.headtop{
+  font-family: "Comfortaa", sans-serif;
+  font-style: normal;
+}
+
+</style>

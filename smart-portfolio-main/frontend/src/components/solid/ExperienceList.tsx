@@ -59,27 +59,27 @@ export default function ExperienceList(props: ExperienceListProps) {
   }
 
   return (
-    <div id="experience-list" class="app-scrollbar grid grid-cols-1 xl:grid-cols-2 gap-px bg-border border border-border max-h-[62svh] overflow-y-auto">
+    <div id="experience-list" class="app-scrollbar ">
       <For each={items()}>
         {(item) => (
-          <article class="bg-card p-6 md:p-8 space-y-5">
-            <div class="flex items-start justify-between gap-6">
-              <div class="space-y-2">
-                <span class="text-[9px] font-mono text-muted-foreground uppercase tracking-[0.2em]">NODE</span>
-                <h4 class="text-lg font-mono font-bold tracking-tight text-foreground">{item.company}</h4>
+          <article class="bg-card ">
+            <div class="">
+              <div class="">
+                <span class="">NODE</span>
+                <h4 class="">{item.company}</h4>
               </div>
-              <span class="text-[9px] font-mono text-brand-orange uppercase tracking-[0.2em] whitespace-nowrap">{item.period}</span>
+              <span class="">{item.period}</span>
             </div>
 
-            <div class="border-l border-border pl-4 space-y-3">
-              <p class="text-[10px] font-mono text-brand-green uppercase tracking-[0.2em]">{item.role}</p>
-              <p class="text-[11px] leading-relaxed text-muted-foreground font-mono tracking-tight">{item.summary}</p>
+            <div class="">
+              <p class="">{item.role}</p>
+              <p class="">{item.summary}</p>
             </div>
 
-            <div class="flex flex-wrap gap-2">
+            <div class="">
               <For each={item.stack ?? []}>
                 {(tech) => (
-                  <span class="text-[9px] font-mono text-muted-foreground uppercase border border-border px-2 py-1 tracking-widest">
+                  <span class="">
                     {tech}
                   </span>
                 )}
