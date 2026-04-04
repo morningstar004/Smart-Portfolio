@@ -56,15 +56,18 @@ export default function AchievementsGrid(props: AchievementsGridProps) {
     <div id="achievement-grid" class="flex flex-row mt-14 justify-center gap-6 w-full max-w-3xl mx-auto">
       <For each={items()}>
         {(item) => (
-          <article class="border rounded-[50px] p-4 min-w-100 min-h-140 flex justify-between items-start gap-4">
-            <div class="max-h-50 flex flex-col py-10 px-4 gap-2 max-w-90">
+          <article class="border rounded-[50px] p-4 min-w-100 min-h-140 flex justify-between items-start gap-4 bg-[#fc785d]">
+            <div class="max-h-50 flex flex-col py-7 px-6 gap-2 max-w-90">
               <div class="flex justify-between items-center">
-                <span class="bg-[#404040d0] w-10 min-h-[1.5px] mb-8 rounded-2xl"></span>
-                <span class="font-semibold text-sm border-[1.5px] border-[#404040d0] rounded-4xl px-2.5 py-1">2020</span>
+                <span class="bg-[#e1e1e1d0] w-10 min-h-[1.5px] mb-8 rounded-2xl translate-y-4"></span>
+                <span class="font-semibold text-sm text-[#e1e1e1] border-[1.5px] border-[#e1e1e1d0] rounded-4xl px-2.5 py-1">2020</span>
               </div>
-              <span class="text-3xl font-bold text-[#ec7a3d]">{item.metric}</span>
-              <h4 class="text-lg font-semibold text-gray-900">{item.title}</h4>
-              <p class="text-gray-700 text-sm mt-4">{item.description}</p>
+              <span class="text-4xl font-bold text-[#e1e1e1] mt-6">{item.metric}</span>
+              <h4 class="font-semibold text-[#d6d6d6]">{item.title}</h4>
+              <p class="text-gray-800 text-sm mt-4 min-h-15">{item.description}</p>
+              <div class="rounded-[40px] bg-amber-200 min-w-80 min-h-60">
+                <img src="" alt="" />
+              </div>
             </div>
             
           </article>
