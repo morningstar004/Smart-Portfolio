@@ -53,18 +53,20 @@ export default function AchievementsGrid(props: AchievementsGridProps) {
   }
 
   return (
-    <div id="achievement-grid" class="app-scrollbar grid grid-cols-1 md:grid-cols-2 gap-px bg-border border border-border max-h-[22rem] overflow-y-auto">
+    <div id="achievement-grid" class="flex flex-row mt-14 justify-center gap-6 w-full max-w-3xl mx-auto">
       <For each={items()}>
         {(item) => (
-          <article class="bg-background p-6 md:p-7 flex flex-col justify-between min-h-56 space-y-8">
-            <div class="space-y-4">
-              <span class="text-[9px] font-mono text-brand-orange uppercase tracking-[0.2em]">{item.metric}</span>
-              <h4 class="text-base font-mono font-bold tracking-tight text-foreground">{item.title}</h4>
-              <p class="text-[11px] leading-relaxed text-muted-foreground font-mono tracking-tight">{item.description}</p>
+          <article class="border rounded-[50px] p-4 min-w-100 min-h-140 flex justify-between items-start gap-4">
+            <div class="max-h-50 flex flex-col py-10 px-4 gap-2 max-w-90">
+              <div class="flex justify-between items-center">
+                <span class="bg-[#404040d0] w-10 min-h-[1.5px] mb-8 rounded-2xl"></span>
+                <span class="font-semibold text-sm border-[1.5px] border-[#404040d0] rounded-4xl px-2.5 py-1">2020</span>
+              </div>
+              <span class="text-3xl font-bold text-[#ec7a3d]">{item.metric}</span>
+              <h4 class="text-lg font-semibold text-gray-900">{item.title}</h4>
+              <p class="text-gray-700 text-sm mt-4">{item.description}</p>
             </div>
-            <div class="pt-4 border-t border-border">
-              <span class="text-[9px] font-mono text-brand-green uppercase tracking-[0.2em]">STATUS_CONFIRMED</span>
-            </div>
+            
           </article>
         )}
       </For>

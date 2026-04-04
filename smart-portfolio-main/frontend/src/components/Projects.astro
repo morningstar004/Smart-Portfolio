@@ -1,6 +1,6 @@
 ---
 import AchievementsGrid, { type AchievementItem } from "./solid/AchievementsGrid";
-import ProjectsGrid from "./solid/ProjectsGrid";
+//import ProjectsGrid from "./solid/ProjectsGrid";
 
 const fallbackAchievements = [
   {
@@ -26,21 +26,23 @@ const fallbackAchievements = [
  ] satisfies AchievementItem[];
 ---  
 
-<section id="projects" data-bg-layer="projects" class="m">
-  <div class="">
+<section id="projects" data-bg-layer="projects" class="mt-14 max-md:mt-8">
+  <div class="flex flex-col gap-16 justify-center items-center max-lg:px-6 max-sm:px-4">
     <div class="">
       <div>
-        <div class="">
-          <div class="">
-            <h2 class="">// SOURCE_CODE_REGISTRY</h2>
-            <h3 class="">SELECTED_WORKS</h3>
+        <div class="flex flex-col mb-2 max-md:mb-6 text-center">
+          <div class="headtop">
+            <h2 class="font-semibold text-[#ec7a3d] max-md:text-sm">My Portfolio</h2>
+            <h3 class="text-4xl font-semibold tracking-tight text-gray-900 mb-8 max-md:text-3xl max-sm:text-2xl max-md:mb-6">MY WORKS</h3>
           </div>
           <div class="">
-            STATUS: <span class="">FETCHING_REMOTE_DATA...</span>
+            <p class="text-gray-700 max-w-2xl mx-auto">
+              A showcase of projects and achievements reflecting my journey as a Frontend engineer,and Full-Stack developer, highlighting my skills, impact, and growth across various domains.
+            </p>
           </div>
         </div>
 
-        <div class="">
+        <!-- <div class="">
           <ProjectsGrid client:load />
           <div class="" data-scrollbar-for="projects-grid" data-scrollbar-orientation="horizontal">
             <div class="">
@@ -48,19 +50,9 @@ const fallbackAchievements = [
             </div>
           </div>
         </div>
-      </div>
+      </div> -->
 
       <div>
-        <div class="">
-          <div class="">
-            <h2 class="">// ACHIEVEMENT_MATRIX</h2>
-            <h3 class="">PERFORMANCE_HIGHLIGHTS</h3>
-          </div>
-          <div class="">
-            MODE: <span class="">SIGNAL_EXTRACTION</span>
-          </div>
-        </div>
-
         <div class="">
           <AchievementsGrid client:load items={fallbackAchievements} />
           <div class="" data-scrollbar-for="achievement-grid" data-scrollbar-orientation="vertical">
@@ -73,3 +65,33 @@ const fallbackAchievements = [
     </div>
   </div>
 </section>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Aldrich&family=Bebas+Neue&family=Boldonse&family=Caveat+Brush&family=Comfortaa:wght@300..700&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Lilita+One&family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Raleway:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+
+.headtop{
+  font-family: "Comfortaa", sans-serif;
+  font-style: normal;
+}
+
+@media (max-width: 1024px) {
+  #experience {
+    overflow-x: hidden;
+  }
+}
+
+@media (max-width: 768px) {
+  .headtop h2 {
+    /* Ensuring the 4xl doesn't cause overflow on narrow tablets */
+    line-height: 1.2;
+  }
+}
+
+@media (max-width: 480px) {
+  /* Scale down spacing for small mobile devices */
+  .custom-scroll-host {
+    padding-right: 0px !important;
+  }
+}
+
+</style>
