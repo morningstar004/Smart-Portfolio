@@ -63,19 +63,19 @@ export default function AchievementsGrid(props: AchievementsGridProps) {
   return (
     <div
       id="achievement-grid"
-      class="flex flex-col lg:flex-row mt-12 lg:mt-24 justify-center items-center lg:items-start gap-8 w-full max-w-7xl mx-auto loading:animate-pulse px-12 lg:px-0"
+      class="flex flex-col lg:flex-row mt-12 lg:mt-24 justify-center items-center lg:items-start gap-8 w-full max-w-7xl mx-auto loading:animate-pulse px-12 lg:px-0 max-lg:mt-20"
     >
       <For each={items()}>
         {(item, index) => (
           // Added max-lg:!transform-none to prevent vertical cards from having staggered gaps on mobile
           <div class="relative group w-full lg:w-auto max-lg:!transform-none" style={{ "transform": Ylocate[index() % Ylocate.length] }}>
             {/* Hidden decorations on mobile to prevent horizontal overflow */}
-            <div class="absolute translate-x-48.25 -translate-y-14 h-4 w-4 rounded-full bg-gray-300 -z-10 max-lg:hidden"></div>
-            <div class="absolute translate-x-50 -translate-y-12 w-[2px] h-14 bg-gray-300 -z-10 group-hover:h-16 transition-all duration-500 max-lg:hidden">
+            <div class="absolute translate-x-48.25 -translate-y-14 h-4 w-4 rounded-full bg-gray-300 -z-10 max-lg:"></div>
+            <div class="absolute translate-x-50 -translate-y-12 w-[2px] h-14 bg-gray-300 -z-10 group-hover:h-16 transition-all duration-500 ">
             </div>
             <article
               // Added max-lg:min-w-0 and max-lg:min-h-[30rem] for better mobile scaling
-              class="rounded-[50px] p-4 min-w-[25rem] max-lg:min-w-0 max-lg:w-full min-h-[36rem] max-lg:min-h-[30rem] flex justify-between items-start gap-4 shadow-lg hover:shadow-2xl hover:-translate-y-3 transition-all duration-300 overflow-hidden"
+              class="rounded-[50px] p-4 min-w-[25rem] max-lg:min-w-0 max-lg:w-full min-h-[38rem] max-lg:min-h-[34rem] flex justify-between items-start gap-4 shadow-lg hover:shadow-2xl hover:-translate-y-3 transition-all duration-300 overflow-hidden"
               style={{ 
                 "background-color": bgColors[index() % bgColors.length],
                 "transform": "none" 
