@@ -1,23 +1,18 @@
 ---
 ---
 
-<section id="chat" data-bg-layer="chat" class="">
+<section id="chat" data-bg-layer="chat" class="flex flex-col gap-8 mt-60 justify-center items-center">
   <div class="">
     <div class="">
       <!-- Info Pane -->
       <div class="">
-        <div class="">
-          <h2 class="">// NEURAL_INTERFACE</h2>
-          <h3 class="">AI_AGENT_ZR</h3>
+        <div class="headtop text-center">
+          <h2 class="font-semibold text-[#ec7a3d] max-md:text-sm lg:text-base">karen</h2>
+          <h3 class="text-4xl font-semibold tracking-tight text-gray-900 mb-8 max-md:text-3xl max-sm:text-2xl max-md:mb-6">AGENT WEBS</h3>
         </div>
-        <p class="">
-          CONNECTED_TO: <span class="">RESUME_DATA_CORE_V1</span><br/>
-          MODEL: GROQ_LLAMA_3_70B<br/>
-          STATUS: <span id="connection-status" class="">ONLINE_READY</span>
-        </p>
-        <div class="">
-          <p class="">
-            <span class=""></span> Ask specific questions about system architecture, tech stacks, or professional history. The agent is grounded in the uploaded resume context.
+        <div class="max-sm:w-3/4 flex mx-auto">
+          <p class="text-gray-700 max-w-2xl mx-auto max-md:text-sm max-md:leading-relaxed max-sm:text-xs">
+             Ask specific questions about system architecture, tech stacks, or professional history. The agent is grounded in the uploaded resume context.
           </p>
         </div>
       </div>
@@ -34,6 +29,7 @@
         </div>
 
         <div class="">
+          <span id="connection-status" class="">ONLINE_READY</span>
           <div id="chat-messages" class="">
             <div class="">
               <span class="">[BOT]</span>
@@ -219,3 +215,33 @@
 
   initChat();
 </script>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Aldrich&family=Bebas+Neue&family=Boldonse&family=Caveat+Brush&family=Comfortaa:wght@300..700&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Lilita+One&family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Raleway:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+
+.headtop{
+  font-family: "Comfortaa", sans-serif;
+  font-style: normal;
+}
+
+@media (max-width: 1024px) {
+  #experience {
+    overflow-x: hidden;
+  }
+}
+
+@media (max-width: 768px) {
+  .headtop h2 {
+    /* Ensuring the 4xl doesn't cause overflow on narrow tablets */
+    line-height: 1.2;
+  }
+}
+
+@media (max-width: 480px) {
+  /* Scale down spacing for small mobile devices */
+  .custom-scroll-host {
+    padding-right: 0px !important;
+  }
+}
+
+</style>

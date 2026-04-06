@@ -21,7 +21,7 @@ import MorphingText from "./react/MorphingText";
 <section
   id="about"
   data-bg-layer="about"
-  class="flex justify-between items-center h-160 relative px-10 max-lg:flex-col-reverse max-lg:h-auto max-lg:py-20 max-md:px-6"
+  class="flex justify-between items-center  h-160 relative px-10 max-lg:flex-col-reverse max-lg:h-auto max-lg:py-20 max-md:px-6"
 >
   <!-- LEFT SIDE: Text Content -->
   <div
@@ -723,14 +723,13 @@ import MorphingText from "./react/MorphingText";
   </div>
 
   <div
-    class="w-1/3 flex flex-col items-center justify-center max-lg:w-full max-md:mb-4 max-lg:mb-12"
+    class="w-1/3 flex flex-col translate-y-10 max-md:translate-y-0 items-center justify-center max-lg:w-full max-md:mb-4 max-lg:mb-12"
   >
     <div
       id="custom-cursor"
       class="fixed w-32 h-32 border-[#388E3C] rounded-full pointer-events-none opacity-0 z-50 -translate-x-1/2 -translate-y-1/2 mix-blend-difference transition-opacity duration-300"
     >
     </div>
-
     <div
       class="relative w-52 h-52 right-30 top-5 rounded-full bg-amber-400 border-8 border-white shadow-2xl z-10 max-lg:right-0 max-lg:top-0"
     >
@@ -744,7 +743,7 @@ import MorphingText from "./react/MorphingText";
         />
       </div>
       <div
-        class="translate-x-68 flex flex-col justify-center items-center max-lg:hidden"
+        class="translate-x-60 translate-y-10 flex flex-col justify-center items-center max-lg:hidden"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -794,52 +793,66 @@ import MorphingText from "./react/MorphingText";
         />
       </div>
     </div>
-
     <div
       class="mt-10 flex flex-col translate-x-10 max-lg:translate-x-0 max-lg:items-center max-md:mt-6"
     >
-      <div class="font-semibold text-gray-700 text-xl intro max-md:text-lg">
-        Hi! I am
-      </div>
-
-      <!-- NEW MORPHING NAME CONTAINER -->
-      <div
-        id="name-display"
-        class="relative h-12 w-80 overflow-visible max-lg:text-center"
-      >
-        <!-- The SVG Filter needed for the goo effect -->
-        <svg class="absolute h-0 w-0" aria-hidden="true">
-          <defs>
-            <filter id="goo-name">
-              <feGaussianBlur
-                in="SourceGraphic"
-                stdDeviation="0.5"
-                result="blur"></feGaussianBlur>
-              <feColorMatrix
-                in="blur"
-                mode="matrix"
-                values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 255 -140"
-                result="goo"></feColorMatrix>
-            </filter>
-          </defs>
-        </svg>
-
-        <div
-          style="filter: url(#goo-name)"
-          class="relative h-full w-full max-lg:flex max-lg:justify-center"
+      <div class="rotate-190 -translate-x-5 -translate-y-5 max-w-[136px] max-md:hidden">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="136"
+          height="75"
+          viewBox="0 0 456 60"
+          fill="none"
         >
-          <span
-            id="name-original"
-            class="myName absolute left-0 top-0 text-3xl text-amber-400 font-bold transition-all duration-[1200ms] ease-in-out opacity-100 scale-100 max-lg:relative max-md:text-2xl max-md:left-20"
+          <path
+            d="M6.65685 52.2929C7.04737 51.9024 7.68054 51.9024 8.07106 52.2929L14.435 58.6569C14.8255 59.0474 14.8255 59.6806 14.435 60.0711C14.0445 60.4616 13.4113 60.4616 13.0208 60.0711L7.36395 54.4143L1.7071 60.0711C1.31657 60.4616 0.683409 60.4616 0.292885 60.0711C-0.0976396 59.6806 -0.0976396 59.0474 0.292885 58.6569L6.65685 52.2929ZM282.864 1V2V1ZM8.36395 53C8.36395 55.1938 8.3809 57.3428 8.41453 59.4476L6.41479 59.4795C6.38098 57.3638 6.36395 55.2041 6.36395 53H8.36395ZM8.8144 71.5505C9.03827 75.9023 9.3442 80.0354 9.72913 83.9574L7.73869 84.1527C7.3505 80.1975 7.04236 76.0333 6.81704 71.6532L8.8144 71.5505ZM11.2591 96.0001C11.9338 100.237 12.7209 104.17 13.6144 107.812L11.6719 108.288C10.764 104.587 9.96641 100.6 9.28402 96.3146L11.2591 96.0001ZM17.1663 119.395C18.755 123.576 20.5367 127.212 22.4932 130.346L20.7967 131.405C18.7615 128.146 16.9245 124.389 15.2967 120.105L17.1663 119.395ZM30.2267 139.498C33.3759 142.169 36.8131 144.038 40.5095 145.198L39.9108 147.106C35.9585 145.866 32.2852 143.866 28.9331 141.023L30.2267 139.498ZM52.2635 146.644C56.0533 146.499 60.0442 145.844 64.2145 144.732L64.7294 146.665C60.4438 147.807 56.3042 148.49 52.34 148.642L52.2635 146.644ZM75.7115 140.74C79.2865 139.239 82.9559 137.481 86.7071 135.496L87.6426 137.263C83.8472 139.272 80.1237 141.057 76.4858 142.584L75.7115 140.74ZM97.3337 129.42C100.726 127.348 104.169 125.126 107.654 122.778L108.772 124.437C105.265 126.799 101.797 129.037 98.3764 131.127L97.3337 129.42ZM117.73 115.735C120.989 113.379 124.276 110.935 127.584 108.419L128.795 110.011C125.475 112.536 122.175 114.99 118.901 117.356L117.73 115.735ZM137.273 100.9C140.458 98.383 143.656 95.8158 146.861 93.2124L148.122 94.7647C144.911 97.3729 141.706 99.9458 138.513 102.469L137.273 100.9ZM156.372 85.4059C159.525 82.7951 162.679 80.1635 165.828 77.5246L167.112 79.0576C163.961 81.6982 160.804 84.3324 157.648 86.9463L156.372 85.4059ZM175.244 69.6108C178.394 66.9586 181.534 64.3125 184.658 61.6874L185.945 63.2186C182.822 65.8429 179.683 68.4879 176.532 71.1407L175.244 69.6108ZM194.112 53.776C197.306 51.1167 200.478 48.4944 203.621 45.9247L204.887 47.4731C201.75 50.0382 198.583 52.6566 195.391 55.3131L194.112 53.776ZM213.217 38.1817C216.501 35.5714 219.745 33.0389 222.941 30.603L224.154 32.1937C220.97 34.6201 217.736 37.1441 214.461 39.7473L213.217 38.1817ZM232.856 23.2624C236.326 20.7771 239.727 18.4379 243.047 16.2722L244.14 17.9474C240.847 20.0947 237.471 22.4171 234.021 24.8884L232.856 23.2624ZM253.631 9.83006C257.474 7.67804 261.185 5.8279 264.742 4.33234L265.517 6.17607C262.043 7.63666 258.4 9.45146 254.608 11.5751L253.631 9.83006ZM276.618 0.613297C278.777 0.211197 280.861 0 282.864 0V2C281.001 2 279.04 2.19653 276.985 2.57947L276.618 0.613297ZM282.864 0C284.898 0 286.884 0.0906219 288.822 0.268311L288.64 2.25996C286.763 2.08797 284.839 2 282.864 2V0ZM300.315 2.47273C304.13 3.61578 307.731 5.13585 311.136 6.9924L310.179 8.74832C306.892 6.95642 303.419 5.49071 299.741 4.3886L300.315 2.47273ZM320.834 13.5771C323.803 16.0215 326.597 18.7483 329.235 21.7179L327.739 23.0461C325.164 20.1461 322.444 17.493 319.563 15.121L320.834 13.5771ZM336.429 30.9286C338.599 34.0646 340.652 37.3767 342.602 40.8348L340.859 41.817C338.936 38.4058 336.916 35.1465 334.785 32.0667L336.429 30.9286ZM347.946 51.1785C349.583 54.623 351.143 58.1703 352.637 61.7968L350.788 62.5586C349.305 58.9606 347.759 55.4459 346.139 52.0369L347.946 51.1785ZM356.831 72.6145C358.15 76.2188 359.419 79.8757 360.646 83.5648L358.748 84.1961C357.526 80.5229 356.264 76.8849 354.953 73.3019L356.831 72.6145ZM364.181 94.6013C365.323 98.2923 366.434 101.995 367.523 105.691L365.604 106.256C364.517 102.567 363.409 98.8727 362.27 95.1925L364.181 94.6013ZM370.755 116.806C371.833 120.549 372.897 124.26 373.958 127.924L372.037 128.481C370.975 124.815 369.91 121.099 368.833 117.36L370.755 116.806ZM377.222 139.02C378.355 142.789 379.495 146.477 380.653 150.058L378.75 150.674C377.586 147.076 376.443 143.374 375.307 139.596L377.222 139.02ZM384.385 160.98C385.747 164.726 387.147 168.301 388.601 171.67L386.765 172.463C385.292 169.05 383.877 165.438 382.505 161.663L384.385 160.98ZM393.599 181.956C395.584 185.54 397.676 188.734 399.904 191.476L398.352 192.737C396.034 189.884 393.878 186.587 391.849 182.925L393.599 181.956ZM408.134 199.022C411.296 201.016 414.717 202.224 418.467 202.534L418.302 204.528C414.21 204.189 410.483 202.867 407.067 200.714L408.134 199.022ZM429.525 201.079C432.685 200.066 436.059 198.531 439.672 196.418L440.681 198.145C436.967 200.317 433.459 201.918 430.136 202.984L429.525 201.079ZM449.081 189.999C450.591 188.834 452.135 187.581 453.717 186.238L455.011 187.762C453.408 189.124 451.839 190.396 450.303 191.582L449.081 189.999Z"
+            fill="#286F6C"></path>
+        </svg>
+      </div>
+      <div class="max-md:translate-x-0 max-md:translate-y-0 -translate-y-10 translate-x-5">
+        <div class="font-semibold text-gray-700 text-xl max-md:translate-x-22 max-md:translate-y-0 intro max-md:text-lg">
+          Hi! I am
+        </div>
+
+        <!-- NEW MORPHING NAME CONTAINER -->
+        <div
+          id="name-display"
+          class="relative h-12 w-80 overflow-visible max-lg:text-center"
+        >
+          <!-- The SVG Filter needed for the goo effect -->
+          <svg class="absolute h-0 w-0" aria-hidden="true">
+            <defs>
+              <filter id="goo-name">
+                <feGaussianBlur
+                  in="SourceGraphic"
+                  stdDeviation="0.5"
+                  result="blur"></feGaussianBlur>
+                <feColorMatrix
+                  in="blur"
+                  mode="matrix"
+                  values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 255 -140"
+                  result="goo"></feColorMatrix>
+              </filter>
+            </defs>
+          </svg>
+
+          <div
+            style="filter: url(#goo-name)"
+            class="relative h-full w-full max-lg:flex max-lg:justify-center"
           >
-            Pranjal kumar.
-          </span>
-          <span
-            id="name-spider"
-            class="myName newName absolute left-0 top-0 text-3xl text-red-600 font-bold transition-all duration-[1200ms] ease-in-out opacity-0 scale-100 whitespace-nowrap max-lg:relative max-md:text-2xl"
-          >
-            Spider-man
-          </span>
+            <span
+              id="name-original"
+              class="myName absolute left-0 top-0 text-3xl text-amber-400 font-bold transition-all duration-[1000ms] ease-in-out opacity-100 scale-100 max-lg:relative max-md:text-2xl max-md:left-20"
+            >
+              Pranjal kumar.
+            </span>
+            <span
+              id="name-spider"
+              class="myName newName absolute left-0 top-0 text-3xl text-red-600 font-bold transition-all duration-[1000ms] ease-in-out opacity-0 scale-100 whitespace-nowrap max-lg:relative max-md:text-2xl"
+            >
+              Spider-man
+            </span>
+          </div>
         </div>
       </div>
     </div>
@@ -1149,7 +1162,7 @@ import MorphingText from "./react/MorphingText";
 
   .newName {
     font-family: "Aldrich", sans-serif;
-    font-weight: 400;
+    font-weight: 800;
     font-style: normal;
   }
 </style>
