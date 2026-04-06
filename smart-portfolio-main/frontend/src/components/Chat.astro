@@ -3,7 +3,7 @@
 
 <section id="chat" data-bg-layer="chat" class="flex flex-col gap-8 mt-60 justify-center items-center">
   <div class="">
-    <div class="">
+    <div class="w-full">
       <!-- Info Pane -->
       <div class="">
         <div class="headtop text-center">
@@ -11,14 +11,14 @@
           <h3 class="text-4xl font-semibold tracking-tight text-gray-900 mb-8 max-md:text-3xl max-sm:text-2xl max-md:mb-6">AGENT WEBS</h3>
         </div>
         <div class="max-sm:w-3/4 flex mx-auto">
-          <p class="text-gray-700 max-w-2xl mx-auto max-md:text-sm max-md:leading-relaxed max-sm:text-xs">
-             Ask specific questions about system architecture, tech stacks, or professional history. The agent is grounded in the uploaded resume context.
+          <p class="text-gray-700 max-w-3xl text-center mx-auto max-md:text-sm max-md:leading-relaxed max-sm:text-xs">
+             Agent Webs is an interactive interface designed to demonstrate the capabilities of a resume-grounded agent named "Karen". Made using Grok Llama 3 70B, Karen can understand and respond to queries about my professional experience, technical skills, and project history based on the structured data from my resume.
           </p>
         </div>
       </div>
 
       <!-- Chat Interface -->
-      <div class="">
+      <div class="min-h-[380px] w-5xl max-w-5xl rounded-lg bg-white/40 p-6 flex flex-col gap-6 mt-12">
         <div class="">
           <span class="">SESSION_ID: {Math.random().toString(36).substring(7).toUpperCase()}</span>
           <div class="">
