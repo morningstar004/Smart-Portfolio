@@ -131,21 +131,6 @@ export default function ContactForm() {
       {/* <div id="form-status" class={statusClass()}>
         {statusText()}
       </div> */}
-
-      <button
-        type="submit"
-        id="contact-submit"
-        disabled={submitting()}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
-        class={`px-8 py-3 font-mono text-xs font-bold tracking-[0.2em] transition-all uppercase border border-border ${
-          buttonActive()
-            ? "bg-brand-green text-white"
-            : "bg-foreground text-background"
-        }`}
-      >
-        {submitting() ? "TRANSMITTING..." : "TRANSMIT_MESSAGE"}
-      </button>
       <div class="flex justify-center pt-2">
         <button
           class="group relative cursor-pointer overflow-hidden rounded-full border bg-[#fffcf3] p-2 px-6 text-center font-semibold text-black dark:bg-[#0a0a0a] dark:text-white transition-all duration-300 min-w-[120px] h-[44px] flex items-center justify-center w-full sm:w-auto"
@@ -161,12 +146,16 @@ export default function ContactForm() {
           >
             <div class="absolute left-1/2 top-1/2 h-2 w-2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-black transition-all duration-300 delay-200 opacity-0 group-hover:scale-[100] group-hover:opacity-100 dark:bg-[#fffcf3] z-0"></div>
             <div class="relative z-10 flex items-center gap-3 transition-all duration-300 delay-200 group-hover:-translate-x-8 group-hover:opacity-0 w-full justify-center">
-              <div class="h-2 w-2 rounded-full bg-black dark:bg-[#fffcf3] transition-all duration-300"></div>
-              <span class="inline-block relative z-10">Submit Inquiry</span>
+              <div class={`h-2 w-2 rounded-full bg-black dark:bg-[#fffcf3] transition-all duration-300 ${
+          buttonActive()
+            ? "bg-green-400 text-white"
+            : "bg-foreground text-background"
+        } `}></div>
+              <span class="inline-block relative z-10">{submitting() ? "TRANSMITTING..." : "Submit Inquiry"}{" "}</span>
             </div>
             <div class="absolute inset-0 z-20 flex items-center justify-center gap-2 text-white translate-x-8 opacity-0 transition-all duration-300 delay-200 group-hover:translate-x-0 group-hover:opacity-100 dark:text-black">
               <span class="flex items-center justify-center gap-2 w-full">
-                Submit Inquiry{" "}
+                {submitting() ? "TRANSMITTING..." : "Submit Inquiry"}{" "}
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
