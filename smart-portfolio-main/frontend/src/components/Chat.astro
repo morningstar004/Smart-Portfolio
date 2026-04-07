@@ -32,7 +32,7 @@
           <span id="connection-status" class="">ONLINE_READY</span>
           <div id="chat-messages" class="">
             <div class="">
-              <span class="">[BOT]</span>
+              <span class="">[WEBS]</span>
               <div class="">
                 SYSTEM_READY. HOW CAN I ASSIST YOUR INQUIRY?
               </div>
@@ -111,7 +111,7 @@
       submitBtn.classList.add("bg-foreground", "text-background");
     });
 
-    function addMessage(role: "USR" | "BOT", text: string): HTMLElement | null {
+    function addMessage(role: "USR" | "WEBS", text: string): HTMLElement | null {
       const wrapper = document.createElement("div");
       wrapper.className = "flex gap-4";
       
@@ -128,7 +128,7 @@
       messages!.appendChild(wrapper);
       messages!.scrollTop = messages!.scrollHeight;
       
-      return role === 'BOT' ? content : null;
+      return role === 'WEBS' ? content : null;
     }
 
     async function handleSubmit(e: Event): Promise<void> {
@@ -144,7 +144,7 @@
       submitBtn!.disabled = true;
       submitBtn!.textContent = "WAIT...";
 
-      const botContent = addMessage("BOT", "");
+      const botContent = addMessage("WEBS", "");
       if (!botContent) return;
       botContent.classList.add("streaming");
 

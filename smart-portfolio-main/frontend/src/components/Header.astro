@@ -17,7 +17,7 @@ const { showSectionNav = true } = Astro.props;
 ---
 
 <header
-  class="sticky top-0 z-50 h-24 w-full bg-[#EAF5EB]/80 backdrop-saturate-200 backdrop-blur-3xl shadow-sm border-b border-[#388E3C]/20"
+  class="sticky top-0 z-50 h-24 w-full bg-[#EAF5EB]/40 backdrop-saturate-100 backdrop-blur-xl shadow-sm border-b border-[#388E3C]/20"
 >
   <!-- Container -->
   <div class="max-w-7xl mx-auto h-full px-6 grid grid-cols-3 items-center">
@@ -83,7 +83,7 @@ const { showSectionNav = true } = Astro.props;
       <MotionLink
         client:load
         href="#chat"
-        className="group active:bg-[#BDDBD0] relative p-[1.2px] max-md:p-[1px] flex items-center justify-center rounded-full overflow-hidden transition-all duration-300"
+        className="group active:bg-[#BDDBD0] relative p-[1.2px] max-md:p-px flex items-center justify-center rounded-full overflow-hidden transition-all duration-300"
       >
         <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[200%] aspect-square animate-[spin_4s_linear_infinite] bg-[conic-gradient(from_0deg,transparent_180deg,#ff4d00_270deg,transparent_360deg)]" />
 
