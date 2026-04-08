@@ -128,9 +128,9 @@ export default function ContactForm() {
         ></textarea>
       </div>
 
-      {/* <div id="form-status" class={statusClass()}>
+      <div id="form-status" class={statusClass()}>
         {statusText()}
-      </div> */}
+      </div>
       <div class="flex justify-center pt-2">
         <button
           class="group relative cursor-pointer overflow-hidden rounded-full border bg-[#fffcf3] p-2 px-6 text-center font-semibold text-black dark:bg-[#0a0a0a] dark:text-white transition-all duration-300 min-w-[120px] h-[44px] flex items-center justify-center w-full sm:w-auto"
