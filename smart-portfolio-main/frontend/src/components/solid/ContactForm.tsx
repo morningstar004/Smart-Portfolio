@@ -88,10 +88,10 @@ export default function ContactForm() {
       onSubmit={(event) => void handleSubmit(event)}
     >
       <div>
-        <h2 class="text-3xl text-center font-bold text-gray-900">
+        <h2 class="text-3xl text-center font-bold text-gray-900 max-md:text-2xl max-sm:text-xl">
           Let's Talk Tech
         </h2>
-        <p class="text-center text-gray-600">
+        <p class="text-center text-gray-600 max-md:text-sm">
           Fill out the form below and I'll get back to you as soon as possible!
         </p>
       </div>
@@ -103,7 +103,7 @@ export default function ContactForm() {
             name="sender_name"
             required
             placeholder="Your Name"
-            class="w-6/7 bg-transparent border-b translate-x-10 border-border rounded-[16px] py-2 text-sm font-mono text-foreground placeholder:text-muted-foreground transition-colors"
+            class="w-6/7 bg-transparent border-b translate-x-10 border-border rounded-[16px] py-2 text-sm font-mono text-foreground placeholder:text-muted-foreground transition-colors max-md:w-full max-md:translate-x-0"
           />
         </div>
         <div class="space-y-2 group">
@@ -113,7 +113,7 @@ export default function ContactForm() {
             name="sender_email"
             required
             placeholder="Your Email"
-            class="w-6/7 bg-transparent border-b border-border rounded-[16px] py-2 text-sm font-mono text-foreground placeholder:text-muted-foreground transition-colors"
+            class="w-6/7 bg-transparent border-b border-border rounded-[16px] py-2 text-sm font-mono text-foreground placeholder:text-muted-foreground transition-colors max-md:w-full"
           />
         </div>
       </div>
@@ -124,7 +124,7 @@ export default function ContactForm() {
           required
           placeholder="Your Message"
           rows="4"
-          class="w-7/8 h-30 bg-transparent border-b border-border py-2 text-sm font-mono text-foreground placeholder:text-muted-foreground resize-none transition-colors translate-x-10 rounded-[25px]"
+          class="w-7/8 h-30 bg-transparent border-b border-border py-2 text-sm font-mono text-foreground placeholder:text-muted-foreground resize-none transition-colors translate-x-10 rounded-[25px] max-md:w-full max-md:translate-x-0"
         ></textarea>
       </div>
 
@@ -151,10 +151,10 @@ export default function ContactForm() {
             ? "bg-green-400 text-white"
             : "bg-foreground text-background"
         } `}></div>
-              <span class="inline-block relative z-10">{submitting() ? "TRANSMITTING..." : "Submit Inquiry"}{" "}</span>
+              <span class="inline-block relative z-10 text-sm sm:text-base">{submitting() ? "TRANSMITTING..." : "Submit Inquiry"}{" "}</span>
             </div>
             <div class="absolute inset-0 z-20 flex items-center justify-center gap-2 text-white translate-x-8 opacity-0 transition-all duration-300 delay-200 group-hover:translate-x-0 group-hover:opacity-100 dark:text-black">
-              <span class="flex items-center justify-center gap-2 w-full">
+              <span class="flex items-center justify-center gap-2 w-full text-sm sm:text-base">
                 {submitting() ? "TRANSMITTING..." : "Submit Inquiry"}{" "}
                 <svg
                   xmlns="http://www.w3.org/2000/svg"

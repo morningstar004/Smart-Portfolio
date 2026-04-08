@@ -1,7 +1,7 @@
 ---
 ---
 
-<section id="chat" data-bg-layer="chat" class="flex flex-col gap-8 mt-60 justify-center items-center">
+<section id="chat" data-bg-layer="chat" class="flex flex-col gap-8 mt-60 justify-center items-center max-md:mt-24 max-md:px-4">
   <div class="">
     <div class="w-full">
       <!-- Info Pane -->
@@ -17,49 +17,51 @@
         </div>
       </div>
 
-      <!-- Chat Interface -->
-      <div class="min-h-[380px] w-5xl max-w-5xl rounded-lg bg-white/40 p-6 flex flex-col gap-6 mt-12">
-        <div class="">
-          <span class="">SESSION_ID: {Math.random().toString(36).substring(7).toUpperCase()}</span>
-          <div class="">
-            <div class=""></div>
-            <div class=""></div>
-            <div class=""></div>
+      <!-- Chat Interface: SPIDER-TECH THEME (Using #EAF5EB, #FF5F5F, #EC7A3D) -->
+      <div class="min-h-[380px] w-full max-w-5xl rounded-lg bg-[#EAF5EB] border-2 border-[#FF5F5F] p-6 flex flex-col gap-6 mt-12 max-md:p-4 max-md:mt-8 max-sm:min-h-[450px] relative overflow-hidden spider-container-hud shadow-[0_10px_30px_-15px_rgba(255,95,95,0.3)]">
+        
+        <!-- Stark HUD Decorative Elements -->
+        <div class="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-[#EC7A3D] m-2 opacity-60"></div>
+        <div class="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 border-[#EC7A3D] m-2 opacity-60"></div>
+        <div class="absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 border-[#EC7A3D] m-2 opacity-60"></div>
+        <div class="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-[#EC7A3D] m-2 opacity-60"></div>
+
+        <div class="flex justify-between items-center max-sm:flex-col max-sm:items-start max-sm:gap-2 relative z-10">
+          <span class="text-[10px] font-mono text-[#FF5F5F] font-bold tracking-widest break-all">SESSION_ID: {Math.random().toString(36).substring(7).toUpperCase()} // WEBS_PROTOCOL_v3.0</span>
+          <div class="flex gap-1.5">
+            <div class="w-2.5 h-2.5 rounded-full bg-[#FF5F5F] animate-pulse"></div>
+            <div class="w-2.5 h-2.5 rounded-full bg-[#EC7A3D]"></div>
+            <div class="w-2.5 h-2.5 rounded-full bg-[#7ca380]"></div>
           </div>
         </div>
 
-        <div class="">
-          <span id="connection-status" class="">ONLINE_READY</span>
-          <div id="chat-messages" class="">
-            <div class="">
-              <span class="">[WEBS]</span>
-              <div class="">
-                SYSTEM_READY. HOW CAN I ASSIST YOUR INQUIRY?
+        <div class="flex-1 flex flex-col gap-4 overflow-hidden border border-[#FF5F5F]/20 rounded-md p-4 bg-white/50 backdrop-blur-sm relative inner-grid-bg">
+          <span id="connection-status" class="text-[10px] font-mono text-[#EC7A3D] font-black uppercase tracking-[0.2em]">ONLINE_READY</span>
+          <div id="chat-messages" class="flex-1 overflow-y-auto space-y-4 pr-2 custom-scrollbar max-h-[400px]">
+            <div class="flex gap-4">
+              <span class="text-[10px] font-mono mt-1 text-[#FF5F5F] font-bold shrink-0">[WEBS]</span>
+              <div class="text-sm font-mono leading-relaxed max-w-xl text-gray-800">
+                SYSTEM_READY. PROTOCOL "WEBS" INITIATED. HOW CAN I ASSIST YOUR INQUIRY, USER?
               </div>
             </div>
           </div>
-          <div class="" data-scrollbar-for="chat-messages" data-scrollbar-orientation="vertical">
-            <div class="">
-              <div class=""></div>
-            </div>
-          </div>
         </div>
 
-        <div class="">
-          <form id="chat-form" class="">
-            <span class=""></span>
+        <div class="w-full relative z-10">
+          <form id="chat-form" class="flex items-center gap-3 border-t border-[#FF5F5F]/20 pt-4 max-sm:flex-col max-sm:items-stretch">
+            <span class="text-xs font-mono text-[#FF5F5F] max-sm:hidden">❯</span>
             <input 
               type="text" 
               id="chat-input"
               placeholder="ENTER_QUERY_HERE..." 
-              class=""
+              class="flex-1 bg-transparent border-none outline-none font-mono text-sm placeholder:text-[#FF5F5F]/40 py-1 text-gray-900"
               autocomplete="off"
               required
             />
             <button 
               type="submit" 
               id="chat-submit"
-              class=""
+              class="px-8 py-2 bg-[#FF5F5F] text-white font-mono text-xs font-bold tracking-widest transition-all hover:bg-[#EC7A3D] hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed rounded shadow-lg max-sm:w-full"
             >
               EXECUTE
             </button>
@@ -71,6 +73,20 @@
 </section>
 
 <style>
+  /* Subtle comic-book dot pattern on the background */
+  .spider-container-hud {
+    background-image: radial-gradient(rgba(236, 122, 61, 0.1) 1px, transparent 1px);
+    background-size: 12px 12px;
+  }
+
+  /* Grid pattern for the message area */
+  .inner-grid-bg {
+    background-image: 
+      linear-gradient(rgba(255, 95, 95, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 95, 95, 0.03) 1px, transparent 1px);
+    background-size: 20px 20px;
+  }
+
   .streaming::after {
     content: "▋";
     animation: blink 1s step-end infinite;
@@ -78,10 +94,31 @@
     width: 6px;
     height: 12px;
     margin-left: 4px;
-    background-color: var(--foreground);
+    background-color: #EC7A3D;
     vertical-align: middle;
   }
   @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+  /* Custom scrollbar using theme colors */
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 4px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #FF5F5F;
+    border-radius: 10px;
+  }
+
+  @media (max-width: 768px) {
+    #chat { margin-top: 6rem; }
+  }
+
+  @media (max-width: 480px) {
+    #chat { margin-top: 4rem; }
+    #chat-messages { font-size: 12px; }
+  }
 </style>
 
 <script>
@@ -98,29 +135,30 @@
 
     let isStreaming = false;
 
-    // Validation logic for hover effect
+    // Hover effect preservation with user colors
     submitBtn.addEventListener("mouseenter", () => {
       if (input.value.trim() !== "" && !isStreaming) {
-        submitBtn.classList.add("bg-brand-green", "text-white");
-        submitBtn.classList.remove("bg-foreground", "text-background");
+        submitBtn.style.backgroundColor = "#EC7A3D";
       }
     });
 
     submitBtn.addEventListener("mouseleave", () => {
-      submitBtn.classList.remove("bg-brand-green", "text-white");
-      submitBtn.classList.add("bg-foreground", "text-background");
+      if (!isStreaming) {
+        submitBtn.style.backgroundColor = "#FF5F5F";
+      }
     });
 
     function addMessage(role: "USR" | "WEBS", text: string): HTMLElement | null {
       const wrapper = document.createElement("div");
-      wrapper.className = "flex gap-4";
+      wrapper.className = "flex gap-4 animate-in fade-in slide-in-from-bottom-2 duration-300";
       
       const roleTag = document.createElement("span");
-      roleTag.className = `text-[10px] font-mono mt-1 ${role === 'USR' ? 'text-brand-orange' : 'text-brand-green'}`;
+      // Use Red for User, Orange for Karen
+      roleTag.className = `text-[10px] font-mono mt-1 font-bold shrink-0 ${role === 'USR' ? 'text-[#FF5F5F]' : 'text-[#EC7A3D]'}`;
       roleTag.textContent = `[${role}]`;
       
       const content = document.createElement("div");
-      content.className = `text-sm font-mono leading-relaxed max-w-xl whitespace-pre-wrap ${role === 'USR' ? 'text-muted-foreground' : 'text-foreground'}`;
+      content.className = `text-sm font-mono leading-relaxed max-w-xl whitespace-pre-wrap ${role === 'USR' ? 'text-gray-500' : 'text-gray-900 font-medium'}`;
       content.textContent = text;
       
       wrapper.appendChild(roleTag);
@@ -173,14 +211,10 @@
           for (const line of lines) {
             const trimmed = line.trim();
             if (!trimmed) continue;
-
-            if (trimmed.startsWith("event: done")) {
-              break;
-            }
+            if (trimmed.startsWith("event: done")) break;
 
             if (trimmed.startsWith("data: ")) {
               let text = trimmed.slice(6);
-              // Unescape "\\n" sequence sent by the backend.
               text = text.replace(/\\n/g, '\n');
               fullText += text;
               botContent.textContent = fullText;
@@ -191,13 +225,13 @@
         
         if (connStatus) {
           connStatus.textContent = "ONLINE_READY";
-          connStatus.className = "text-brand-green";
+          connStatus.style.color = "#EC7A3D";
         }
       } catch {
         botContent.textContent = "ERROR: INTERFACE_TIMEOUT__OR_CONNECTION_FAILURE.";
         if (connStatus) {
           connStatus.textContent = "OFFLINE_FAILURE";
-          connStatus.className = "text-brand-red";
+          connStatus.style.color = "#FF5F5F";
         }
       } finally {
         botContent.classList.remove("streaming");
@@ -217,7 +251,7 @@
 </script>
 
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Aldrich&family=Bebas+Neue&family=Boldonse&family=Caveat+Brush&family=Comfortaa:wght@300..700&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Lilita+One&family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Raleway:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@300..700&display=swap');
 
 .headtop{
   font-family: "Comfortaa", sans-serif;
@@ -225,23 +259,14 @@
 }
 
 @media (max-width: 1024px) {
-  #experience {
-    overflow-x: hidden;
-  }
+  #experience { overflow-x: hidden; }
 }
 
 @media (max-width: 768px) {
-  .headtop h2 {
-    /* Ensuring the 4xl doesn't cause overflow on narrow tablets */
-    line-height: 1.2;
-  }
+  .headtop h2 { line-height: 1.2; }
 }
 
 @media (max-width: 480px) {
-  /* Scale down spacing for small mobile devices */
-  .custom-scroll-host {
-    padding-right: 0px !important;
-  }
+  .custom-scroll-host { padding-right: 0px !important; }
 }
-
 </style>

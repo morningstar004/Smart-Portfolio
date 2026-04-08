@@ -2,24 +2,83 @@
 import ContactForm from "./solid/ContactForm";
 ---
 
-<section id="contact" data-bg-layer="contact" class="min-h-[calc(100svh-4rem)] mt-24 scroll-mt-16 snap-start bg-transparent py-8 md:py-10 flex items-center">
+<section
+  id="contact"
+  data-bg-layer="contact"
+  class="min-h-[calc(100svh-4rem)] mt-24 scroll-mt-16 snap-start bg-transparent py-8 md:py-10 flex items-center"
+>
   <div class="max-w-7xl mx-auto w-full px-4 md:px-8">
     <div class="flex flex-col justify-center items-center gap-8 lg:gap-12">
       <div>
         <div class="headtop text-center">
-          <h2 class="font-semibold text-[#ec7a3d] max-md:text-sm lg:text-base">Get In Touch</h2>
-          <h3 class="text-4xl font-semibold tracking-tight text-gray-900 mb-8 max-md:text-3xl max-sm:text-2xl max-md:mb-6">CONTACT ME</h3>
+          <h2 class="font-semibold text-[#ec7a3d] max-md:text-sm lg:text-base">
+            Get In Touch
+          </h2>
+          <h3
+            class="text-4xl font-semibold tracking-tight text-gray-900 mb-8 max-md:text-3xl max-sm:text-2xl max-md:mb-6"
+          >
+            CONTACT ME
+          </h3>
         </div>
-        <div class="max-sm:w-3/4 flex mx-auto">
-          <p class="text-gray-700 max-w-2xl mx-auto text-center max-md:text-sm max-md:leading-relaxed max-sm:text-xs">
-            I'm currently open to new opportunities and collaborations. Whether you have a question, want to discuss a project.
-            or just want to say hi, feel free to reach out using the contact form below. I look forward to connecting with you!
+        <div class="max-sm:w-full flex mx-auto">
+          <p
+            class="text-gray-700 max-w-2xl mx-auto text-center max-md:text-sm max-md:leading-relaxed max-sm:text-xs px-4"
+          >
+            I'm currently open to new opportunities and collaborations. Whether
+            you have a question, want to discuss a project. or just want to say
+            hi, feel free to reach out using the contact form below. I look
+            forward to connecting with you!
           </p>
         </div>
       </div>
-      <div class="w-full lg:w-2/3 border border-border rounded-full p-6 md:p-10 bg-card flex items-center">
+      <div
+        class="w-full lg:w-2/3 border border-border rounded-full p-6 md:p-10 bg-card flex items-center max-md:rounded-[2.5rem] max-sm:px-4"
+      >
         <ContactForm client:load />
       </div>
     </div>
   </div>
 </section>
+
+<style>
+  @import url("https://fonts.googleapis.com/css2?family=Aldrich&family=Bebas+Neue&family=Boldonse&family=Caveat+Brush&family=Comfortaa:wght@300..700&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Lilita+One&family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Raleway:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap");
+
+  .headtop {
+    font-family: "Comfortaa", sans-serif;
+    font-style: normal;
+  }
+
+  @media (max-width: 1024px) {
+    #experience {
+      overflow-x: hidden;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .headtop h2 {
+      /* Ensuring the 4xl doesn't cause overflow on narrow tablets */
+      line-height: 1.2;
+    }
+    
+    /* Typography scaling for tablet/mobile */
+    #contact h3 {
+      font-size: 1.875rem; /* 30px */
+      margin-bottom: 1.5rem;
+    }
+  }
+
+  @media (max-width: 480px) {
+    /* Scale down spacing for small mobile devices */
+    .custom-scroll-host {
+      padding-right: 0px !important;
+    }
+    
+    #contact {
+      margin-top: 3rem;
+    }
+
+    #contact h3 {
+      font-size: 1.5rem; /* 24px */
+    }
+  }
+</style>
