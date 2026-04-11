@@ -1,6 +1,7 @@
 ---
 // Import your React component
 import Cat from "../components/react/cat-animation"; // Adjust path as needed
+import Clock from "../components/react/Clock"; // Adjust path as needed
 
 const currentYear = new Date().getFullYear();
 const buildStamp = new Date()
@@ -21,6 +22,9 @@ const buildStamp = new Date()
 >
   <!-- CAT ANIMATION START -->
   <div class="flex flex-row justify-around items-center relative">
+    <div>
+      <Clock client:only="react" />
+    </div>
     <div class="text-center">
       <a
         href="/"
