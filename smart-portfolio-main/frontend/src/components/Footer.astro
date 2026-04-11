@@ -22,10 +22,10 @@ const buildStamp = new Date()
 >
   <!-- CAT ANIMATION START -->
   <div class="flex flex-row justify-around items-center relative">
-    <div>
+    <div class="ml-20">
       <Clock client:only="react" />
     </div>
-    <div class="text-center">
+    <div class="text-center translate-x-15">
       <a
         href="/"
         class="font-mono font-bold text-2xl tracking-tighter transition-colors"
@@ -47,10 +47,10 @@ const buildStamp = new Date()
             stroke-linecap="round"
             stroke-linejoin="round"></path>
         </svg>
-        <p class="font-semibold ">Work.pranjalkumar000007@gmail.com</p>
+        <a class="font-semibold hover:text-[#a2a2a2] transition-colors duration-300" href="mailto:pranjalkumar000007@gmail.com?subject=Contact%20from%20Website">Work.pranjalkumar000007@gmail.com</a>
       </div>
     </div>
-    <div class="w-80 h-80 translate-y-22.5 -translate-x-20">
+    <div class="w-90 h-90 translate-y-25.5 ">
       <!-- Container to control size -->
       <Cat client:only="react" />
     </div>
@@ -63,10 +63,10 @@ const buildStamp = new Date()
   <div class="">
     <div class="flex flex-row items-center justify-around">
       <div class="">
-        <span class="">ALL_RIGHTS_RESERVED // {currentYear}</span>
+        <span class="">©MorningStar. All rights reserved. {currentYear}</span>
       </div>
 
-      <div class="gap-6 flex">
+      <div class="social gap-6 flex">
         <a href="https://github.com/morningstar004" target="_blank">GITHUB</a>
         <a href="https://linkedin.com/in/pranjal1618" target="_blank"
           >LINKEDIN</a
@@ -105,3 +105,9 @@ const buildStamp = new Date()
 
   initDarkModeRestore();
 </script>
+
+<!-- <script>
+  .social a {
+    transition: color 0.3s ease;
+  }
+</script> -->

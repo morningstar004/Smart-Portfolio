@@ -36,9 +36,7 @@ const AnalogClock = () => {
   };
 
   return (
-    <div className="clock-container">
-      <div className="page-header">Analog Clock</div>
-      
+    <div className="clock-container rounded-full">
       <div className="clock">
         <div 
           className="hour" 
@@ -53,12 +51,11 @@ const AnalogClock = () => {
           style={{ transform: `rotateZ(${rotations.sec}deg)` }}
         ></div>
       </div>
-
-      <div className="switch-cont">
+      {/* <div className="switch-cont">
         <button className="switch-btn" onClick={toggleTheme}>
           {theme === 'light' ? 'dark' : 'light'}
         </button>
-      </div>
+      </div> */}
     </div>
   );
 };
