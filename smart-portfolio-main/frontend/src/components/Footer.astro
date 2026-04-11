@@ -1,35 +1,80 @@
 ---
+// Import your React component
+import Cat from "../components/react/cat-animation"; // Adjust path as needed
+
 const currentYear = new Date().getFullYear();
-const buildStamp = new Date().toLocaleString('en-GB', {
-  year: 'numeric',
-  month: '2-digit',
-  day: '2-digit',
-  hour: '2-digit',
-  minute: '2-digit',
-  hour12: false
-}).replace(/\//g, '.').replace(', ', '_');
+const buildStamp = new Date()
+  .toLocaleString("en-GB", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  })
+  .replace(/\//g, ".")
+  .replace(", ", "_");
 ---
 
-<footer class="">
+<footer
+  class="shadow-t-2xl bg-[#EAF5EB]/40 dark:border-gray-700 py-4 px-6 backdrop-saturate-100 backdrop-blur-xl min-h-16"
+>
+  <!-- CAT ANIMATION START -->
+  <div class="flex flex-row justify-around items-center relative">
+    <div class="text-center">
+      <a
+        href="/"
+        class="font-mono font-bold text-2xl tracking-tighter transition-colors"
+      >
+        Morning<span class="text-[#388E3C]">Star</span>
+      </a>
+      <div class="flex flex-row gap-2 items-center">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="25px"
+          height="25px"
+          viewBox="0 0 24 24"
+          fill="#D9DEED"
+        >
+          <path
+            d="M21.5 18L14.8571 12M9.14286 12L2.50003 18M2 7L10.1649 12.7154C10.8261 13.1783 11.1567 13.4097 11.5163 13.4993C11.8339 13.5785 12.1661 13.5785 12.4837 13.4993C12.8433 13.4097 13.1739 13.1783 13.8351 12.7154L22 7M6.8 20H17.2C18.8802 20 19.7202 20 20.362 19.673C20.9265 19.3854 21.3854 18.9265 21.673 18.362C22 17.7202 22 16.8802 22 15.2V8.8C22 7.11984 22 6.27976 21.673 5.63803C21.3854 5.07354 20.9265 4.6146 20.362 4.32698C19.7202 4 18.8802 4 17.2 4H6.8C5.11984 4 4.27976 4 3.63803 4.32698C3.07354 4.6146 2.6146 5.07354 2.32698 5.63803C2 6.27976 2 7.11984 2 8.8V15.2C2 16.8802 2 17.7202 2.32698 18.362C2.6146 18.9265 3.07354 19.3854 3.63803 19.673C4.27976 20 5.11984 20 6.8 20Z"
+            stroke="#333A4E"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"></path>
+        </svg>
+        <p class="font-semibold ">Work.pranjalkumar000007@gmail.com</p>
+      </div>
+    </div>
+    <div class="w-80 h-80 translate-y-22.5 -translate-x-20">
+      <!-- Container to control size -->
+      <Cat client:only="react" />
+    </div>
+  </div>
+  <!-- CAT ANIMATION END -->
+  <div class="flex justify-center items-center">
+    <hr class="border-[#388E3C]/20 w-[85%] mb-4" />
+  </div>
+
   <div class="">
-    <div class="">
+    <div class="flex flex-row items-center justify-around">
       <div class="">
-        <span class="">ZR_SYSTEMS</span>
         <span class="">ALL_RIGHTS_RESERVED // {currentYear}</span>
       </div>
-      
-      <div class="">
-        <a href="https://github.com/ZRishu" target="_blank" class="">GITHUB</a>
-        <a href="https://linkedin.com/in/ZRishu" target="_blank" class="">LINKEDIN</a>
-        <a href="https://x.com/ragebyt" target="_blank" class="">X/TWITTER</a>
+
+      <div class="gap-6 flex">
+        <a href="https://github.com/morningstar004" target="_blank">GITHUB</a>
+        <a href="https://linkedin.com/in/pranjal1618" target="_blank"
+          >LINKEDIN</a
+        >
+        <a href="https://x.com/pranjalkumar161" target="_blank">X/TWITTER</a>
+        <a href="https://www.reddit.com/user/Morning-star-1618/" target="_blank"
+          >REDDIT</a
+        >
       </div>
 
       <div class="text-right">
-        <span 
-          id="build-stamp" 
-          class=""
-          title="DBL_CLICK_TO_RESTORE_DARK_MODE"
-        >
+        <span id="build-stamp" title="DBL_CLICK_TO_RESTORE_DARK_MODE">
           BUILD_STAMP: {buildStamp}
         </span>
       </div>
@@ -48,11 +93,11 @@ const buildStamp = new Date().toLocaleString('en-GB', {
       // Only trigger if we are currently in light mode
       if (html.classList.contains("dark")) return;
 
-      if (typeof (window as any).toggleTheme === 'function') {
-        (window as any).toggleTheme(e, "dark"); 
+      if (typeof (window as any).toggleTheme === "function") {
+        (window as any).toggleTheme(e, "dark");
       }
     });
   }
 
-  initDarkModeRestore(); 
+  initDarkModeRestore();
 </script>
