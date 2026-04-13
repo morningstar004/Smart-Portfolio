@@ -18,27 +18,32 @@ const buildStamp = new Date()
 ---
 
 <footer
-  class="shadow-t-2xl bg-[#EAF5EB]/40 dark:border-gray-700 py-4 px-6 backdrop-saturate-100 backdrop-blur-xl min-h-16"
+  class="shadow-t-2xl bg-[#EAF5EB]/40 dark:border-gray-700 py-4 px-6 backdrop-saturate-100 backdrop-blur-xl min-h-16 max-md:py-8 max-md:px-4"
 >
   <!-- CAT ANIMATION START -->
-  <div class="flex flex-row justify-around items-center relative">
-    <div class="ml-20">
+  <div
+    class="flex flex-row justify-around items-center relative max-md:flex-col max-md:gap-8 max-md:justify-around"
+  >
+    <div class="ml-20 max-md:ml-0 max-md:order-2 max-md:hidden">
       <Clock client:only="react" />
     </div>
-    <div class="text-center translate-x-15">
+    <div
+      class="text-center translate-x-15 max-md:translate-x-0 max-md:order-1 max-md:translate-y-20"
+    >
       <a
         href="/"
-        class="font-mono font-bold text-2xl tracking-tighter transition-colors"
+        class="font-mono font-bold text-2xl tracking-tighter transition-colors max-md:text-xl"
       >
         Morning<span class="text-[#388E3C]">Star</span>
       </a>
-      <div class="flex flex-row gap-2 items-center">
+      <div class="flex flex-row gap-2 items-center justify-center max-md:mt-2">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="25px"
           height="25px"
           viewBox="0 0 24 24"
           fill="#D9DEED"
+          class="max-md:w-5 max-md:h-5"
         >
           <path
             d="M21.5 18L14.8571 12M9.14286 12L2.50003 18M2 7L10.1649 12.7154C10.8261 13.1783 11.1567 13.4097 11.5163 13.4993C11.8339 13.5785 12.1661 13.5785 12.4837 13.4993C12.8433 13.4097 13.1739 13.1783 13.8351 12.7154L22 7M6.8 20H17.2C18.8802 20 19.7202 20 20.362 19.673C20.9265 19.3854 21.3854 18.9265 21.673 18.362C22 17.7202 22 16.8802 22 15.2V8.8C22 7.11984 22 6.27976 21.673 5.63803C21.3854 5.07354 20.9265 4.6146 20.362 4.32698C19.7202 4 18.8802 4 17.2 4H6.8C5.11984 4 4.27976 4 3.63803 4.32698C3.07354 4.6146 2.6146 5.07354 2.32698 5.63803C2 6.27976 2 7.11984 2 8.8V15.2C2 16.8802 2 17.7202 2.32698 18.362C2.6146 18.9265 3.07354 19.3854 3.63803 19.673C4.27976 20 5.11984 20 6.8 20Z"
@@ -48,48 +53,103 @@ const buildStamp = new Date()
             stroke-linejoin="round"></path>
         </svg>
         <a
-          class="font-semibold hover:text-[#a2a2a2] transition-colors duration-300"
+          class="font-semibold hover:text-[#a2a2a2] transition-colors duration-300 max-md:text-sm break-all"
           href="https://mail.google.com/mail/?view=cm&fs=1&to=pranjalkumar000007@gmail.com"
           target="_blank"
           rel="noopener noreferrer">Work.pranjalkumar000007@gmail.com</a
         >
       </div>
     </div>
-    <div class="w-90 h-90 translate-y-25.5">
+    <div
+      class="w-90 h-90 translate-y-25 max-md:w-64 max-md:h-64 max-md:translate-y-26 max-md:order-3"
+    >
       <!-- Container to control size -->
       <Cat client:only="react" />
     </div>
   </div>
   <!-- CAT ANIMATION END -->
   <div class="flex justify-center items-center">
-    <hr class="border-[#388E3C]/20 w-[85%] mb-4" />
+    <hr class="border-[#388E3C]/20 w-[85%] mb-4 max-md:mt-8" />
   </div>
 
   <div class="">
-    <div class="flex flex-row items-center justify-around">
+    <div
+      class="flex flex-row items-center justify-around max-md:flex-col max-md:gap-6 max-md:text-center"
+    >
       <div class="">
-        <span class="">©MorningStar. All rights reserved. {currentYear}</span>
-      </div>
-
-      <div class="social gap-6 flex">
-        <a href="https://github.com/morningstar004" target="_blank">GITHUB</a>
-        <a href="https://linkedin.com/in/pranjal1618" target="_blank"
-          >LINKEDIN</a
-        >
-        <a href="https://x.com/pranjalkumar161" target="_blank">X/TWITTER</a>
-        <a href="https://www.reddit.com/user/Morning-star-1618/" target="_blank"
-          >REDDIT</a
+        <span class="max-md:text-sm"
+          >©MorningStar. All rights reserved. {currentYear}</span
         >
       </div>
 
-      <div class="text-right">
-        <span id="build-stamp" title="DBL_CLICK_TO_RESTORE_DARK_MODE">
+      <div
+        class="social gap-6 flex text-[16px] max-md:gap-4 max-md:flex-wrap max-md:justify-center"
+      >
+        <a
+          href="https://github.com/morningstar004"
+          target="_blank"
+          class="max-md:text-xs">GitHub</a
+        >
+        <a
+          href="https://linkedin.com/in/pranjal1618"
+          target="_blank"
+          class="max-md:text-xs">LinkedIn</a
+        >
+        <a
+          href="https://x.com/pranjalkumar161"
+          target="_blank"
+          class="max-md:text-xs">X</a
+        >
+        <a
+          href="https://www.reddit.com/user/Morning-star-1618/"
+          target="_blank"
+          class="max-md:text-xs">Reddit</a
+        >
+      </div>
+
+      <div class="text-right max-md:text-center">
+        <span
+          id="build-stamp"
+          title="DBL_CLICK_TO_RESTORE_DARK_MODE"
+          class="max-md:text-[10px] opacity-70"
+        >
           BUILD_STAMP: {buildStamp}
         </span>
       </div>
     </div>
   </div>
 </footer>
+
+<style>
+  /* Targeted CSS for responsive typography and spacing without modifying existing classes */
+  @media (max-width: 1024px) {
+    .social a {
+      font-size: 0.75rem;
+      letter-spacing: 0.05em;
+    }
+  }
+
+  @media (max-width: 768px) {
+    /* Ensure the very long email doesn't cause horizontal scroll */
+    a[href^="https://mail.google.com"] {
+      display: block;
+      max-width: 280px;
+      overflow-wrap: break-word;
+    }
+
+    /* Subtle adjustment to the build stamp for tiny screens */
+    #build-stamp {
+      font-family: monospace;
+      display: block;
+      margin-top: 4px;
+    }
+  }
+
+  .social{
+    font-family: 
+    letter-spacing: 0.1em;
+  }
+</style>
 
 <script>
   function initDarkModeRestore(): void {
@@ -110,9 +170,3 @@ const buildStamp = new Date()
 
   initDarkModeRestore();
 </script>
-
-<!-- <script>
-  .social a {
-    transition: color 0.3s ease;
-  }
-</script> -->
