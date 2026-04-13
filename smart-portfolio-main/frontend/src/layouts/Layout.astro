@@ -140,33 +140,33 @@ const {
     </div>
 
     <script>
-      // function initCursor(): void {
-      //   const cursor = document.getElementById('custom-cursor');
-      //   const follower = document.getElementById('custom-cursor-follower');
-      //   if (!cursor || !follower) return;
+      function initCursor(): void {
+        const cursor = document.getElementById('custom-cursor');
+        const follower = document.getElementById('custom-cursor-follower');
+        if (!cursor || !follower) return;
 
-      //   let posX = 0, posY = 0;
-      //   let mouseX = 0, mouseY = 0;
+        let posX = 0, posY = 0;
+        let mouseX = 0, mouseY = 0;
 
-      //   const updateCursorPosition = (e: MouseEvent | PointerEvent) => {
-      //     mouseX = e.clientX;
-      //     mouseY = e.clientY;
-      //     cursor.style.transform = `translate3d(${mouseX - (cursor.offsetWidth / 2)}px, ${mouseY - (cursor.offsetHeight / 2)}px, 0)`;
-      //   };
+        const updateCursorPosition = (e: MouseEvent | PointerEvent) => {
+          mouseX = e.clientX;
+          mouseY = e.clientY;
+          cursor.style.transform = `translate3d(${mouseX - (cursor.offsetWidth / 2)}px, ${mouseY - (cursor.offsetHeight / 2)}px, 0)`;
+        };
 
-      //   window.addEventListener('mousemove', updateCursorPosition);
-      //   window.addEventListener('pointermove', updateCursorPosition);
+        window.addEventListener('mousemove', updateCursorPosition);
+        window.addEventListener('pointermove', updateCursorPosition);
 
-      //   function animate() {
-      //     if (!follower) return;
-      //     posX += (mouseX - posX) * 0.15;
-      //     posY += (mouseY - posY) * 0.15;
+        function animate() {
+          if (!follower) return;
+          posX += (mouseX - posX) * 0.15;
+          posY += (mouseY - posY) * 0.15;
           
-      //     follower.style.transform = `translate3d(${posX - (follower.offsetWidth / 2)}px, ${posY - (follower.offsetHeight / 2)}px, 0)`;
-      //     requestAnimationFrame(animate);
-      //   }
-      //   animate();
-      // }
+          follower.style.transform = `translate3d(${posX - (follower.offsetWidth / 2)}px, ${posY - (follower.offsetHeight / 2)}px, 0)`;
+          requestAnimationFrame(animate);
+        }
+        animate();
+      }
 
       function initSectionBackground(): void {
         const layers = Array.from(document.querySelectorAll<HTMLElement>('[data-bg-id]'));
