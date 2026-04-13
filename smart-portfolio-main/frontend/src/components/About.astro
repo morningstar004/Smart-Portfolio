@@ -21,7 +21,7 @@ import MorphingText from "./react/MorphingText";
 <section
   id="about"
   data-bg-layer="about"
-  class="flex justify-between items-center  h-160 relative px-10 max-lg:flex-col-reverse max-lg:h-auto max-lg:py-20 max-md:px-6"
+  class="flex justify-between items-center h-160 relative px-10 max-lg:flex-col-reverse max-lg:h-auto max-lg:py-20 max-md:px-6"
 >
   <!-- LEFT SIDE: Text Content -->
   <div
@@ -727,7 +727,7 @@ import MorphingText from "./react/MorphingText";
   >
     <div
       id="custom-cursor"
-      class="fixed w-32 h-32 border-[#388E3C] rounded-full pointer-events-none opacity-0 z-50 -translate-x-1/2 -translate-y-1/2 mix-blend-difference transition-opacity duration-300"
+      class="opacity-0 pointer-events-none absolute w-10 h-10 rounded-full border-2 border-gray-500 transition-transform duration-300 ease-out transform z-50"
     >
     </div>
     <div
@@ -796,7 +796,9 @@ import MorphingText from "./react/MorphingText";
     <div
       class="mt-10 flex flex-col translate-x-10 max-lg:translate-x-0 max-lg:items-center max-md:mt-6"
     >
-      <div class="rotate-190 -translate-x-5 -translate-y-5 max-w-[136px] max-md:hidden">
+      <div
+        class="rotate-190 -translate-x-5 -translate-y-5 max-w-[136px] max-md:hidden"
+      >
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="136"
@@ -809,8 +811,12 @@ import MorphingText from "./react/MorphingText";
             fill="#286F6C"></path>
         </svg>
       </div>
-      <div class="max-md:translate-x-0 max-md:translate-y-0 -translate-y-10 translate-x-5">
-        <div class="font-semibold text-gray-700 text-xl max-md:translate-x-22 max-md:translate-y-0 intro max-md:text-lg">
+      <div
+        class="max-md:translate-x-0 max-md:translate-y-0 -translate-y-10 translate-x-5"
+      >
+        <div
+          class="font-semibold text-gray-700 text-xl max-md:translate-x-22 max-md:translate-y-0 intro max-md:text-lg"
+        >
           Hi! I am
         </div>
 
@@ -861,6 +867,8 @@ import MorphingText from "./react/MorphingText";
 
 <script>
   // import { apiUrl } from "../lib/public-api";
+
+  import { custom } from "astro:schema";
 
   // async function loadHero(): Promise<void> {
   //   // const nameEl = document.getElementById("hero-name");
@@ -952,14 +960,16 @@ import MorphingText from "./react/MorphingText";
       return;
 
     const handleMove = (e: MouseEvent) => {
-      customCursor.style.left = `${e.clientX}px`;
-      customCursor.style.top = `${e.clientY}px`;
+      const offsetX = e.clientX - 100;
+      const offsetY = e.clientY - 100;
+      customCursor.style.transform = `translate3d(${offsetX}px, ${offsetY}px, 0)`;
 
       const rect = trigger.getBoundingClientRect();
       const x = e.clientX - rect.left;
       const y = e.clientY - rect.top;
 
-      revealContainer.style.clipPath = `circle(80px at ${x}px ${y}px)`;
+      revealContainer.style.clipPath = `circle(100px at ${x}px ${y}px)`;
+      revealContainer.style.transition = "clip-path 0.15s ease-out";
     };
 
     trigger.addEventListener("mouseenter", () => {
@@ -1055,23 +1065,7 @@ import MorphingText from "./react/MorphingText";
     transform: scaleY(1.1) skewX(-2deg);
     opacity: 0.5;
   }
-  #custom-cursor {
-    position: fixed;
-    top: 0;
-    left: 0;
-    transform: translate3d(0, 0, 0);
-    will-change: transform;
-    transition:
-      opacity 0.3s ease,
-      scale 0.3s ease-in-out;
-    pointer-events: none;
-    z-index: 9999;
-    width: 200px;
-    height: 200px;
-    border: 2px solid black;
-    border-radius: 50%;
-    mix-blend-difference: difference;
-  }
+ */
 
   @media (max-width: 768px) {
     #custom-cursor {

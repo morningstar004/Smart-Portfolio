@@ -138,6 +138,77 @@ const {
         scrollbar-width: none; /* Firefox */
         -ms-overflow-style: none; /* IE and Edge */
       }
+
+      #section-bg-stage {
+        /* The Grid Pattern */
+        background-image:
+          linear-gradient(
+            to right,
+            rgba(128, 128, 128, 0.1) 1px,
+            transparent 1px
+          ),
+          linear-gradient(
+            to bottom,
+            rgba(128, 128, 128, 0.1) 1px,
+            transparent 1px
+          );
+        background-size: 50px 50px;
+        /* Optional: adds a subtle fade effect at the edges or bottom */
+        mask-image: radial-gradient(
+          circle at center,
+          black 80%,
+          transparent 100%
+        );
+      }
+
+      /* Adjust grid color for light mode specifically if needed */
+      :root:not(.dark) #section-bg-stage {
+        background-image:
+          linear-gradient(to right, rgba(0, 0, 0, 0.05) 1px, transparent 1px),
+          linear-gradient(to bottom, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
+      }
+
+      /* 2. THE SCROLL ANIMATION */
+
+      /* Define the keyframes for shrinking/growing */
+      @keyframes section-reveal {
+        0% {
+          transform: scale(0.94);
+          opacity: 50;
+        }
+        /* Section is fully in view */
+        25%,
+        75% {
+          transform: scale(1);
+          opacity: 1;
+        }
+        /* Section is scrolling out the top */
+        100% {
+          transform: scale(0.95);
+          opacity: 50;
+        }
+      }
+
+      /* Apply this to the sections inside your slot */
+      /* Note: Ensure your sections have 'snap-align: start' */
+      section {
+        view-timeline-name: --section-view;
+        view-timeline-axis: block;
+
+        /* This ensures the animation is linked to the section's progress through the viewport */
+        animation-timeline: --section-view;
+        animation-name: section-reveal;
+        animation-fill-mode: both;
+        animation-timing-function: ease-in-out;
+
+        /* Ensure the transform doesn't cause layout shifting */
+        will-change: transform, opacity;
+      }
+
+      /* Resetting the default snap behavior to ensure smooth transitions */
+      html {
+        scroll-padding-top: 0;
+      }
     </style>
     <script is:inline>
       const theme = (() => {
@@ -187,373 +258,4 @@ const {
     >
     </div>
   </div>
-
-  <script>
-    // Cursor initialization function removed as requested
-
-    function initSectionBackground(): void {
-      const layers = Array.from(
-        document.querySelectorAll<HTMLElement>("[data-bg-id]"),
-      );
-      const sections = Array.from(
-        document.querySelectorAll<HTMLElement>("[data-bg-layer]"),
-      );
-      if (layers.length === 0 || sections.length === 0) return;
-
-      const setActive = (id: string) => {
-        layers.forEach((layer) => {
-          layer.style.opacity = layer.dataset.bgId === id ? "1" : "0";
-        });
-      };
-
-      const observer = new IntersectionObserver(
-        (entries) => {
-          const visible = entries
-            .filter((entry) => entry.isIntersecting)
-            .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
-          if (!visible) return;
-          setActive(
-            (visible.target as HTMLElement).dataset.bgLayer || "default",
-          );
-        },
-        {
-          threshold: [0.2, 0.4, 0.6, 0.8],
-          rootMargin: "-20% 0px -20% 0px",
-        },
-      );
-
-      sections.forEach((section) => observer.observe(section));
-      const initialSection = sections[0];
-      setActive(
-        initialSection
-          ? initialSection.dataset.bgLayer || "default"
-          : "default",
-      );
-    }
-
-    function attachScrollbar(
-      scrollable: Window | HTMLElement,
-      root: HTMLElement,
-      orientation: "vertical" | "horizontal",
-    ): void {
-      const thumb = root.querySelector<HTMLElement>(".custom-scrollbar-thumb");
-      if (!thumb || window.matchMedia("(max-width: 1024px)").matches) return;
-
-      const isWindowTarget = scrollable === window;
-      const html = document.documentElement;
-      const body = document.body;
-      let isDragging = false;
-      let activePointerId: number | null = null;
-      let pointerOffset = 0;
-      let suppressTrackClick = false;
-      let restoreScrollBehavior = "";
-      let restoreSnapType = "";
-      let resizeObserver: ResizeObserver | null = null;
-      let mutationObserver: MutationObserver | null = null;
-
-      const getMetrics = () => {
-        if (isWindowTarget) {
-          const viewport = html.clientHeight;
-          const scrollSize = html.scrollHeight;
-          const scrollPos =
-            window.scrollY || html.scrollTop || body.scrollTop || 0;
-          const trackSize =
-            orientation === "vertical" ? root.clientHeight : root.clientWidth;
-          return { viewport, scrollSize, scrollPos, trackSize };
-        }
-
-        const element = scrollable as HTMLElement;
-        if (orientation === "vertical") {
-          return {
-            viewport: element.clientHeight,
-            scrollSize: element.scrollHeight,
-            scrollPos: element.scrollTop,
-            trackSize: root.clientHeight,
-          };
-        }
-
-        return {
-          viewport: element.clientWidth,
-          scrollSize: element.scrollWidth,
-          scrollPos: element.scrollLeft,
-          trackSize: root.clientWidth,
-        };
-      };
-
-      const setScroll = (value: number) => {
-        if (isWindowTarget) {
-          window.scrollTo(0, value);
-          return;
-        }
-
-        const element = scrollable as HTMLElement;
-        if (orientation === "vertical") {
-          element.scrollTop = value;
-        } else {
-          element.scrollLeft = value;
-        }
-      };
-
-      const update = () => {
-        const { viewport, scrollSize, scrollPos, trackSize } = getMetrics();
-        const maxScroll = Math.max(scrollSize - viewport, 0);
-        if (maxScroll <= 0 || trackSize <= 0) {
-          root.classList.add("is-hidden");
-          return;
-        }
-
-        root.classList.remove("is-hidden");
-        const minThumbSize = orientation === "vertical" ? 32 : 48;
-        const thumbSize = Math.max(
-          (viewport / scrollSize) * trackSize,
-          minThumbSize,
-        );
-        const maxThumbOffset = Math.max(trackSize - thumbSize, 0);
-        const thumbOffset =
-          maxScroll > 0 ? (scrollPos / maxScroll) * maxThumbOffset : 0;
-
-        if (orientation === "vertical") {
-          thumb.style.height = `${thumbSize}px`;
-          thumb.style.transform = `translate3d(0, ${thumbOffset}px, 0)`;
-        } else {
-          thumb.style.width = `${thumbSize}px`;
-          thumb.style.transform = `translate3d(${thumbOffset}px, 0, 0)`;
-        }
-      };
-
-      const applyPointerScroll = (event: PointerEvent) => {
-        const rect = root.getBoundingClientRect();
-        const pointerPos =
-          orientation === "vertical"
-            ? event.clientY - rect.top
-            : event.clientX - rect.left;
-        const { viewport, scrollSize, trackSize } = getMetrics();
-        const maxScroll = Math.max(scrollSize - viewport, 0);
-        const minThumbSize = orientation === "vertical" ? 32 : 48;
-        const thumbSize = Math.max(
-          (viewport / scrollSize) * trackSize,
-          minThumbSize,
-        );
-        const maxThumbOffset = Math.max(trackSize - thumbSize, 0);
-        const clampedThumbOffset = Math.min(
-          Math.max(pointerPos - pointerOffset, 0),
-          maxThumbOffset,
-        );
-        const nextScroll =
-          maxThumbOffset > 0
-            ? (clampedThumbOffset / maxThumbOffset) * maxScroll
-            : 0;
-        setScroll(nextScroll);
-        update();
-      };
-
-      const stopDrag = (event?: PointerEvent) => {
-        if (!isDragging) return;
-        if (
-          event &&
-          activePointerId !== null &&
-          event.pointerId !== activePointerId
-        )
-          return;
-        isDragging = false;
-        activePointerId = null;
-        thumb.classList.remove("is-dragging");
-
-        const scrollTargetElement = isWindowTarget
-          ? html
-          : (scrollable as HTMLElement);
-        scrollTargetElement.style.scrollBehavior = restoreScrollBehavior;
-        body.style.scrollSnapType = restoreSnapType;
-
-        window.removeEventListener("pointermove", onPointerMove);
-        window.removeEventListener("pointerup", stopDrag);
-        window.removeEventListener("pointercancel", stopDrag);
-        window.setTimeout(() => {
-          suppressTrackClick = false;
-        }, 0);
-      };
-
-      const onPointerMove = (event: PointerEvent) => {
-        if (!isDragging) return;
-        if (activePointerId !== null && event.pointerId !== activePointerId)
-          return;
-        event.preventDefault();
-        suppressTrackClick = true;
-        applyPointerScroll(event);
-      };
-
-      thumb.addEventListener("pointerdown", (event) => {
-        if (event.button !== 0) return;
-        event.preventDefault();
-        event.stopPropagation();
-        const rect = thumb.getBoundingClientRect();
-        pointerOffset =
-          orientation === "vertical"
-            ? event.clientY - rect.top
-            : event.clientX - rect.left;
-        activePointerId = event.pointerId;
-        isDragging = true;
-        suppressTrackClick = false;
-
-        const scrollTargetElement = isWindowTarget
-          ? html
-          : (scrollable as HTMLElement);
-        restoreScrollBehavior = scrollTargetElement.style.scrollBehavior;
-        restoreSnapType = body.style.scrollSnapType;
-
-        scrollTargetElement.style.scrollBehavior = "auto";
-        body.style.scrollSnapType = "none";
-
-        thumb.classList.add("is-dragging");
-        thumb.setPointerCapture(event.pointerId);
-        window.addEventListener("pointermove", onPointerMove, {
-          passive: false,
-        });
-        window.addEventListener("pointerup", stopDrag);
-        window.addEventListener("pointercancel", stopDrag);
-      });
-
-      thumb.addEventListener("dragstart", (event) => event.preventDefault());
-
-      root.addEventListener("pointerdown", (event) => {
-        if (event.button !== 0) return;
-        if (event.target === thumb) return;
-        event.preventDefault();
-        const rect = root.getBoundingClientRect();
-        const { viewport, scrollSize, trackSize } = getMetrics();
-        const minThumbSize = orientation === "vertical" ? 32 : 48;
-        const thumbSize = Math.max(
-          (viewport / scrollSize) * trackSize,
-          minThumbSize,
-        );
-        const pointerPos =
-          orientation === "vertical"
-            ? event.clientY - rect.top
-            : event.clientX - rect.left;
-        pointerOffset = thumbSize / 2;
-        const clampedThumbOffset = Math.min(
-          Math.max(pointerPos - pointerOffset, 0),
-          Math.max(trackSize - thumbSize, 0),
-        );
-        const maxScroll = Math.max(scrollSize - viewport, 0);
-        const nextScroll =
-          trackSize > thumbSize
-            ? (clampedThumbOffset / (trackSize - thumbSize)) * maxScroll
-            : 0;
-        setScroll(nextScroll);
-        update();
-      });
-
-      root.addEventListener("click", (event) => {
-        if (!suppressTrackClick) return;
-        event.preventDefault();
-        event.stopPropagation();
-      });
-
-      const scrollTarget: Window | HTMLElement = isWindowTarget
-        ? window
-        : (scrollable as HTMLElement);
-      scrollTarget.addEventListener("scroll", update, { passive: true });
-      window.addEventListener("resize", update);
-
-      if (!isWindowTarget) {
-        const element = scrollable as HTMLElement;
-        resizeObserver = new ResizeObserver(update);
-        resizeObserver.observe(element);
-        resizeObserver.observe(root);
-        mutationObserver = new MutationObserver(update);
-        mutationObserver.observe(element, {
-          childList: true,
-          subtree: true,
-          characterData: true,
-        });
-      } else {
-        resizeObserver = new ResizeObserver(update);
-        resizeObserver.observe(html);
-        resizeObserver.observe(root);
-      }
-
-      update();
-    }
-
-    function initCustomScrollbars(): void {
-      const pageScrollbar = document.getElementById("page-scrollbar");
-      if (pageScrollbar) {
-        attachScrollbar(window, pageScrollbar, "vertical");
-      }
-
-      const scrollbars = Array.from(
-        document.querySelectorAll<HTMLElement>("[data-scrollbar-for]"),
-      );
-      scrollbars.forEach((root) => {
-        const targetId = root.dataset.scrollbarFor;
-        if (!targetId) return;
-        const target = document.getElementById(targetId);
-        if (!target) return;
-        const orientation =
-          root.dataset.scrollbarOrientation === "horizontal"
-            ? "horizontal"
-            : "vertical";
-        attachScrollbar(target, root, orientation);
-      });
-    }
-
-    initSectionBackground();
-    initCustomScrollbars();
-
-    // Global Theme Toggle with Native View Transitions
-    (window as any).toggleTheme = function (e: MouseEvent, nextTheme: string) {
-      const html = document.documentElement;
-      const isDark = html.classList.contains("dark");
-      if (
-        (isDark && nextTheme === "dark") ||
-        (!isDark && nextTheme === "light")
-      )
-        return;
-
-      const performToggle = () => {
-        if (nextTheme === "dark") {
-          html.classList.add("dark");
-        } else {
-          html.classList.remove("dark");
-        }
-        localStorage.setItem("theme", nextTheme);
-        document.dispatchEvent(
-          new CustomEvent("theme-changed", { detail: { theme: nextTheme } }),
-        );
-      };
-
-      if (!(document as any).startViewTransition) {
-        performToggle();
-        return;
-      }
-
-      const x = e.clientX;
-      const y = e.clientY;
-      const endRadius = Math.hypot(
-        Math.max(x, window.innerWidth - x),
-        Math.max(y, window.innerHeight - y),
-      );
-
-      const transition = (document as any).startViewTransition(performToggle);
-
-      transition.ready.then(() => {
-        const clipPath = [
-          `circle(0px at ${x}px ${y}px)`,
-          `circle(${endRadius}px at ${x}px ${y}px)`,
-        ];
-
-        document.documentElement.animate(
-          {
-            clipPath: clipPath,
-          },
-          {
-            duration: 800,
-            easing: "cubic-bezier(0.65, 0, 0.35, 1)",
-            pseudoElement: "::view-transition-new(root)",
-          },
-        );
-      });
-    };
-  </script>
 </html>
