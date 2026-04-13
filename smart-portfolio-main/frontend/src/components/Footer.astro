@@ -7,14 +7,11 @@ const currentYear = new Date().getFullYear();
 const buildStamp = new Date()
   .toLocaleString("en-GB", {
     year: "numeric",
-    month: "2-digit",
+    month: "short",
     day: "2-digit",
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: false,
   })
   .replace(/\//g, ".")
-  .replace(", ", "_");
+  .replace(", ", " ");
 ---
 
 <footer
@@ -76,14 +73,14 @@ const buildStamp = new Date()
     <div
       class="flex flex-row items-center justify-around max-md:flex-col max-md:gap-6 max-md:text-center"
     >
-      <div class="">
+      <div class="transition-opacity text-[15px] duration-300 opacity-70 max-md:order-2 max-md:mb-4">
         <span class="max-md:text-sm"
           >©MorningStar. All rights reserved. {currentYear}</span
         >
       </div>
 
       <div
-        class="social gap-6 flex text-[16px] max-md:gap-4 max-md:flex-wrap max-md:justify-center"
+        class="social gap-6 flex text-[16px] max-md:gap-4 max-md:flex-wrap max-md:justify-center lg:pr-18"
       >
         <a
           href="https://github.com/morningstar004"
@@ -107,13 +104,13 @@ const buildStamp = new Date()
         >
       </div>
 
-      <div class="text-right max-md:text-center">
+      <div class="text-right text-sm max-md:text-center">
         <span
           id="build-stamp"
           title="DBL_CLICK_TO_RESTORE_DARK_MODE"
           class="max-md:text-[10px] opacity-70"
         >
-          BUILD_STAMP: {buildStamp}
+          Build Stamp: {buildStamp}
         </span>
       </div>
     </div>
@@ -121,6 +118,8 @@ const buildStamp = new Date()
 </footer>
 
 <style>
+  @import url('https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap');
+
   /* Targeted CSS for responsive typography and spacing without modifying existing classes */
   @media (max-width: 1024px) {
     .social a {
@@ -146,8 +145,14 @@ const buildStamp = new Date()
   }
 
   .social{
-    font-family: 
+    font-family:"Raleway", sans-serif;
     letter-spacing: 0.1em;
+  }
+  .social a {
+    transition: color 0.3s ease;
+  }
+  .social a:hover {
+    color: #a2a2a2;
   }
 </style>
 
