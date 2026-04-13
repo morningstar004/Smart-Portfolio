@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@astrojs/check": "^0.9.8",
+    "@lottiefiles/dotlottie-react": "^0.x.x", 
     "@astrojs/react": "^5.0.1",
     "@astrojs/solid-js": "^6.0.1",
     "@tabler/icons": "^3.40.0",
