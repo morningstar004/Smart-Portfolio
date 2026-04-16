@@ -745,6 +745,7 @@ import MorphingText from "./react/MorphingText";
       <div
         class="translate-x-60 translate-y-10 flex flex-col justify-center items-center max-lg:hidden spider-container"
       >
+        <!-- web -->
         <svg
           xmlns="[w3.org](http://www.w3.org/2000/svg)"
           height="120px"
@@ -804,7 +805,7 @@ import MorphingText from "./react/MorphingText";
       class="mt-10 flex flex-col translate-x-10 max-lg:translate-x-0 max-lg:items-center max-md:mt-6"
     >
       <div
-        class="rotate-190 -translate-x-5 -translate-y-5 max-w-[136px] max-md:hidden"
+        class="rotate-190 -translate-x-5 -translate-y-5 max-w-34 max-md:hidden"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -855,13 +856,13 @@ import MorphingText from "./react/MorphingText";
           >
             <span
               id="name-original"
-              class="myName absolute left-0 top-0 text-3xl text-amber-400 font-bold transition-all duration-[1000ms] ease-in-out opacity-100 scale-100 max-lg:relative max-md:text-2xl max-md:left-20"
+              class="myName absolute left-0 top-0 text-3xl text-amber-400 font-bold transition-all duration-1000ms ease-in-out opacity-100 scale-100 max-lg:relative max-md:text-2xl max-md:left-20"
             >
               Pranjal kumar.
             </span>
             <span
               id="name-spider"
-              class="myName newName absolute left-0 top-0 text-3xl text-red-600 font-bold transition-all duration-[1000ms] ease-in-out opacity-0 scale-100 whitespace-nowrap max-lg:relative max-md:text-2xl"
+              class="myName newName absolute left-0 top-0 text-3xl text-red-600 font-bold transition-all duration-1000ms ease-in-out opacity-0 scale-100 whitespace-nowrap max-lg:relative max-md:text-2xl"
             >
               Spider-man
             </span>
@@ -1237,11 +1238,11 @@ import MorphingText from "./react/MorphingText";
 
   /* Hover: spider swings side to side */
   .spider-container:hover .spider-svg {
-    animation: swing 0.6s ease-in-out infinite;
+    animation: swing 1s ease-in-out infinite;
   }
 
   .spider-container:hover .thread-line {
-    animation: thread-swing 0.6s ease-in-out infinite;
+    animation: thread-swing 1s ease-in-out infinite;
   }
 
   .spider-container:hover .web-svg {
@@ -1279,21 +1280,21 @@ import MorphingText from "./react/MorphingText";
   }
 
   .spider-container.clicked .web-svg {
-    animation: web-shake 0.5s ease-in-out;
+    animation:  0.5s ease-in-out;
   }
 
   @keyframes drop-climb {
     0% {
-      transform: translateY(-12px);
+      transform: translateY(0px);
     }
     30% {
-      transform: translateY(60px) rotate(10deg);
+      transform: translateY(0px) rotate(10deg);
     }
     50% {
-      transform: translateY(60px) rotate(-10deg);
+      transform: translateY(0px) rotate(-10deg);
     }
     100% {
-      transform: translateY(-12px) rotate(0deg);
+      transform: translateY(0px) rotate(0deg);
     }
   }
 
@@ -1302,10 +1303,10 @@ import MorphingText from "./react/MorphingText";
       height: 48px;
     }
     30% {
-      height: 120px;
+      height: 100px;
     }
     50% {
-      height: 120px;
+      height: 100px;
     }
     100% {
       height: 48px;
