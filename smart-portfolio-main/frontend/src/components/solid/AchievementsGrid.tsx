@@ -71,21 +71,21 @@ export default function AchievementsGrid(props: AchievementsGridProps) {
         {(item, index) => (
           // Added max-lg:!transform-none to prevent vertical cards from having staggered gaps on mobile
           <div
-            class="relative group w-full lg:w-auto max-lg:!transform-none"
+            class="relative group w-full lg:w-auto max-lg:transform-none!"
             style={{ transform: Ylocate[index() % Ylocate.length] }}
           >
             {/* Hidden decorations on mobile to prevent horizontal overflow */}
             <div class="absolute translate-x-48.25 -translate-y-14 h-4 w-4 rounded-full bg-gray-300 -z-10 max-lg:"></div>
-            <div class="absolute translate-x-50 -translate-y-12 w-[2px] h-14 bg-gray-300 -z-10 group-hover:h-16 transition-all duration-500 "></div>
+            <div class="absolute translate-x-50 -translate-y-12 w-0.5 h-14 bg-gray-300 -z-10 group-hover:h-16 transition-all duration-500 "></div>
             <article
               // Added max-lg:min-w-0 and max-lg:min-h-[30rem] for better mobile scaling
-              class="rounded-[50px] p-4 min-w-[25rem] max-lg:min-w-0 max-lg:w-full min-h-[38rem] max-lg:min-h-[34rem] flex justify-between items-start gap-4 shadow-lg hover:shadow-2xl hover:-translate-y-3 transition-all duration-300 overflow-hidden"
+              class="rounded-[50px] p-4 min-w-100 max-lg:min-w-0 max-lg:w-full min-h-153 max-lg:min-h-136 flex justify-between items-start gap-4 shadow-lg hover:shadow-2xl hover:-translate-y-3 transition-all duration-300 overflow-hidden"
               style={{
                 "background-color": bgColors[index() % bgColors.length],
                 transform: "none",
               }}
             >
-              <div class="flex flex-col py-7 px-6 max-w-[22.5rem] w-full">
+              <div class="flex flex-col py-7 px-6 max-w-90 w-full">
                 <div class="flex justify-between items-center">
                   <span class="bg-[#00000060] w-10 min-h-[1.5px] mb-8 translate-y-4"></span>
                   <span class="font-semibold text-sm text-black/60 border-[1.5px] rounded-full border-black/60 py-1 px-2">
@@ -93,17 +93,17 @@ export default function AchievementsGrid(props: AchievementsGridProps) {
                   </span>
                 </div>
                 {/* Responsive typography: text-2xl on mobile, text-4xl on desktop */}
-                <span class="text-2xl lg:text-4xl font-bold text-black/80 mt-6  break-words">
+                <span class="text-2xl lg:text-4xl font-bold text-black/80 mt-6  wrap-break-words">
                   {item.title}
                 </span>
-                <h4 class="font-semibold text-black/60 break-words">
+                <h4 class="font-semibold text-black/60 bwrap-reak-words">
                   {item.metric}
                 </h4>
-                <p class="text-gray-700 text-sm mt-4 min-h-[3.75rem]">
+                <p class="text-gray-700 text-sm mt-4 min-h-15">
                   {item.description}
                 </p>
                 {/* Responsive width for the visual box */}
-                <div class="rounded-[40px] bg-white/30 mt-4 min-w-[20rem] max-lg:min-w-0 max-lg:w-full min-h-[15rem] flex items-center justify-center self-center">
+                <div class="rounded-[40px] bg-white/30 mt-4 min-w-[20rem] max-lg:min-w-0 max-lg:w-full min-h-60 flex items-center justify-center self-center">
                   <span class="text-black/20 italic">Visual</span>
                 </div>
               </div>

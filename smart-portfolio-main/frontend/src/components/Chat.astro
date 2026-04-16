@@ -34,8 +34,29 @@
         </div>
       </div>
 
-      <!-- Chat Interface: SPIDER-TECH THEME (Using #EAF5EB, #FF5F5F, #EC7A3D) -->
-      <!-- Main Container -->
+      <div class="flex mt-12">
+        <div>
+          <div
+            class="absolute translate-x-26.25 -translate-y-2 h-4 w-4 rounded-full bg-gray-300 -z-10 max-lg:"
+          >
+          </div>
+          <div
+            class="absolute translate-x-28 -translate-y-1 w-0.5 h-14 bg-gray-300 -z-10 group-hover:h-16 transition-all duration-500"
+          >
+          </div>
+        </div>
+        <div>
+          <div
+            class="absolute translate-x-164.25 -translate-y-2 h-4 w-4 rounded-full bg-gray-300 -z-10 max-lg:"
+          >
+          </div>
+          <div
+            class="absolute translate-x-166 -translate-y-1 w-0.5 h-14 bg-gray-300 -z-10 group-hover:h-16 transition-all duration-500"
+          >
+          </div>
+        </div>
+      </div>
+      <!-- Chat Interface -->
       <div
         class="relative flex flex-col w-full max-w-5xl min-h-120 max-h-130 bg-[#FF5F5F] rounded-[2.5rem] px-4 py-3 md:px-8 md:py-5 shadow-[0_20px_50px_-15px_rgba(255,95,95,0.4)] overflow-hidden font-mono mt-12"
       >
@@ -63,6 +84,7 @@
             </div>
           </div>
           <div
+            id="connection-status"
             class="text-[10px] text-[#ffe4e4] opacity-70 uppercase tracking-tighter"
           >
             Status: <span class="text-white">Active_Link</span>
@@ -75,23 +97,24 @@
         >
           <div
             id="chat-messages"
-            class="flex-1 overflow-y-auto p-6 space-y-6 custom-scrollbar"
+            class="flex-1 overflow-y-auto p-6 space-y-8 custom-scrollbar"
           >
-            <!-- System Message -->
-            <div class="flex gap-4 items-start">
+            <!-- Initial System Message -->
+            <div class="flex gap-4 items-start animate-in fade-in duration-500">
               <span
-                class="text-[11px] px-2 py-1 bg-[#FF5F5F] text-white font-bold rounded shadow-sm shrink-0"
+                class="text-[11px] px-2 py-1 bg-[#EC7A3D] text-white font-bold rounded shadow-sm shrink-0"
                 >WEBS</span
               >
-              <div class="relative group">
+              <div class="relative group max-w-[80%]">
                 <div
-                  class="text-sm leading-relaxed text-gray-800 bg-white/90 rounded-[1.5rem] rounded-tl-none p-4 shadow-sm max-w-[85%]"
+                  class="text-sm leading-relaxed text-gray-800 bg-white/90 rounded-[1.5rem] rounded-tl-none p-4 shadow-sm border border-[#FF5F5F]/80"
                 >
                   SYSTEM_READY. PROTOCOL "WEBS" INITIATED. HOW CAN I ASSIST YOUR
                   INQUIRY, USER?
                 </div>
-                <span class="absolute -bottom-4 left-0 text-[9px] text-white/50"
-                  >04:02 AM</span
+                <span
+                  class="absolute -bottom-5 left-2 text-[9px] text-white/60 timestamp-label"
+                  >--:--</span
                 >
               </div>
             </div>
@@ -141,6 +164,8 @@
 </section>
 
 <style>
+  @import url("https://fonts.googleapis.com/css2?family=Comfortaa:wght@300..700&display=swap");
+
   .custom-scrollbar::-webkit-scrollbar {
     width: 4px;
   }
@@ -154,67 +179,27 @@
   .custom-scrollbar::-webkit-scrollbar-thumb:hover {
     background: rgba(255, 255, 255, 0.4);
   }
-  /* Subtle comic-book dot pattern on the background */
-  .spider-container-hud {
-    background-image: radial-gradient(
-      rgba(236, 122, 61, 0.8) 1px,
-      transparent 1px
-    );
-    background-size: 12px 12px;
+
+  .headtop {
+    font-family: "Comfortaa", sans-serif;
+    font-style: normal;
   }
 
-  /* Grid pattern for the message area */
-  .inner-grid-bg {
-    background-image:
-      linear-gradient(rgba(154, 66, 66, 0.05) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(154, 66, 66, 0.05) 1px, transparent 1px);
-    background-size: 20px 20px;
-  }
-
-  .streaming::after {
-    content: "▋";
-    animation: blink 1s step-end infinite;
-    display: inline-block;
-    width: 6px;
-    height: 12px;
-    margin-left: 4px;
-    background-color: #ec7a3d;
-    vertical-align: middle;
-  }
-  @keyframes blink {
-    0%,
-    100% {
-      opacity: 1;
+  @media (max-width: 1024px) {
+    #experience {
+      overflow-x: hidden;
     }
-    50% {
-      opacity: 0;
-    }
-  }
-
-  /* Custom scrollbar using theme colors */
-  .custom-scrollbar::-webkit-scrollbar {
-    width: 4px;
-  }
-  .custom-scrollbar::-webkit-scrollbar-track {
-    background: transparent;
-  }
-  .custom-scrollbar::-webkit-scrollbar-thumb {
-    background: #ff5f5f;
-    border-radius: 10px;
   }
 
   @media (max-width: 768px) {
-    #chat {
-      margin-top: 6rem;
+    .headtop h2 {
+      line-height: 1.2;
     }
   }
 
   @media (max-width: 480px) {
-    #chat {
-      margin-top: 4rem;
-    }
-    #chat-messages {
-      font-size: 12px;
+    .custom-scroll-host {
+      padding-right: 0px !important;
     }
   }
 </style>
@@ -231,48 +216,68 @@
     const submitBtn = document.getElementById(
       "chat-submit",
     ) as HTMLButtonElement | null;
-    const connStatus = document.getElementById("connection-status");
 
     if (!form || !input || !messages || !submitBtn) return;
 
+    // Set initial timestamp for the hardcoded message
+    const initialTime = messages.querySelector(".timestamp-label");
+    if (initialTime) initialTime.textContent = getCurrentTime();
+
     let isStreaming = false;
 
-    // Hover effect preservation with user colors
-    submitBtn.addEventListener("mouseenter", () => {
-      if (input.value.trim() !== "" && !isStreaming) {
-        submitBtn.style.backgroundColor = "#EC7A3D";
-      }
-    });
-
-    submitBtn.addEventListener("mouseleave", () => {
-      if (!isStreaming) {
-        submitBtn.style.backgroundColor = "#FF5F5F";
-      }
-    });
+    function getCurrentTime(): string {
+      return new Date().toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+    }
 
     function addMessage(
       role: "USR" | "WEBS",
       text: string,
     ): HTMLElement | null {
+      const isUser = role === "USR";
       const wrapper = document.createElement("div");
-      wrapper.className =
-        "flex gap-4 animate-in fade-in slide-in-from-bottom-2 duration-300";
+
+      // Layout: flex-row-reverse for user to put icon on right and align bubble right
+      wrapper.className = `flex gap-3 animate-in fade-in slide-in-from-bottom-2 duration-300 w-full ${isUser ? "flex-row-reverse" : "flex-row"}`;
 
       const roleTag = document.createElement("span");
-      // Use Red for User, Orange for Karen
-      roleTag.className = `text-[10px] font-mono mt-1 font-bold shrink-0 ${role === "USR" ? "text-[#FF5F5F]" : "text-[#EC7A3D]"}`;
-      roleTag.textContent = `[${role}]`;
+      roleTag.className = `text-[10px] px-2 py-1 h-fit font-mono font-bold rounded shadow-sm shrink-0 ${
+        isUser ? "bg-white text-[#FF5F5F]" : "bg-[#EC7A3D] text-white"
+      }`;
+      roleTag.textContent = role;
+
+      const bubbleContainer = document.createElement("div");
+      bubbleContainer.className = `relative group max-w-[80%] flex flex-col ${isUser ? "items-end" : "items-start"}`;
 
       const content = document.createElement("div");
-      content.className = `text-sm font-mono leading-relaxed max-w-xl whitespace-pre-wrap ${role === "USR" ? "text-gray-500" : "text-gray-900 font-medium"}`;
+      content.className = `text-sm font-mono leading-relaxed p-4 shadow-md whitespace-pre-wrap ${
+        isUser
+          ? "bg-[#FF5F5F] text-white rounded-[1.5rem] rounded-tr-none border border-white/20"
+          : "bg-white/90 text-gray-900 rounded-[1.5rem] rounded-tl-none border border-[#FF5F5F]/80"
+      }`;
       content.textContent = text;
 
-      wrapper.appendChild(roleTag);
-      wrapper.appendChild(content);
-      messages!.appendChild(wrapper);
-      messages!.scrollTop = messages!.scrollHeight;
+      const timeLabel = document.createElement("span");
+      timeLabel.className = `absolute -bottom-5 text-[9px] opacity-70 whitespace-nowrap ${isUser ? "right-2 text-white" : "left-2 text-white/60"}`;
+      timeLabel.textContent = getCurrentTime();
 
-      return role === "WEBS" ? content : null;
+      bubbleContainer.appendChild(content);
+      bubbleContainer.appendChild(timeLabel);
+
+      wrapper.appendChild(roleTag);
+      wrapper.appendChild(bubbleContainer);
+
+      messages!.appendChild(wrapper);
+
+      // Smooth scroll to bottom
+      messages!.scrollTo({
+        top: messages!.scrollHeight,
+        behavior: "smooth",
+      });
+
+      return isUser ? null : content;
     }
 
     async function handleSubmit(e: Event): Promise<void> {
@@ -311,8 +316,8 @@
           if (done) break;
 
           buffer += decoder.decode(value, { stream: true });
-          const lines = buffer.split(" \n");
-          buffer = lines.pop() ?? " ";
+          const lines = buffer.split("\n");
+          buffer = lines.pop() ?? "";
 
           for (const line of lines) {
             const trimmed = line.trim();
@@ -321,25 +326,21 @@
 
             if (trimmed.startsWith("data: ")) {
               let text = trimmed.slice(6);
-              text = text.replace(/\\n/g, "\n");
+              try {
+                // Handle JSON escaped newlines if the API sends them
+                text = JSON.parse(`"${text}"`);
+              } catch (e) {
+                text = text.replace(/\\n/g, "\n");
+              }
               fullText += text;
               botContent.textContent = fullText;
               messages!.scrollTop = messages!.scrollHeight;
             }
           }
         }
-
-        if (connStatus) {
-          connStatus.textContent = "ONLINE_READY";
-          connStatus.style.color = "#EC7A3D";
-        }
-      } catch {
+      } catch (err) {
         botContent.textContent =
-          "ERROR: INTERFACE_TIMEOUT__OR_CONNECTION_FAILURE.";
-        if (connStatus) {
-          connStatus.textContent = "OFFLINE_FAILURE";
-          connStatus.style.color = "#FF5F5F";
-        }
+          "ERROR: INTERFACE_TIMEOUT_OR_CONNECTION_FAILURE.";
       } finally {
         botContent.classList.remove("streaming");
         isStreaming = false;
@@ -356,30 +357,3 @@
 
   initChat();
 </script>
-
-<style>
-  @import url("https://fonts.googleapis.com/css2?family=Comfortaa:wght@300..700&display=swap");
-
-  .headtop {
-    font-family: "Comfortaa", sans-serif;
-    font-style: normal;
-  }
-
-  @media (max-width: 1024px) {
-    #experience {
-      overflow-x: hidden;
-    }
-  }
-
-  @media (max-width: 768px) {
-    .headtop h2 {
-      line-height: 1.2;
-    }
-  }
-
-  @media (max-width: 480px) {
-    .custom-scroll-host {
-      padding-right: 0px !important;
-    }
-  }
-</style>
