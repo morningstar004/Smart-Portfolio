@@ -1,29 +1,25 @@
----
-
----
-
 <section
   id="chat"
   data-bg-layer="chat"
-  class="flex flex-col gap-8 mt-60 justify-center items-center max-md:mt-24 max-md:px-4"
+  class="flex flex-col gap-8 mt-60 justify-center items-center max-md:mt-24 max-md:px-4 scroll-mt-35 md:mt-40 lg:mt-60 max-md:gap-6"
 >
   <div class="">
-    <div class="w-full">
+    <div class="w-full max-w-full">
       <!-- Info Pane -->
       <div class="">
         <div class="headtop text-center">
-          <h2 class="font-semibold text-[#ec7a3d] max-md:text-sm lg:text-base">
+          <h2 class="font-semibold text-[#ec7a3d] max-md:text-sm lg:text-base md:text-sm">
             karen
           </h2>
           <h3
-            class="text-4xl font-semibold tracking-tight text-gray-900 mb-8 max-md:text-3xl max-sm:text-2xl max-md:mb-6"
+            class="text-4xl font-semibold tracking-tight text-gray-900 mb-8 max-md:text-3xl max-sm:text-2xl max-md:mb-6 md:text-4xl md:mb-7"
           >
             AGENT WEBS
           </h3>
         </div>
-        <div class="max-sm:w-3/4 flex mx-auto">
+        <div class="max-sm:w-full flex mx-auto px-4">
           <p
-            class="text-gray-700 max-w-3xl text-center mx-auto max-md:text-sm max-md:leading-relaxed max-sm:text-xs"
+            class="text-gray-700 max-w-3xl text-center mx-auto max-md:text-sm max-md:leading-relaxed max-sm:text-xs md:text-base md:leading-normal"
           >
             Agent Webs is an interactive interface designed to demonstrate the
             capabilities of a resume-grounded agent named "Karen". Made using
@@ -34,31 +30,32 @@
         </div>
       </div>
 
-      <div class="flex mt-12">
+      <div class="flex mt-12 max-md:mt-0">
         <div>
           <div
-            class="absolute translate-x-26.25 -translate-y-2 h-4 w-4 rounded-full bg-gray-300 -z-10 max-lg:"
+            class="absolute translate-x-26.25 -translate-y-2 h-4 w-4 rounded-full bg-gray-300 -z-10 max-lg:hidden"
           >
           </div>
           <div
-            class="absolute translate-x-28 -translate-y-1 w-0.5 h-14 bg-gray-300 -z-10 group-hover:h-16 transition-all duration-500"
+            class="absolute translate-x-28 -translate-y-1 w-0.5 h-14 bg-gray-300 -z-10 group-hover:h-16 transition-all duration-500 max-lg:hidden"
           >
           </div>
         </div>
         <div>
           <div
-            class="absolute translate-x-164.25 -translate-y-2 h-4 w-4 rounded-full bg-gray-300 -z-10 max-lg:"
+            class="absolute translate-x-164.25 -translate-y-2 h-4 w-4 rounded-full bg-gray-300 -z-10 max-lg:hidden"
           >
           </div>
           <div
-            class="absolute translate-x-166 -translate-y-1 w-0.5 h-14 bg-gray-300 -z-10 group-hover:h-16 transition-all duration-500"
+            class="absolute translate-x-166 -translate-y-1 w-0.5 h-14 bg-gray-300 -z-10 group-hover:h-16 transition-all duration-500 max-lg:hidden"
           >
           </div>
         </div>
       </div>
       <!-- Chat Interface -->
       <div
-        class="relative flex flex-col w-full max-w-5xl min-h-120 max-h-130 bg-[#FF5F5F] rounded-[2.5rem] px-4 py-3 md:px-8 md:py-5 shadow-[0_20px_50px_-15px_rgba(255,95,95,0.4)] overflow-hidden font-mono mt-12"
+        id="chat-container"
+        class="relative flex flex-col w-full max-w-5xl min-h-120 max-h-130 bg-[#FF5F5F] rounded-[2.5rem] px-4 py-3 md:px-8 md:py-5 shadow-[0_20px_50px_-15px_rgba(255,95,95,0.4)] overflow-hidden font-mono mt-12 max-md:min-h-[500px] max-md:rounded-[1.5rem] max-sm:mt-6 transition-[height,max-height] duration-300 md:max-h-[600px] md:min-h-[550px] lg:max-h-130 lg:min-h-120"
       >
         <!-- Decorative HUD Scanline Effect -->
         <div
@@ -67,12 +64,12 @@
         </div>
 
         <!-- Header Section -->
-        <div class="relative z-10 flex justify-between items-center mb-2 px-2">
+        <div class="relative z-10 flex justify-between items-center mb-2 px-2 max-sm:mb-4 md:mb-3">
           <div class="flex items-center gap-3">
             <div
-              class="px-3 py-1 bg-white/20 rounded-full border border-white/30"
+              class="px-3 py-1 bg-white/20 rounded-full border border-white/30 max-sm:px-2"
             >
-              <span class="text-[11px] text-white font-bold tracking-widest"
+              <span class="text-[11px] text-white font-bold tracking-widest max-sm:text-[9px] md:text-[10px] lg:text-[11px]"
                 >WEBS PROTOCOL V3.0</span
               >
             </div>
@@ -85,7 +82,7 @@
           </div>
           <div
             id="connection-status"
-            class="text-[10px] text-[#ffe4e4] opacity-70 uppercase tracking-tighter"
+            class="text-[10px] text-[#ffe4e4] opacity-70 uppercase tracking-tighter max-sm:text-[8px] md:text-[9px] lg:text-[10px]"
           >
             Status: <span class="text-white">Active_Link</span>
           </div>
@@ -93,21 +90,21 @@
 
         <!-- Main Chat Window -->
         <div
-          class="relative flex-1 flex flex-col bg-white/10 backdrop-blur-md rounded-[1.8rem] border border-white/20 overflow-hidden shadow-inner"
+          class="relative flex-1 max-w-183.75 flex flex-col bg-white/10 backdrop-blur-md rounded-[1.8rem] border border-white/20 overflow-hidden shadow-inner max-md:rounded-[1.2rem] md:max-w-full lg:max-w-183.75"
         >
           <div
             id="chat-messages"
-            class="flex-1 overflow-y-auto p-6 space-y-8 custom-scrollbar"
+            class="flex-1 overflow-y-auto p-6 space-y-8 custom-scrollbar max-sm:p-4 max-sm:space-y-6 md:p-5 md:space-y-7"
           >
             <!-- Initial System Message -->
-            <div class="flex gap-4 items-start animate-in fade-in duration-500">
+            <div class="flex gap-4 items-start animate-in fade-in duration-500 max-sm:gap-2 md:gap-3">
               <span
-                class="text-[11px] px-2 py-1 bg-[#EC7A3D] text-white font-bold rounded shadow-sm shrink-0"
+                class="text-[11px] px-2 py-1 bg-[#EC7A3D] text-white font-bold rounded shadow-sm shrink-0 max-sm:text-[9px] md:text-[10px]"
                 >WEBS</span
               >
-              <div class="relative group max-w-[80%]">
+              <div class="relative group max-w-[80%] max-sm:max-w-[85%] md:max-w-[82%]">
                 <div
-                  class="text-sm leading-relaxed text-gray-800 bg-white/90 rounded-[1.5rem] rounded-tl-none p-4 shadow-sm border border-[#FF5F5F]/80"
+                  class="text-sm leading-relaxed text-gray-800 bg-white/90 rounded-[1.5rem] rounded-tl-none p-4 shadow-sm border border-[#FF5F5F]/80 max-sm:text-xs max-sm:p-3 md:text-[13px] lg:text-sm"
                 >
                   SYSTEM_READY. PROTOCOL "WEBS" INITIATED. HOW CAN I ASSIST YOUR
                   INQUIRY, USER?
@@ -122,26 +119,27 @@
         </div>
 
         <!-- Input Footer -->
-        <div class="relative z-10 mt-2">
+        <div class="relative z-10 mt-2 max-sm:mt-4 md:mt-3">
           <form
             id="chat-form"
-            class="flex items-center gap-2 bg-[#ffe4e4] rounded-full p-1 shadow-xl border border-white/30 focus-within:ring-1 ring-white/50 transition-all"
+            class="flex items-center gap-2 bg-[#ffe4e4] rounded-full p-1 shadow-xl border border-white/30 focus-within:ring-1 ring-white/50 transition-all max-sm:gap-1"
           >
-            <div class="pl-4 pr-2 text-[#FF5F5F] font-bold select-none">❯</div>
+            <div class="pl-4 pr-2 text-[#FF5F5F] font-bold select-none max-sm:pl-3 max-sm:pr-1 max-sm:text-xs md:text-sm">❯</div>
             <input
               type="text"
               id="chat-input"
               placeholder="ENTER_QUERY_HERE..."
-              class="flex-1 bg-transparent border-none outline-none focus:ring-0 font-mono text-sm placeholder:text-[#FF5F5F]/40 py-2 text-gray-900"
+              class="flex-1 bg-transparent border-none outline-none focus:ring-0 font-mono text-sm placeholder:text-[#FF5F5F]/40 py-2 text-gray-900 max-sm:text-xs max-sm:py-1.5 md:py-2.5"
               autocomplete="off"
               required
             />
             <button
               type="submit"
               id="chat-submit"
-              class="group flex items-center gap-2 px-8 py-3 bg-[#FF5F5F] rounded-full text-white font-bold text-xs tracking-widest transition-all hover:bg-[#ff4646] hover:shadow-lg active:scale-95"
+              class="group flex items-center gap-2 px-8 py-3 bg-[#FF5F5F] rounded-full text-white font-bold text-xs tracking-widest transition-all hover:bg-[#ff4646] hover:shadow-lg active:scale-95 max-sm:px-4 max-sm:py-2 max-sm:text-[10px] md:px-6 md:py-2.5"
             >
-              EXECUTE
+              <span class="max-sm:hidden">EXECUTE</span>
+              <span class="sm:hidden">SEND</span>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 class="h-3 w-3 transition-transform group-hover:translate-x-1"
@@ -185,21 +183,47 @@
     font-style: normal;
   }
 
+  /* Specific logic for when keyboard is open on mobile */
+  @media (max-width: 768px) {
+    .headtop h2 {
+      line-height: 1.2;
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 2px;
+    }
+    /* Reduce height when keyboard is likely active to ensure input visibility */
+    #chat-container.keyboard-active {
+      max-height: 60vh !important;
+      min-height: 300px !important;
+    }
+    
+    /* Ensure chat bubbles don't get too wide on small screens */
+    #chat-messages > div {
+      width: 100%;
+    }
+  }
+
   @media (max-width: 1024px) {
     #experience {
       overflow-x: hidden;
     }
-  }
-
-  @media (max-width: 768px) {
-    .headtop h2 {
-      line-height: 1.2;
+    
+    /* Tablet specific scaling to prevent overflow and maintain aesthetics */
+    #chat-container {
+      max-width: 95%;
+      margin-left: auto;
+      margin-right: auto;
     }
   }
 
   @media (max-width: 480px) {
     .custom-scroll-host {
       padding-right: 0px !important;
+    }
+    
+    /* Responsive typography refinement for very small devices */
+    #chat-form input::placeholder {
+      font-size: 10px;
     }
   }
 </style>
@@ -216,8 +240,25 @@
     const submitBtn = document.getElementById(
       "chat-submit",
     ) as HTMLButtonElement | null;
+    const chatContainer = document.getElementById("chat-container");
+    const chatSection = document.getElementById("chat");
 
     if (!form || !input || !messages || !submitBtn) return;
+
+    // Mobile Keyboard Handling Logic
+    input.addEventListener("focus", () => {
+      if (window.innerWidth <= 768) {
+        chatContainer?.classList.add("keyboard-active");
+        // Delay scroll to ensure the layout has shifted
+        setTimeout(() => {
+          chatSection?.scrollIntoView({ behavior: "smooth", block: "start" });
+        }, 300);
+      }
+    });
+
+    input.addEventListener("blur", () => {
+      chatContainer?.classList.remove("keyboard-active");
+    });
 
     // Set initial timestamp for the hardcoded message
     const initialTime = messages.querySelector(".timestamp-label");
@@ -239,23 +280,22 @@
       const isUser = role === "USR";
       const wrapper = document.createElement("div");
 
-      // Layout: flex-row-reverse for user to put icon on right and align bubble right
-      wrapper.className = `flex gap-3 animate-in fade-in slide-in-from-bottom-2 duration-300 w-full ${isUser ? "flex-row-reverse" : "flex-row"}`;
+      wrapper.className = `flex gap-3 animate-in fade-in slide-in-from-bottom-2 duration-300 w-full max-sm:gap-2 ${isUser ? "flex-row-reverse" : "flex-row"}`;
 
       const roleTag = document.createElement("span");
-      roleTag.className = `text-[10px] px-2 py-1 h-fit font-mono font-bold rounded shadow-sm shrink-0 ${
+      roleTag.className = `text-[10px] px-2 py-1 h-fit font-mono font-bold rounded shadow-sm shrink-0 max-sm:text-[9px] ${
         isUser ? "bg-white text-[#FF5F5F]" : "bg-[#EC7A3D] text-white"
       }`;
       roleTag.textContent = role;
 
       const bubbleContainer = document.createElement("div");
-      bubbleContainer.className = `relative group max-w-[80%] flex flex-col ${isUser ? "items-end" : "items-start"}`;
+      bubbleContainer.className = `relative group max-w-[80%] flex flex-col overflow-hidden max-sm:max-w-[85%] ${isUser ? "items-end" : "items-start"}`;
 
       const content = document.createElement("div");
-      content.className = `text-sm font-mono leading-relaxed p-4 shadow-md whitespace-pre-wrap ${
+      content.className = `text-sm font-mono leading-relaxed p-4 shadow-md whitespace-pre-wrap break-words max-sm:text-xs max-sm:p-3 ${
         isUser
-          ? "bg-[#FF5F5F] text-white rounded-[1.5rem] rounded-tr-none border border-white/20"
-          : "bg-white/90 text-gray-900 rounded-[1.5rem] rounded-tl-none border border-[#FF5F5F]/80"
+          ? "bg-[#FF5F5F] text-white rounded-[1.5rem] rounded-tr-none border border-white/20 max-sm:rounded-[1rem] max-sm:rounded-tr-none"
+          : "bg-white/90 text-gray-900 rounded-[1.5rem] rounded-tl-none border border-[#FF5F5F]/80 max-sm:rounded-[1rem] max-sm:rounded-tl-none"
       }`;
       content.textContent = text;
 
@@ -271,7 +311,6 @@
 
       messages!.appendChild(wrapper);
 
-      // Smooth scroll to bottom
       messages!.scrollTo({
         top: messages!.scrollHeight,
         behavior: "smooth",
@@ -291,7 +330,7 @@
       input!.value = "";
       isStreaming = true;
       submitBtn!.disabled = true;
-      submitBtn!.textContent = "WAIT...";
+      submitBtn!.innerHTML = `WAIT... <svg class="animate-spin h-3 w-3 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>`;
 
       const botContent = addMessage("WEBS", "");
       if (!botContent) return;
@@ -327,7 +366,6 @@
             if (trimmed.startsWith("data: ")) {
               let text = trimmed.slice(6);
               try {
-                // Handle JSON escaped newlines if the API sends them
                 text = JSON.parse(`"${text}"`);
               } catch (e) {
                 text = text.replace(/\\n/g, "\n");
@@ -345,7 +383,7 @@
         botContent.classList.remove("streaming");
         isStreaming = false;
         submitBtn!.disabled = false;
-        submitBtn!.textContent = "EXECUTE";
+        submitBtn!.innerHTML = `EXECUTE <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>`;
         input!.focus();
       }
     }
