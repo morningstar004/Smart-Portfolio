@@ -63,7 +63,7 @@ const MorphingText = () => {
           <span
             key={word}
             className={`
-              absolute left-0 top-1/2 -translate-y-1/2 text-black
+              absolute left-0 top-1/2 -translate-y-1/2 text-black dark:text-white
               text-[105px] font-exterbold uppercase tracking-tighter leading-none
               transition-all duration-1800 ease-linear whitespace-nowrap 
               max-lg:text-[75px] max-md:text-[50px] max-sm:text-[28px] max-lg:left-8 max-md:items-center max-md:justify-center

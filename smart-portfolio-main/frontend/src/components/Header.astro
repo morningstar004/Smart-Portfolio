@@ -17,7 +17,7 @@ const { showSectionNav = true } = Astro.props;
 ---
 
 <header
-  class="sticky top-0 z-50 h-30 w-full bg-[#EAF5EB]/40 backdrop-saturate-80 backdrop-blur-md shadow-sm border-b border-[#388E3C]/20"
+  class="sticky top-0 z-50 h-30 w-full bg-[#EAF5EB]/40 dark:bg-[#0a0e0d]/40 backdrop-saturate-80 backdrop-blur-md shadow-sm border-b border-[#388E3C]/20 dark:border-[#2d4744]/40"
 >
   <!-- Container -->
   <div class="max-w-7xl mx-auto h-full px-6 grid grid-cols-3 items-center">
@@ -25,9 +25,9 @@ const { showSectionNav = true } = Astro.props;
     <div class="flex justify-start">
       <a
         href="/"
-        class="font-mono font-bold text-2xl tracking-tighter transition-colors"
+        class="font-mono font-bold text-2xl tracking-tighter transition-colors text-black dark:text-white"
       >
-        Morning<span class="text-[#388E3C]">Star</span>
+        Morning<span class="text-[#388E3C] dark:text-[#00d96f]">Star</span>
       </a>
     </div>
     
@@ -57,11 +57,11 @@ const { showSectionNav = true } = Astro.props;
                   }}
                   class="relative inline-block transition-transform duration-400 ease-[cubic-bezier(0.76,0,0.24,1)] group-hover:-translate-y-full"
                 >
-                  <span class="lg:text-[13px] md:text-[11px] tracking-widest font-bold uppercase text-gray-900">
+                  <span class="lg:text-[13px] md:text-[11px] tracking-widest font-bold uppercase text-gray-900 dark:text-gray-100">
                     {char === " " ? "\u00A0" : char}
                   </span>
 
-                  <span class="absolute top-full left-0 lg:text-[13px] md:text-[11px] tracking-[0.2em] font-bold uppercase text-[#388E3C]">
+                  <span class="absolute top-full left-0 lg:text-[13px] md:text-[11px] tracking-[0.2em] font-bold uppercase text-[#388E3C] dark:text-[#00d96f]">
                     {char === " " ? "\u00A0" : char}
                   </span>
                 </span>
