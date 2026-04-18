@@ -228,7 +228,7 @@ const {
         ) {
           return localStorage.getItem("theme-preference");
         }
-        return "dark";
+        return "light";
       })();
       if (theme === "light") {
         document.documentElement.classList.remove("dark");
@@ -261,7 +261,7 @@ const {
   <!-- Page Scrollbar Element -->
   <div
     id="page-scrollbar"
-    class="fixed right-1 top-0 bottom-0 w-1.5 z-[9999] pointer-events-auto"
+    class="fixed right-1 top-0 bottom-0 w-1.5 z-9999 pointer-events-auto"
   >
     <div
       class="custom-scrollbar-thumb w-full bg-foreground/20 hover:bg-foreground/40 rounded-full transition-colors cursor-pointer"
