@@ -31,8 +31,27 @@ const AnalogClock = () => {
     document.documentElement.setAttribute('data-theme', theme);
   }, [theme]);
 
+  // Use website theme if available, else fallback to local state
+  useEffect(() => {
+    const observer = new MutationObserver(() => {
+      const siteTheme = document.documentElement.getAttribute('data-theme');
+      if (siteTheme && siteTheme !== theme) {
+        setTheme(siteTheme);
+      }
+    });
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+    // Initialize with current site theme
+    const siteTheme = document.documentElement.getAttribute('data-theme');
+    if (siteTheme && siteTheme !== theme) {
+      setTheme(siteTheme);
+    }
+    return () => observer.disconnect();
+  }, []);
+
   const toggleTheme = () => {
-    setTheme((prevTheme) => (prevTheme === 'light' ? 'dark' : 'light'));
+    const newTheme = theme === 'light' ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', newTheme);
+    setTheme(newTheme);
   };
 
   return (
@@ -51,11 +70,6 @@ const AnalogClock = () => {
           style={{ transform: `rotateZ(${rotations.sec}deg)` }}
         ></div>
       </div>
-      {/* <div className="switch-cont">
-        <button className="switch-btn" onClick={toggleTheme}>
-          {theme === 'light' ? 'dark' : 'light'}
-        </button>
-      </div> */}
     </div>
   );
 };
