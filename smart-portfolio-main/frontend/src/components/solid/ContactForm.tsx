@@ -88,10 +88,10 @@ export default function ContactForm() {
       onSubmit={(event) => void handleSubmit(event)}
     >
       <div>
-        <h2 class="text-3xl text-center font-bold text-gray-900 max-md:text-2xl max-sm:text-xl">
+        <h2 class="text-3xl text-center font-bold text-gray-900 max-md:text-2xl max-sm:text-xl dark:text-gray-300">
           Let's Talk Tech
         </h2>
-        <p class="text-center text-gray-600 max-md:text-sm">
+        <p class="text-center text-gray-600 max-md:text-sm dark:text-gray-400">
           Fill out the form below and I'll get back to you as soon as possible!
         </p>
       </div>
@@ -133,7 +133,7 @@ export default function ContactForm() {
       </div>
       <div class="flex justify-center pt-2">
         <button
-          class="group relative cursor-pointer overflow-hidden rounded-full border bg-[#fffcf3] p-2 px-6 text-center font-semibold text-black dark:bg-[#0a0a0a] dark:text-white transition-all duration-300 min-w-[120px] h-[44px] flex items-center justify-center w-full sm:w-auto"
+          class="group relative cursor-pointer overflow-hidden rounded-full border bg-[#fffcf3] p-2 px-6 text-center font-semibold text-black dark:bg-[#0a0a0a] dark:text-white dark:border-[#fffcf3] transition-all duration-300 min-w-[120px] h-[44px] flex items-center justify-center w-full sm:w-auto"
           type="submit"
           id="contact-submit"
           disabled={submitting()}
