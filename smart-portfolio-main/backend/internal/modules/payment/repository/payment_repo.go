@@ -83,8 +83,8 @@ func (r *PaymentRepository) ProcessSponsorshipTx(
 	// validated/sanitised by the webhook controller before reaching this
 	// method. The payload mirrors what SponsorNotificationListener expects.
 	payloadJSON := fmt.Sprintf(
-		`{"sponsorName":%q,"amount":%f,"currency":%q,"email":%q}`,
-		name, amount, currency, email,
+		`{"sponsorName":%q,"amount":%f,"currency":%q,"email":%q,"status":"SUCCESS","paymentId":%q}`,
+		name, amount, currency, email, paymentID,
 	)
 
 	// ── Insert outbox event ─────────────────────────────────────────────

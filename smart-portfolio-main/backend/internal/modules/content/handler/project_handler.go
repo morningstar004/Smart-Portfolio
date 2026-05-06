@@ -7,16 +7,30 @@ import (
 	"github.com/ZRishu/smart-portfolio/internal/modules/content/dto"
 	"github.com/ZRishu/smart-portfolio/internal/modules/content/service"
 	"github.com/go-chi/chi/v5"
+	"github.com/rs/zerolog/log"
 )
 
 // ProjectHandler handles HTTP requests for the /api/projects endpoints.
 type ProjectHandler struct {
-	service service.ProjectService
+	service        service.ProjectService
+	githubSyncSvc  service.GitHubSyncService
+	githubUsername string
+	githubLimit    int
 }
 
 // NewProjectHandler creates a new ProjectHandler backed by the given service.
-func NewProjectHandler(svc service.ProjectService) *ProjectHandler {
-	return &ProjectHandler{service: svc}
+func NewProjectHandler(
+	svc service.ProjectService,
+	githubSyncSvc service.GitHubSyncService,
+	githubUsername string,
+	githubLimit int,
+) *ProjectHandler {
+	return &ProjectHandler{
+		service:        svc,
+		githubSyncSvc:  githubSyncSvc,
+		githubUsername: githubUsername,
+		githubLimit:    githubLimit,
+	}
 }
 
 // Routes returns a chi.Router with all project routes mounted. This keeps
@@ -34,6 +48,7 @@ func (h *ProjectHandler) Routes() chi.Router {
 	r := chi.NewRouter()
 
 	r.Get("/", h.GetAll)
+	r.Get("/highlights", h.GetHighlights)
 	r.Get("/{id}", h.GetByID)
 	r.Post("/", h.Create)
 	r.Put("/{id}", h.Update)
@@ -58,6 +73,22 @@ func (h *ProjectHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 	}
 
 	httputil.WriteJSON(w, http.StatusOK, projects)
+}
+
+func (h *ProjectHandler) GetHighlights(w http.ResponseWriter, r *http.Request) {
+	if h.githubSyncSvc != nil && h.githubSyncSvc.Enabled() {
+		if err := h.githubSyncSvc.Sync(r.Context(), false); err != nil {
+			log.Warn().Err(err).Msg("project_handler: serving cached GitHub works after sync failure")
+		}
+	}
+
+	highlights, err := h.service.GetWorkHighlights(r.Context(), h.githubUsername, h.githubLimit)
+	if err != nil {
+		httputil.WriteInternalError(w, err, "ProjectHandler.GetHighlights")
+		return
+	}
+
+	httputil.WriteJSON(w, http.StatusOK, highlights)
 }
 
 // GetByID handles GET /api/projects/{id} and returns a single project by its

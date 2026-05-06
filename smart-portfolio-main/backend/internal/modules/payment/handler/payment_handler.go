@@ -1,10 +1,11 @@
 package handler
 
 import (
-	"encoding/json"
 	"net/http"
+	"strings"
 
 	"github.com/ZRishu/smart-portfolio/internal/httputil"
+	"github.com/ZRishu/smart-portfolio/internal/modules/payment/dto"
 	"github.com/ZRishu/smart-portfolio/internal/modules/payment/service"
 	"github.com/go-chi/chi/v5"
 	"github.com/rs/zerolog/log"
@@ -25,6 +26,7 @@ func NewPaymentHandler(svc service.PaymentService) *PaymentHandler {
 func (h *PaymentHandler) PaymentRoutes() chi.Router {
 	r := chi.NewRouter()
 	r.Post("/create-order", h.CreateOrder)
+	r.Post("/verify-payment", h.VerifyPayment)
 	return r
 }
 
@@ -38,33 +40,58 @@ func (h *PaymentHandler) SponsorRoutes() chi.Router {
 
 // CreateOrder handles POST /api/payments/create-order.
 func (h *PaymentHandler) CreateOrder(w http.ResponseWriter, r *http.Request) {
-	var req struct {
-		Amount   float64 `json:"amount"`
-		Currency string  `json:"currency"`
-	}
-
-	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		httputil.WriteError(w, http.StatusBadRequest, "invalid request body")
+	var req dto.CreateOrderRequest
+	if err := httputil.DecodeJSON(r, &req); err != nil {
+		httputil.WriteError(w, http.StatusBadRequest, "invalid JSON body: "+err.Error())
 		return
 	}
 
 	if req.Currency == "" {
 		req.Currency = "INR"
 	}
-
-	if req.Amount <= 0 {
-		httputil.WriteError(w, http.StatusBadRequest, "invalid amount")
+	if err := req.Validate(); err != nil {
+		httputil.WriteValidationError(w, err)
 		return
 	}
 
-	orderDetails, err := h.paymentService.CreateRazorpayOrder(req.Amount, req.Currency)
+	orderDetails, err := h.paymentService.CreateRazorpayOrder(req)
 	if err != nil {
+		if strings.Contains(err.Error(), "validation failed") {
+			httputil.WriteValidationError(w, err)
+			return
+		}
 		log.Error().Err(err).Msg("payment_handler: failed to create razorpay order")
 		httputil.WriteError(w, http.StatusInternalServerError, "Failed to create order: "+err.Error())
 		return
 	}
 
 	httputil.WriteJSON(w, http.StatusOK, orderDetails)
+}
+
+// VerifyPayment handles POST /api/payments/verify-payment.
+func (h *PaymentHandler) VerifyPayment(w http.ResponseWriter, r *http.Request) {
+	var req dto.VerifyPaymentRequest
+	if err := httputil.DecodeJSON(r, &req); err != nil {
+		httputil.WriteError(w, http.StatusBadRequest, "invalid JSON body: "+err.Error())
+		return
+	}
+
+	if err := req.Validate(); err != nil {
+		httputil.WriteValidationError(w, err)
+		return
+	}
+
+	receipt, err := h.paymentService.VerifyCheckoutPayment(req)
+	if err != nil {
+		if strings.Contains(err.Error(), "validation failed") {
+			httputil.WriteValidationError(w, err)
+			return
+		}
+		httputil.WriteError(w, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	httputil.WriteJSON(w, http.StatusOK, receipt)
 }
 
 // GetSponsors handles GET /api/sponsors.

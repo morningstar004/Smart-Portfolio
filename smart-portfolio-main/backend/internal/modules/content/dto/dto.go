@@ -50,6 +50,33 @@ type ProjectResponse struct {
 	CreatedAt   time.Time `json:"created_at"`
 }
 
+type WorkItemResponse struct {
+	ID          string     `json:"id"`
+	Title       string     `json:"title"`
+	Description string     `json:"description"`
+	TechStack   *string    `json:"tech_stack,omitempty"`
+	GithubURL   *string    `json:"github_url,omitempty"`
+	LiveURL     *string    `json:"live_url,omitempty"`
+	Source      string     `json:"source"`
+	Stars       int        `json:"stars,omitempty"`
+	IsPinned    bool       `json:"is_pinned,omitempty"`
+	UpdatedAt   *time.Time `json:"updated_at,omitempty"`
+	CreatedAt   time.Time  `json:"created_at"`
+}
+
+type GitHubProfileResponse struct {
+	Username        string  `json:"username"`
+	DisplayName     *string `json:"display_name,omitempty"`
+	ProfileURL      string  `json:"profile_url"`
+	RepositoriesURL string  `json:"repositories_url"`
+	AvatarURL       *string `json:"avatar_url,omitempty"`
+}
+
+type WorkHighlightsResponse struct {
+	Items  []WorkItemResponse     `json:"items"`
+	GitHub *GitHubProfileResponse `json:"github,omitempty"`
+}
+
 // =============================================================================
 // Contact Message DTOs
 // =============================================================================

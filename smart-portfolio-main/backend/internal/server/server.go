@@ -84,6 +84,7 @@ func New(cfg *config.Config) *Server {
 // concrete handlers and passes their .Routes() / .ChatRoutes() etc. here.
 type ModuleRoutes struct {
 	Projects        chi.Router // mounted at /api/projects
+	Profile         chi.Router // mounted at /api/profile
 	Contact         chi.Router // mounted at /api/contact
 	Chat            chi.Router // mounted at /api/chat
 	Ingest          chi.Router // mounted at /api/ingest
@@ -158,6 +159,9 @@ func (s *Server) RegisterRoutes(m ModuleRoutes) {
 		// Content module
 		if m.Projects != nil {
 			api.Mount("/projects", m.Projects)
+		}
+		if m.Profile != nil {
+			api.Mount("/profile", m.Profile)
 		}
 		if m.Contact != nil {
 			// POST /api/contact is public; GET/PATCH/DELETE are admin but

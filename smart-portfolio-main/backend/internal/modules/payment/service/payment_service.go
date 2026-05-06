@@ -7,12 +7,15 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
+	"math"
 	"net/http"
 	"strings"
+	"time"
 
 	"github.com/google/uuid"
 
 	"github.com/ZRishu/smart-portfolio/internal/config"
+	"github.com/ZRishu/smart-portfolio/internal/modules/payment/dto"
 	"github.com/ZRishu/smart-portfolio/internal/modules/payment/model"
 	"github.com/ZRishu/smart-portfolio/internal/modules/payment/repository"
 	"github.com/rs/zerolog/log"
@@ -37,7 +40,10 @@ type PaymentService interface {
 	HandlePaymentCaptured(ctx context.Context, payload []byte) error
 
 	// CreateRazorpayOrder creates a new order in Razorpay
-	CreateRazorpayOrder(amount float64, currency string) (map[string]interface{}, error)
+	CreateRazorpayOrder(req dto.CreateOrderRequest) (*dto.CreateOrderResponse, error)
+
+	// VerifyCheckoutPayment validates a client-side Razorpay checkout success payload.
+	VerifyCheckoutPayment(req dto.VerifyPaymentRequest) (*dto.PaymentReceiptResponse, error)
 
 	// GetRecentSponsors fetches the top recent sponsors.
 	GetRecentSponsors(ctx context.Context) ([]model.Sponsor, error)
@@ -186,6 +192,11 @@ func (s *paymentService) HandlePaymentCaptured(ctx context.Context, payload []by
 	if n, ok := entity.Notes["sponsor_name"]; ok && strings.TrimSpace(n) != "" {
 		name = strings.TrimSpace(n)
 	}
+	if strings.TrimSpace(email) == "" {
+		if e, ok := entity.Notes["sponsor_email"]; ok && strings.TrimSpace(e) != "" {
+			email = strings.TrimSpace(e)
+		}
+	}
 
 	// ── Validate extracted fields ───────────────────────────────────────
 	if razorpayEventID == "" {
@@ -193,9 +204,6 @@ func (s *paymentService) HandlePaymentCaptured(ctx context.Context, payload []by
 	}
 	if paymentID == "" {
 		return fmt.Errorf("payment_service.HandlePaymentCaptured: missing payment ID in payload")
-	}
-	if email == "" {
-		return fmt.Errorf("payment_service.HandlePaymentCaptured: missing email in payload")
 	}
 	if currency == "" {
 		currency = "INR"
@@ -264,40 +272,49 @@ func truncate(s string, maxLen int) string {
 }
 
 // CreateRazorpayOrder creates a new order via the Razorpay API.
-func (s *paymentService) CreateRazorpayOrder(amount float64, currency string) (map[string]interface{}, error) {
+func (s *paymentService) CreateRazorpayOrder(req dto.CreateOrderRequest) (*dto.CreateOrderResponse, error) {
 	if s.keyID == "" || s.keySecret == "" {
 		return nil, fmt.Errorf("razorpay credentials not configured")
 	}
+	if err := req.Validate(); err != nil {
+		return nil, err
+	}
 
-	importRazorpay := "github.com/razorpay/razorpay-go"
-	_ = importRazorpay // tricking go imports if we don't use it directly at top, wait we should just do HTTP request to avoid messing with top imports in this replace block, or I can update the top imports later. I'll use standard net/http for a simple API call.
-
+	currency := strings.ToUpper(strings.TrimSpace(req.Currency))
 	url := "https://api.razorpay.com/v1/orders"
 
 	// Razorpay requires amount in paise
-	amountInPaise := int(amount * 100)
+	amountInPaise := int(math.Round(req.Amount * 100))
 	receipt := "txn_" + strings.ReplaceAll(uuid.New().String(), "-", "")[:8]
+	notes := map[string]string{}
+	if strings.TrimSpace(req.SponsorName) != "" {
+		notes["sponsor_name"] = strings.TrimSpace(req.SponsorName)
+	}
+	if strings.TrimSpace(req.SponsorEmail) != "" {
+		notes["sponsor_email"] = strings.TrimSpace(req.SponsorEmail)
+	}
 
 	payload := map[string]interface{}{
 		"amount":   amountInPaise,
 		"currency": currency,
 		"receipt":  receipt,
+		"notes":    notes,
 	}
 	bodyBytes, err := json.Marshal(payload)
 	if err != nil {
 		return nil, err
 	}
 
-	req, err := http.NewRequest("POST", url, strings.NewReader(string(bodyBytes)))
+	httpReq, err := http.NewRequest("POST", url, strings.NewReader(string(bodyBytes)))
 	if err != nil {
 		return nil, err
 	}
 
-	req.SetBasicAuth(s.keyID, s.keySecret)
-	req.Header.Set("Content-Type", "application/json")
+	httpReq.SetBasicAuth(s.keyID, s.keySecret)
+	httpReq.Header.Set("Content-Type", "application/json")
 
 	client := &http.Client{}
-	resp, err := client.Do(req)
+	resp, err := client.Do(httpReq)
 	if err != nil {
 		return nil, err
 	}
@@ -314,11 +331,58 @@ func (s *paymentService) CreateRazorpayOrder(amount float64, currency string) (m
 
 	// Return the public key with the order payload so the frontend does not need
 	// a separate Razorpay env var. The secret remains backend-only.
-	return map[string]interface{}{
-		"id":       result["id"],
-		"amount":   result["amount"],
-		"currency": result["currency"],
-		"key_id":   s.keyID,
+	return &dto.CreateOrderResponse{
+		ID:       fmt.Sprint(result["id"]),
+		Amount:   amountInPaise,
+		Currency: currency,
+		KeyID:    s.keyID,
+		Receipt:  receipt,
+		Notes:    notes,
+	}, nil
+}
+
+// VerifyCheckoutPayment validates the client-side checkout signature and returns
+// a normalized receipt payload for UI rendering / PDF export.
+func (s *paymentService) VerifyCheckoutPayment(req dto.VerifyPaymentRequest) (*dto.PaymentReceiptResponse, error) {
+	if s.keySecret == "" {
+		return nil, fmt.Errorf("razorpay credentials not configured")
+	}
+	if err := req.Validate(); err != nil {
+		return nil, err
+	}
+
+	signaturePayload := req.RazorpayOrderID + "|" + req.RazorpayPaymentID
+	mac := hmac.New(sha256.New, []byte(s.keySecret))
+	mac.Write([]byte(signaturePayload))
+	expected := hex.EncodeToString(mac.Sum(nil))
+	if !hmac.Equal([]byte(expected), []byte(req.RazorpaySignature)) {
+		return nil, fmt.Errorf("invalid razorpay payment signature")
+	}
+
+	sponsorName := strings.TrimSpace(req.SponsorName)
+	if sponsorName == "" {
+		sponsorName = "Anonymous Sponsor"
+	}
+
+	currency := strings.ToUpper(strings.TrimSpace(req.Currency))
+	if currency == "" {
+		currency = "INR"
+	}
+
+	return &dto.PaymentReceiptResponse{
+		ReceiptNumber:     "RCPT-" + strings.ToUpper(strings.TrimPrefix(req.RazorpayPaymentID, "pay_")),
+		SponsorName:       sponsorName,
+		SponsorEmail:      strings.TrimSpace(req.SponsorEmail),
+		RecipientName:     "ZR Systems",
+		RecipientRole:     "Backend Developer",
+		RecipientLocation: "Remote India",
+		Amount:            req.Amount,
+		Currency:          currency,
+		Status:            "SUCCESS",
+		RazorpayOrderID:   req.RazorpayOrderID,
+		RazorpayPaymentID: req.RazorpayPaymentID,
+		IssuedAt:          time.Now().UTC(),
+		Message:           "Contribution received successfully. Thank you for sponsoring ZR Systems.",
 	}, nil
 }
 

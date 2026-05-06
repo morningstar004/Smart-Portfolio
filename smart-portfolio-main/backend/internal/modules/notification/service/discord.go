@@ -25,7 +25,7 @@ type NotificationService interface {
 
 	// SendSponsorNotification formats and sends a notification about a new
 	// sponsorship payment. It is non-blocking.
-	SendSponsorNotification(ctx context.Context, sponsorName, email, currency string, amount float64)
+	SendSponsorNotification(ctx context.Context, sponsorName, email, currency string, amount float64, paymentID, status string)
 
 	// SendRaw sends an arbitrary string message to the notification channel.
 	// It is non-blocking.
@@ -45,11 +45,13 @@ type discordPayload struct {
 // All sends are dispatched asynchronously in goroutines so the calling code
 // is never blocked by network I/O.
 type DiscordNotificationService struct {
-	webhookURL string
-	client     *http.Client
-	wg         sync.WaitGroup
-	random     *rand.Rand
-	sendMu     sync.Mutex
+	defaultWebhookURL string
+	contactWebhookURL string
+	paymentWebhookURL string
+	client            *http.Client
+	wg                sync.WaitGroup
+	random            *rand.Rand
+	sendMu            sync.Mutex
 }
 
 type rateLimitResponse struct {
@@ -62,14 +64,19 @@ type rateLimitResponse struct {
 // If the webhook URL is empty, all send operations become silent no-ops and
 // a warning is logged at construction time.
 func NewDiscordNotificationService(cfg config.DiscordConfig) *DiscordNotificationService {
-	if cfg.WebhookURL == "" {
-		log.Warn().Msg("discord: webhook URL is not configured — notifications will be silently skipped")
+	if cfg.ContactWebhookURL == "" && cfg.PaymentWebhookURL == "" && cfg.WebhookURL == "" {
+		log.Warn().Msg("discord: webhook URLs are not configured — notifications will be silently skipped")
 	} else {
-		log.Info().Msg("discord: notification service initialized")
+		log.Info().
+			Bool("contact_configured", cfg.ContactWebhookURL != "" || cfg.WebhookURL != "").
+			Bool("payment_configured", cfg.PaymentWebhookURL != "" || cfg.WebhookURL != "").
+			Msg("discord: notification service initialized")
 	}
 
 	return &DiscordNotificationService{
-		webhookURL: cfg.WebhookURL,
+		defaultWebhookURL: cfg.WebhookURL,
+		contactWebhookURL: cfg.ContactWebhookURL,
+		paymentWebhookURL: cfg.PaymentWebhookURL,
 		client: &http.Client{
 			Timeout: 10 * time.Second,
 		},
@@ -91,30 +98,34 @@ func (d *DiscordNotificationService) SendContactNotification(ctx context.Context
 		messageBody,
 	)
 
-	d.sendAsync(ctx, msg)
+	d.sendAsync(ctx, d.resolveWebhookURL("contact"), msg)
 }
 
 // SendSponsorNotification formats a rich markdown message about a new
 // sponsorship payment and sends it to Discord asynchronously.
-func (d *DiscordNotificationService) SendSponsorNotification(ctx context.Context, sponsorName, email, currency string, amount float64) {
+func (d *DiscordNotificationService) SendSponsorNotification(ctx context.Context, sponsorName, email, currency string, amount float64, paymentID, status string) {
 	msg := fmt.Sprintf(
 		"🎉 **NEW SPONSOR ALERT!** 🎉\n"+
 			"> **Name:** %s\n"+
 			"> **Amount:** %.2f %s\n"+
 			"> **Email:** %s\n"+
+			"> **Payment ID:** %s\n"+
+			"> **Status:** %s\n"+
 			"The outbox pipeline processed this payment successfully!",
 		sponsorName,
 		amount,
 		currency,
 		email,
+		paymentID,
+		status,
 	)
 
-	d.sendAsync(ctx, msg)
+	d.sendAsync(ctx, d.resolveWebhookURL("payment"), msg)
 }
 
 // SendRaw sends an arbitrary string message to Discord asynchronously.
 func (d *DiscordNotificationService) SendRaw(ctx context.Context, message string) {
-	d.sendAsync(ctx, message)
+	d.sendAsync(ctx, d.resolveWebhookURL("default"), message)
 }
 
 // Shutdown blocks until every in-flight notification goroutine has completed.
@@ -129,8 +140,8 @@ func (d *DiscordNotificationService) Shutdown() {
 // sendAsync dispatches the actual HTTP POST in a separate goroutine so the
 // caller is never blocked. The goroutine is tracked via the WaitGroup so
 // Shutdown can wait for it.
-func (d *DiscordNotificationService) sendAsync(ctx context.Context, message string) {
-	if d.webhookURL == "" {
+func (d *DiscordNotificationService) sendAsync(ctx context.Context, webhookURL, message string) {
+	if webhookURL == "" {
 		log.Debug().Msg("discord: skipping notification — webhook URL not configured")
 		return
 	}
@@ -147,7 +158,7 @@ func (d *DiscordNotificationService) sendAsync(ctx context.Context, message stri
 		// Use a detached context for the send operation so that retries can
 		// continue even if the original request context is cancelled.
 		detachedCtx := context.WithoutCancel(ctx)
-		if err := d.send(detachedCtx, message); err != nil {
+		if err := d.send(detachedCtx, webhookURL, message); err != nil {
 			log.Error().Err(err).Msg("discord: failed to send notification")
 		}
 	}()
@@ -157,7 +168,7 @@ func (d *DiscordNotificationService) sendAsync(ctx context.Context, message stri
 // It returns an error if the request fails or Discord responds with a
 // non-2xx status code. It handles HTTP 429 (Too Many Requests) by retrying
 // with exponential backoff and jitter, respecting the Retry-After header.
-func (d *DiscordNotificationService) send(ctx context.Context, message string) error {
+func (d *DiscordNotificationService) send(ctx context.Context, webhookURL, message string) error {
 	payload := discordPayload{Content: message}
 
 	body, err := json.Marshal(payload)
@@ -172,7 +183,7 @@ func (d *DiscordNotificationService) send(ctx context.Context, message string) e
 	for attempt := 0; attempt <= maxRetries; attempt++ {
 		d.sendMu.Lock()
 
-		req, err := http.NewRequestWithContext(ctx, http.MethodPost, d.webhookURL, bytes.NewReader(body))
+		req, err := http.NewRequestWithContext(ctx, http.MethodPost, webhookURL, bytes.NewReader(body))
 		if err != nil {
 			d.sendMu.Unlock()
 			return fmt.Errorf("discord: failed to create request: %w", err)
@@ -245,6 +256,27 @@ func (d *DiscordNotificationService) send(ctx context.Context, message string) e
 	}
 
 	return fmt.Errorf("discord: failed after %d attempts", maxRetries+1)
+}
+
+func (d *DiscordNotificationService) resolveWebhookURL(channel string) string {
+	switch channel {
+	case "contact":
+		if d.contactWebhookURL != "" {
+			return d.contactWebhookURL
+		}
+	case "payment":
+		if d.paymentWebhookURL != "" {
+			return d.paymentWebhookURL
+		}
+	}
+
+	if d.defaultWebhookURL != "" {
+		return d.defaultWebhookURL
+	}
+	if d.contactWebhookURL != "" {
+		return d.contactWebhookURL
+	}
+	return d.paymentWebhookURL
 }
 
 func parseDiscordRetryAfter(resp *http.Response) (time.Duration, error) {

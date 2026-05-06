@@ -9,6 +9,7 @@ import (
 	"github.com/ZRishu/smart-portfolio/internal/httputil"
 	airepository "github.com/ZRishu/smart-portfolio/internal/modules/ai/repository"
 	"github.com/ZRishu/smart-portfolio/internal/modules/content/repository"
+	contentservice "github.com/ZRishu/smart-portfolio/internal/modules/content/service"
 	paymentdto "github.com/ZRishu/smart-portfolio/internal/modules/payment/dto"
 	paymentmodel "github.com/ZRishu/smart-portfolio/internal/modules/payment/model"
 	paymentrepository "github.com/ZRishu/smart-portfolio/internal/modules/payment/repository"
@@ -22,10 +23,12 @@ import (
 type AdminHandler struct {
 	pg                *database.Postgres
 	projectRepo       *repository.ProjectRepository
+	githubRepoRepo    *repository.GitHubRepositoryRepository
 	contactRepo       *repository.ContactRepository
 	paymentRepo       *paymentrepository.PaymentRepository
 	vectorStoreRepo   *airepository.VectorStoreRepository
 	semanticCacheRepo *airepository.SemanticCacheRepository
+	githubSyncSvc     contentservice.GitHubSyncService
 }
 
 // NewAdminHandler creates a new AdminHandler wired to all the repositories
@@ -33,18 +36,22 @@ type AdminHandler struct {
 func NewAdminHandler(
 	pg *database.Postgres,
 	projectRepo *repository.ProjectRepository,
+	githubRepoRepo *repository.GitHubRepositoryRepository,
 	contactRepo *repository.ContactRepository,
 	paymentRepo *paymentrepository.PaymentRepository,
 	vectorStoreRepo *airepository.VectorStoreRepository,
 	semanticCacheRepo *airepository.SemanticCacheRepository,
+	githubSyncSvc contentservice.GitHubSyncService,
 ) *AdminHandler {
 	return &AdminHandler{
 		pg:                pg,
 		projectRepo:       projectRepo,
+		githubRepoRepo:    githubRepoRepo,
 		contactRepo:       contactRepo,
 		paymentRepo:       paymentRepo,
 		vectorStoreRepo:   vectorStoreRepo,
 		semanticCacheRepo: semanticCacheRepo,
+		githubSyncSvc:     githubSyncSvc,
 	}
 }
 
@@ -61,6 +68,7 @@ func (h *AdminHandler) Routes() chi.Router {
 	r.Get("/health", h.DeepHealthCheck)
 	r.Get("/stats", h.DashboardStats)
 	r.Get("/sponsors", h.ListSponsors)
+	r.Post("/github/sync", h.SyncGitHubWorks)
 
 	return r
 }
@@ -121,6 +129,14 @@ func (h *AdminHandler) DashboardStats(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		s.Projects = int64(len(projects))
+		if h.githubRepoRepo != nil && h.githubSyncSvc != nil && h.githubSyncSvc.Enabled() {
+			githubCount, err := h.githubRepoRepo.CountByUsername(ctx, h.githubSyncSvc.Username())
+			if err != nil {
+				ch <- result{err: err}
+				return
+			}
+			s.Projects += githubCount
+		}
 
 		// Contact message counts
 		total, unread, err := h.contactRepo.Count(ctx)
@@ -197,6 +213,24 @@ func (h *AdminHandler) ListSponsors(w http.ResponseWriter, r *http.Request) {
 	}
 
 	httputil.WriteJSON(w, http.StatusOK, responses)
+}
+
+func (h *AdminHandler) SyncGitHubWorks(w http.ResponseWriter, r *http.Request) {
+	if h.githubSyncSvc == nil || !h.githubSyncSvc.Enabled() {
+		httputil.WriteError(w, http.StatusBadRequest, "github sync is not configured")
+		return
+	}
+
+	if err := h.githubSyncSvc.Sync(r.Context(), true); err != nil {
+		httputil.WriteInternalError(w, err, "AdminHandler.SyncGitHubWorks")
+		return
+	}
+
+	httputil.WriteJSON(w, http.StatusOK, map[string]string{
+		"status":   "ok",
+		"username": h.githubSyncSvc.Username(),
+		"message":  "GitHub works sync completed",
+	})
 }
 
 // sponsorModelToResponse converts a payment model.Sponsor into a

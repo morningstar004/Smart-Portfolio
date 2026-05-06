@@ -1,6 +1,13 @@
 # =============================================================================
 # Smart Portfolio — Makefile
 # =============================================================================
+
+# Load .env file if it exists
+ifneq (,$(wildcard .env))
+    include .env
+    export
+endif
+
 # Usage:
 #   make              — build the binary
 #   make run          — build and run locally

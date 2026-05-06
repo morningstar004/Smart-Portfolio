@@ -99,6 +99,7 @@ func (s *ragService) AskQuestion(ctx context.Context, req dto.ChatRequest) (*dto
 	}
 
 	question := strings.TrimSpace(req.Question)
+	useSemanticCache := req.MaxWords == 0
 	log.Info().Str("question", truncateStr(question, 100)).Msg("rag_service: received question (non-streaming)")
 
 	// Step 1: Embed the question.
@@ -108,16 +109,18 @@ func (s *ragService) AskQuestion(ctx context.Context, req dto.ChatRequest) (*dto
 	}
 
 	// Step 2: Check semantic cache.
-	cached, found, err := s.cacheRepo.FindCachedResponse(ctx, embedding)
-	if err != nil {
-		log.Warn().Err(err).Msg("rag_service: semantic cache lookup failed — continuing without cache")
-	}
-	if found {
-		log.Info().Msg("rag_service: semantic cache HIT — returning cached response")
-		return &dto.ChatResponse{
-			Answer: cached,
-			Cached: true,
-		}, nil
+	if useSemanticCache {
+		cached, found, err := s.cacheRepo.FindCachedResponse(ctx, embedding)
+		if err != nil {
+			log.Warn().Err(err).Msg("rag_service: semantic cache lookup failed — continuing without cache")
+		}
+		if found {
+			log.Info().Msg("rag_service: semantic cache HIT — returning cached response")
+			return &dto.ChatResponse{
+				Answer: normalizeAnswer(cached, req.MaxWords),
+				Cached: true,
+			}, nil
+		}
 	}
 
 	log.Info().Msg("rag_service: semantic cache MISS — querying vector store and LLM")
@@ -129,13 +132,16 @@ func (s *ragService) AskQuestion(ctx context.Context, req dto.ChatRequest) (*dto
 	}
 
 	// Step 4: Call the LLM (non-streaming).
-	answer, err := s.callLLM(ctx, question, contextText, false)
+	answer, err := s.callLLM(ctx, question, contextText, false, req.MaxWords)
 	if err != nil {
 		return nil, fmt.Errorf("rag_service.AskQuestion: %w", err)
 	}
+	answer = normalizeAnswer(answer, req.MaxWords)
 
 	// Step 5: Save to semantic cache in a background goroutine.
-	s.saveToCacheAsync(question, embedding, answer)
+	if useSemanticCache {
+		s.saveToCacheAsync(question, embedding, answer)
+	}
 
 	return &dto.ChatResponse{
 		Answer: answer,
@@ -260,13 +266,18 @@ CONTEXT:
 
 // callLLM sends a non-streaming chat completion request to the Groq API and
 // returns the full assistant message content.
-func (s *ragService) callLLM(ctx context.Context, question, contextText string, stream bool) (string, error) {
+func (s *ragService) callLLM(ctx context.Context, question, contextText string, stream bool, maxWords int) (string, error) {
+	systemMessage := systemPrompt(contextText)
+	if maxWords > 0 {
+		systemMessage += fmt.Sprintf("\n\nFor this response, return exactly one plain-text sentence with no more than %d words. Do not exceed that limit.", maxWords)
+	}
+
 	payload := chatCompletionRequest{
 		Model:       s.aiCfg.Model,
 		Temperature: s.aiCfg.Temperature,
 		Stream:      stream,
 		Messages: []chatMessage{
-			{Role: "system", Content: systemPrompt(contextText)},
+			{Role: "system", Content: systemMessage},
 			{Role: "user", Content: question},
 		},
 	}
@@ -477,6 +488,30 @@ func writeSSEEvent(w http.ResponseWriter, flusher http.Flusher, event, data stri
 	}
 	fmt.Fprint(w, "\n")
 	flusher.Flush()
+}
+
+func normalizeAnswer(text string, maxWords int) string {
+	cleaned := strings.Join(strings.Fields(strings.TrimSpace(text)), " ")
+	if maxWords <= 0 {
+		return cleaned
+	}
+
+	words := strings.Fields(cleaned)
+	if len(words) > maxWords {
+		cleaned = strings.Join(words[:maxWords], " ")
+	}
+
+	cleaned = strings.TrimSpace(cleaned)
+	if cleaned == "" {
+		return cleaned
+	}
+
+	lastChar := cleaned[len(cleaned)-1]
+	if lastChar != '.' && lastChar != '!' && lastChar != '?' {
+		cleaned += "."
+	}
+
+	return cleaned
 }
 
 // ---------------------------------------------------------------------------

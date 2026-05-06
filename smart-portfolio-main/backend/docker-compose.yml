@@ -1,4 +1,35 @@
+# =============================================================================
+# Smart Portfolio — Local Development Stack
+# =============================================================================
+# Usage:
+#   docker compose up -d          # start everything
+#   docker compose up -d --build  # rebuild the app image and start
+#   docker compose logs -f app    # tail app logs
+#   docker compose down -v        # stop everything and destroy volumes
+# =============================================================================
+
 services:
+  # ─────────────────────────────────────────────────────────────────────────
+  # PostgreSQL Database (with pgvector)
+  # ─────────────────────────────────────────────────────────────────────────
+  db:
+    image: pgvector/pgvector:pg16
+    container_name: smart-portfolio-db
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: portfolio
+      POSTGRES_PASSWORD: portfolio_secret
+      POSTGRES_DB: smart_portfolio
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U portfolio -d smart_portfolio"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
   # ─────────────────────────────────────────────────────────────────────────
   # Smart Portfolio Application
   # ─────────────────────────────────────────────────────────────────────────
@@ -12,30 +43,13 @@ services:
       - "8080:8080"
     env_file:
       - .env
+    environment:
+      # If DATABASE_URL is not set in .env, fallback to the db service.
+      # We use 'db' as the hostname because they are in the same network.
+      - DATABASE_URL=${DATABASE_URL:-postgres://portfolio:portfolio_secret@db:5432/smart_portfolio?sslmode=disable}
     depends_on:
       db:
         condition: service_healthy
-
-  # ─────────────────────────────────────────────────────────────────────────
-  # PostgreSQL with pgvector (Required for AI)
-  # ─────────────────────────────────────────────────────────────────────────
-  db:
-    image: ankane/pgvector:v0.5.1
-    container_name: smart-portfolio-db
-    restart: unless-stopped
-    ports:
-      - "5432:5432"
-    environment:
-      - POSTGRES_USER=portfolio
-      - POSTGRES_PASSWORD=password
-      - POSTGRES_DB=smart_portfolio
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U portfolio -d smart_portfolio"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
-    volumes:
-      - pgdata:/var/lib/postgresql/data
 
 volumes:
   pgdata:

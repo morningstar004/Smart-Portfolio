@@ -20,6 +20,7 @@ import (
 	contenthandler "github.com/ZRishu/smart-portfolio/internal/modules/content/handler"
 	contentrepository "github.com/ZRishu/smart-portfolio/internal/modules/content/repository"
 	contentservice "github.com/ZRishu/smart-portfolio/internal/modules/content/service"
+	contentworker "github.com/ZRishu/smart-portfolio/internal/modules/content/worker"
 	notifservice "github.com/ZRishu/smart-portfolio/internal/modules/notification/service"
 	paymenthandler "github.com/ZRishu/smart-portfolio/internal/modules/payment/handler"
 	paymentrepository "github.com/ZRishu/smart-portfolio/internal/modules/payment/repository"
@@ -95,18 +96,22 @@ func main() {
 	discordService := notifservice.NewDiscordNotificationService(cfg.Discord)
 
 	// ─────────────────────────────────────────────────────────────────────
-	// 7. Content module (projects + contact messages)
+	// 7. Content module (projects + contact messages + profile)
 	// ─────────────────────────────────────────────────────────────────────
 	projectRepo := contentrepository.NewProjectRepository(pg.Pool)
+	githubProfileRepo := contentrepository.NewGitHubProfileRepository(pg.Pool)
+	githubRepoRepo := contentrepository.NewGitHubRepositoryRepository(pg.Pool)
 	contactRepo := contentrepository.NewContactRepository(pg.Pool)
+	profileRepo := contentrepository.NewProfileRepository(pg)
 
-	projectSvc := contentservice.NewProjectService(projectRepo, appCache)
+	projectSvc := contentservice.NewProjectService(projectRepo, githubRepoRepo, githubProfileRepo, appCache)
 	contactSvc := contentservice.NewContactMessageService(contactRepo, discordService)
+	profileSvc := contentservice.NewProfileService(profileRepo)
 
-	projectHandler := contenthandler.NewProjectHandler(projectSvc)
 	contactHandler := contenthandler.NewContactHandler(contactSvc, cfg.Admin.APIKey)
+	profileHandler := contenthandler.NewProfileHandler(profileSvc)
 
-	log.Info().Msg("content module: initialized (projects + contact messages)")
+	log.Info().Msg("content module: initialized (projects + contact messages + profile)")
 
 	// ─────────────────────────────────────────────────────────────────────
 	// 8. AI module (embeddings, RAG, ingestion)
@@ -118,11 +123,26 @@ func main() {
 
 	semanticCacheRepo := airepository.NewSemanticCacheRepository(pg.Pool)
 	vectorStoreRepo := airepository.NewVectorStoreRepository(pg.Pool, cfg.Embedding.Dimensions)
+	githubEmbeddingRepo := airepository.NewGitHubEmbeddingRepository(pg.Pool, cfg.Embedding.Dimensions)
 
 	ragSvc := aiservice.NewRAGService(embeddingSvc, semanticCacheRepo, vectorStoreRepo, cfg.AI)
 	ingestionSvc := aiservice.NewIngestionService(embeddingSvc, vectorStoreRepo)
+	githubSyncSvc := contentservice.NewGitHubSyncService(
+		cfg.GitHub,
+		githubProfileRepo,
+		githubRepoRepo,
+		githubEmbeddingRepo,
+		embeddingSvc,
+		contentservice.InvalidateProjectCaches(appCache),
+	)
 
 	aiHandler := aihandler.NewAIHandler(ragSvc, ingestionSvc)
+	projectHandler := contenthandler.NewProjectHandler(
+		projectSvc,
+		githubSyncSvc,
+		githubSyncSvc.Username(),
+		cfg.GitHub.ProjectsLimit,
+	)
 
 	log.Info().Msg("ai module: initialized (embeddings + RAG + ingestion)")
 
@@ -142,10 +162,12 @@ func main() {
 	adminH := adminhandler.NewAdminHandler(
 		pg,
 		projectRepo,
+		githubRepoRepo,
 		contactRepo,
 		paymentRepo,
 		vectorStoreRepo,
 		semanticCacheRepo,
+		githubSyncSvc,
 	)
 
 	log.Info().Msg("admin module: initialized (stats + sponsors + deep health)")
@@ -153,19 +175,16 @@ func main() {
 	// ─────────────────────────────────────────────────────────────────────
 	// 11. Event bus subscribers
 	// ─────────────────────────────────────────────────────────────────────
-	// Subscribe the Discord notification handler for SPONSOR_CREATED events.
-	// When the outbox poller picks up a new sponsorship event, the bus
-	// dispatches it here, which formats and sends a Discord notification
-	// asynchronously in its own goroutine.
 	bus.Subscribe("SPONSOR_CREATED", func(ctx context.Context, event eventbus.Event) error {
 		log.Info().Msg("event_handler: received SPONSOR_CREATED event — sending Discord notification")
 
-		// Parse the JSON payload to extract sponsor details.
 		var payload struct {
 			SponsorName string  `json:"sponsorName"`
 			Amount      float64 `json:"amount"`
 			Currency    string  `json:"currency"`
 			Email       string  `json:"email"`
+			Status      string  `json:"status"`
+			PaymentID   string  `json:"paymentId"`
 		}
 
 		if err := json.Unmarshal([]byte(event.Payload), &payload); err != nil {
@@ -173,7 +192,15 @@ func main() {
 			return err
 		}
 
-		discordService.SendSponsorNotification(ctx, payload.SponsorName, payload.Email, payload.Currency, payload.Amount)
+		discordService.SendSponsorNotification(
+			ctx,
+			payload.SponsorName,
+			payload.Email,
+			payload.Currency,
+			payload.Amount,
+			payload.PaymentID,
+			payload.Status,
+		)
 		return nil
 	})
 
@@ -186,6 +213,8 @@ func main() {
 	// ─────────────────────────────────────────────────────────────────────
 	outboxPoller := worker.NewOutboxPoller(paymentRepo, bus, cfg.Outbox.PollInterval, 50)
 	outboxPoller.Start(rootCtx)
+	githubSyncWorker := contentworker.NewGitHubSyncWorker(githubSyncSvc, cfg.GitHub.SyncInterval)
+	githubSyncWorker.Start(rootCtx)
 
 	log.Info().
 		Dur("interval", cfg.Outbox.PollInterval).
@@ -197,6 +226,7 @@ func main() {
 	srv := server.New(cfg)
 	srv.RegisterRoutes(server.ModuleRoutes{
 		Projects:        projectHandler.Routes(),
+		Profile:         profileHandler.Routes(),
 		Contact:         contactHandler.Routes(),
 		Chat:            aiHandler.ChatRoutes(),
 		Ingest:          aiHandler.IngestRoutes(),
@@ -206,8 +236,6 @@ func main() {
 		Admin:           adminH.Routes(),
 	})
 
-	// Start the HTTP server in a separate goroutine so we can listen for
-	// shutdown signals on the main goroutine.
 	serverErrors := make(chan error, 1)
 	go func() {
 		serverErrors <- srv.Start()
@@ -220,8 +248,6 @@ func main() {
 	// ─────────────────────────────────────────────────────────────────────
 	// 14. Graceful shutdown
 	// ─────────────────────────────────────────────────────────────────────
-	// Wait for either: (a) the server to encounter a fatal error, or
-	// (b) an OS signal indicating the process should terminate.
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
 
@@ -234,56 +260,26 @@ func main() {
 		log.Info().Str("signal", sig.String()).Msg("shutdown signal received")
 	}
 
-	// Cancel the root context so all background workers and the event bus
-	// know to start draining.
 	rootCancel()
 
 	log.Info().Msg("shutting down gracefully — draining in-flight work...")
 
-	// Give the HTTP server a bounded amount of time to finish serving
-	// in-flight requests before forcibly closing connections.
 	shutdownCtx, shutdownCancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer shutdownCancel()
 
-	// Shutdown order:
-	//
-	// 1. HTTP server — stop accepting new connections, drain in-flight requests.
-	// 2. Outbox poller — stop polling, let the current cycle finish.
-	// 3. Event bus — wait for all in-flight event handlers to complete.
-	// 4. Discord notification service — wait for in-flight webhook calls.
-	// 5. RAG service — wait for any background cache-save goroutines.
-	// 6. Database pool — close all connections.
-	//
-	// Steps 2-5 run concurrently via goroutines since they're independent,
-	// but we wait for all of them before closing the database (step 6).
-
-	// Step 1: HTTP server
-	if err := srv.Shutdown(shutdownCtx); err != nil {
-		log.Error().Err(err).Msg("HTTP server shutdown error")
-	}
-
-	// Steps 2-5: concurrent background service shutdown
 	shutdownDone := make(chan struct{})
 	go func() {
 		defer close(shutdownDone)
 
-		// Step 2: Outbox poller
 		outboxPoller.Stop()
 		log.Info().Msg("shutdown: outbox poller stopped")
 
-		// Step 3: Event bus
 		bus.Shutdown()
 		log.Info().Msg("shutdown: event bus drained")
 
-		// Step 4: Discord service
 		discordService.Shutdown()
 		log.Info().Msg("shutdown: discord notifications drained")
 
-		// Step 5: RAG cache workers
-		// The ragService may have goroutines saving to the semantic cache.
-		// We access the concrete type to call ShutdownCacheWorkers.
-		// This is a best-effort operation — if the interface assertion fails,
-		// we skip it (the goroutines will be killed when the process exits).
 		type cacheShutdowner interface {
 			ShutdownCacheWorkers()
 		}
@@ -293,17 +289,12 @@ func main() {
 		}
 	}()
 
-	// Wait for background shutdown to complete or the timeout to expire.
 	select {
 	case <-shutdownDone:
 		log.Info().Msg("shutdown: all background services stopped cleanly")
 	case <-shutdownCtx.Done():
 		log.Warn().Msg("shutdown: timed out waiting for background services — forcing exit")
 	}
-
-	// Step 6: Database pool is closed by the deferred pg.Close() at the
-	// top of main(). By the time we reach this point, all services that
-	// depend on the pool have been shut down.
 
 	log.Info().Msg("smart-portfolio: shutdown complete — goodbye!")
 }

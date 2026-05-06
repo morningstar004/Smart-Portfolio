@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/joho/godotenv"
@@ -15,6 +16,7 @@ type Config struct {
 	Database  DatabaseConfig
 	AI        AIConfig
 	Embedding EmbeddingConfig
+	GitHub    GitHubConfig
 	Discord   DiscordConfig
 	Razorpay  RazorpayConfig
 	Frontend  FrontendConfig
@@ -49,8 +51,19 @@ type EmbeddingConfig struct {
 	Dimensions int
 }
 
+type GitHubConfig struct {
+	Username       string
+	Token          string
+	SyncInterval   time.Duration
+	ProjectsLimit  int
+	CandidateLimit int
+	Timeout        time.Duration
+}
+
 type DiscordConfig struct {
-	WebhookURL string
+	WebhookURL        string
+	ContactWebhookURL string
+	PaymentWebhookURL string
 }
 
 type RazorpayConfig struct {
@@ -98,7 +111,7 @@ func Load() (*Config, error) {
 	cfg.Server.Port = envOrDefault("PORT", envOrDefault("SERVER_PORT", "8080"))
 
 	// ── Database ─────────────────────────────────────────────────────────
-	cfg.Database.URL = requireEnv("DATABASE_URL", &errs)
+	cfg.Database.URL = envOrDefault("DATABASE_URL", "postgres://portfolio:portfolio_secret@localhost:5432/smart_portfolio?sslmode=disable")
 	cfg.Database.MaxOpenConns = envIntOrDefault("DB_MAX_OPEN_CONNS", 10)
 	cfg.Database.MaxIdleConns = envIntOrDefault("DB_MAX_IDLE_CONNS", 5)
 	cfg.Database.ConnMaxLifetime = time.Duration(envIntOrDefault("DB_CONN_MAX_LIFETIME_MIN", 30)) * time.Minute
@@ -115,8 +128,18 @@ func Load() (*Config, error) {
 	cfg.Embedding.Model = envOrDefault("EMBEDDING_MODEL", "jina-embeddings-v2-base-en")
 	cfg.Embedding.Dimensions = envIntOrDefault("EMBEDDING_DIMENSIONS", 768)
 
+	// ── GitHub sync (optional) ──────────────────────────────────────────
+	cfg.GitHub.Username = envOrDefault("GITHUB_USERNAME", "")
+	cfg.GitHub.Token = envOrDefault("GITHUB_API_TOKEN", "")
+	cfg.GitHub.SyncInterval = time.Duration(envIntOrDefault("GITHUB_SYNC_INTERVAL_HOURS", 24)) * time.Hour
+	cfg.GitHub.ProjectsLimit = envIntOrDefault("GITHUB_PROJECTS_LIMIT", 6)
+	cfg.GitHub.CandidateLimit = envIntOrDefault("GITHUB_PROJECTS_CANDIDATE_LIMIT", 40)
+	cfg.GitHub.Timeout = time.Duration(envIntOrDefault("GITHUB_API_TIMEOUT_SEC", 20)) * time.Second
+
 	// ── Discord ──────────────────────────────────────────────────────────
 	cfg.Discord.WebhookURL = envOrDefault("DISCORD_WEBHOOK_URL", "")
+	cfg.Discord.ContactWebhookURL = envOrDefault("DISCORD_CONTACT_WEBHOOK_URL", cfg.Discord.WebhookURL)
+	cfg.Discord.PaymentWebhookURL = envOrDefault("DISCORD_PAYMENT_WEBHOOK_URL", cfg.Discord.WebhookURL)
 
 	// ── Razorpay ─────────────────────────────────────────────────────────
 	cfg.Razorpay.KeyID = envOrDefault("RAZORPAY_KEY_ID", "")
@@ -156,14 +179,15 @@ func requireEnv(key string, errs *[]string) string {
 	if v == "" {
 		*errs = append(*errs, key)
 	}
-	return v
+	return strings.Trim(v, "\"'")
 }
 
 func envOrDefault(key, fallback string) string {
-	if v := os.Getenv(key); v != "" {
-		return v
+	v := os.Getenv(key)
+	if v == "" {
+		return fallback
 	}
-	return fallback
+	return strings.Trim(v, "\"'")
 }
 
 func envIntOrDefault(key string, fallback int) int {
@@ -171,6 +195,7 @@ func envIntOrDefault(key string, fallback int) int {
 	if v == "" {
 		return fallback
 	}
+	v = strings.Trim(v, "\"'")
 	n, err := strconv.Atoi(v)
 	if err != nil {
 		return fallback
@@ -183,6 +208,7 @@ func envFloatOrDefault(key string, fallback float64) float64 {
 	if v == "" {
 		return fallback
 	}
+	v = strings.Trim(v, "\"'")
 	f, err := strconv.ParseFloat(v, 64)
 	if err != nil {
 		return fallback

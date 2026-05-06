@@ -8,12 +8,16 @@ import (
 // ChatRequest is the payload for asking a question to the AI assistant.
 type ChatRequest struct {
 	Question string `json:"question"`
+	MaxWords int    `json:"max_words,omitempty"`
 }
 
 // Validate checks that the question field is present and non-empty.
 func (r ChatRequest) Validate() error {
 	if strings.TrimSpace(r.Question) == "" {
 		return fmt.Errorf("validation failed: question cannot be empty")
+	}
+	if r.MaxWords < 0 {
+		return fmt.Errorf("validation failed: max_words cannot be negative")
 	}
 	return nil
 }

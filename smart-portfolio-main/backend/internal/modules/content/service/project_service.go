@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"fmt"
+	"strings"
 
 	"github.com/ZRishu/smart-portfolio/internal/httputil"
 	"github.com/ZRishu/smart-portfolio/internal/modules/content/dto"
@@ -13,10 +14,12 @@ import (
 )
 
 const projectsCacheKey = "projects:all"
+const worksHighlightsCacheKey = "projects:highlights"
 
 // ProjectService defines the interface for project business logic.
 type ProjectService interface {
 	GetAllProjects(ctx context.Context) ([]dto.ProjectResponse, error)
+	GetWorkHighlights(ctx context.Context, githubUsername string, githubLimit int) (*dto.WorkHighlightsResponse, error)
 	GetProjectByID(ctx context.Context, id string) (*dto.ProjectResponse, error)
 	CreateProject(ctx context.Context, req dto.ProjectRequest) (*dto.ProjectResponse, error)
 	UpdateProject(ctx context.Context, id string, req dto.ProjectRequest) (*dto.ProjectResponse, error)
@@ -25,15 +28,24 @@ type ProjectService interface {
 
 // projectService is the concrete implementation of ProjectService.
 type projectService struct {
-	repo  *repository.ProjectRepository
-	cache *cache.Cache
+	repo        *repository.ProjectRepository
+	githubRepos *repository.GitHubRepositoryRepository
+	githubUsers *repository.GitHubProfileRepository
+	cache       *cache.Cache
 }
 
 // NewProjectService creates a new ProjectService with the given repository and cache.
-func NewProjectService(repo *repository.ProjectRepository, c *cache.Cache) ProjectService {
+func NewProjectService(
+	repo *repository.ProjectRepository,
+	githubRepos *repository.GitHubRepositoryRepository,
+	githubUsers *repository.GitHubProfileRepository,
+	c *cache.Cache,
+) ProjectService {
 	return &projectService{
-		repo:  repo,
-		cache: c,
+		repo:        repo,
+		githubRepos: githubRepos,
+		githubUsers: githubUsers,
+		cache:       c,
 	}
 }
 
@@ -66,6 +78,89 @@ func (s *projectService) GetAllProjects(ctx context.Context) ([]dto.ProjectRespo
 	log.Debug().Int("count", len(responses)).Msg("project_service: cached all projects")
 
 	return responses, nil
+}
+
+func (s *projectService) GetWorkHighlights(ctx context.Context, githubUsername string, githubLimit int) (*dto.WorkHighlightsResponse, error) {
+	if cached, found := s.cache.Get(worksHighlightsCacheKey); found {
+		if response, ok := cached.(dto.WorkHighlightsResponse); ok {
+			return &response, nil
+		}
+	}
+
+	manualProjects, err := s.repo.FindAll(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("project_service.GetWorkHighlights: %w", err)
+	}
+
+	items := make([]dto.WorkItemResponse, 0, len(manualProjects))
+	seenGitHubURLs := make(map[string]struct{})
+
+	if s.githubRepos != nil && s.githubUsers != nil && strings.TrimSpace(githubUsername) != "" {
+		repos, err := s.githubRepos.ListByUsername(ctx, strings.ToLower(strings.TrimSpace(githubUsername)), githubLimit)
+		if err != nil {
+			return nil, fmt.Errorf("project_service.GetWorkHighlights: github repos: %w", err)
+		}
+		for _, repo := range repos {
+			githubURL := repo.GitHubURL
+			seenGitHubURLs[strings.ToLower(githubURL)] = struct{}{}
+			items = append(items, dto.WorkItemResponse{
+				ID:          fmt.Sprintf("github:%d", repo.GitHubRepoID),
+				Title:       repo.Name,
+				Description: repo.Description,
+				TechStack:   repo.TechStack,
+				GithubURL:   &githubURL,
+				LiveURL:     repo.HomepageURL,
+				Source:      "github",
+				Stars:       repo.Stars,
+				IsPinned:    repo.IsPinned,
+				UpdatedAt:   repo.PushedAt,
+				CreatedAt:   repo.CreatedAt,
+			})
+		}
+	}
+
+	for _, project := range manualProjects {
+		if project.GithubURL != nil {
+			if _, exists := seenGitHubURLs[strings.ToLower(strings.TrimSpace(*project.GithubURL))]; exists {
+				continue
+			}
+		}
+
+		items = append(items, dto.WorkItemResponse{
+			ID:          project.ID.String(),
+			Title:       project.Title,
+			Description: project.Description,
+			TechStack:   project.TechStack,
+			GithubURL:   project.GithubURL,
+			LiveURL:     project.LiveURL,
+			Source:      "manual",
+			CreatedAt:   project.CreatedAt,
+		})
+	}
+
+	var githubProfile *dto.GitHubProfileResponse
+	if s.githubUsers != nil && strings.TrimSpace(githubUsername) != "" {
+		profile, err := s.githubUsers.GetByUsername(ctx, strings.ToLower(strings.TrimSpace(githubUsername)))
+		if err != nil {
+			return nil, fmt.Errorf("project_service.GetWorkHighlights: github profile: %w", err)
+		}
+		if profile != nil {
+			githubProfile = &dto.GitHubProfileResponse{
+				Username:        profile.Username,
+				DisplayName:     profile.DisplayName,
+				ProfileURL:      profile.ProfileURL,
+				RepositoriesURL: profile.RepositoriesURL,
+				AvatarURL:       profile.AvatarURL,
+			}
+		}
+	}
+
+	response := dto.WorkHighlightsResponse{
+		Items:  items,
+		GitHub: githubProfile,
+	}
+	s.cache.Set(worksHighlightsCacheKey, response)
+	return &response, nil
 }
 
 // GetProjectByID returns a single project by ID.
@@ -111,6 +206,7 @@ func (s *projectService) CreateProject(ctx context.Context, req dto.ProjectReque
 
 	// Invalidate the projects list cache so the next read picks up the new entry.
 	s.cache.Delete(projectsCacheKey)
+	s.cache.Delete(worksHighlightsCacheKey)
 	log.Info().Str("id", created.ID.String()).Str("title", created.Title).Msg("project_service: project created")
 
 	resp := projectModelToResponse(*created)
@@ -149,6 +245,7 @@ func (s *projectService) UpdateProject(ctx context.Context, id string, req dto.P
 	}
 
 	s.cache.Delete(projectsCacheKey)
+	s.cache.Delete(worksHighlightsCacheKey)
 	log.Info().Str("id", updated.ID.String()).Msg("project_service: project updated")
 
 	resp := projectModelToResponse(*updated)
@@ -173,6 +270,7 @@ func (s *projectService) DeleteProject(ctx context.Context, id string) error {
 	}
 
 	s.cache.Delete(projectsCacheKey)
+	s.cache.Delete(worksHighlightsCacheKey)
 	log.Info().Str("id", id).Msg("project_service: project deleted")
 
 	return nil
@@ -188,5 +286,12 @@ func projectModelToResponse(p model.Project) dto.ProjectResponse {
 		GithubURL:   p.GithubURL,
 		LiveURL:     p.LiveURL,
 		CreatedAt:   p.CreatedAt,
+	}
+}
+
+func InvalidateProjectCaches(c *cache.Cache) func() {
+	return func() {
+		c.Delete(projectsCacheKey)
+		c.Delete(worksHighlightsCacheKey)
 	}
 }
