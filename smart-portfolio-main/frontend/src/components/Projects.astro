@@ -1,5 +1,7 @@
 ---
-import AchievementsGrid, { type AchievementItem } from "./solid/AchievementsGrid";
+import AchievementsGrid, {
+  type AchievementItem,
+} from "./solid/AchievementsGrid";
 //import ProjectsGrid from "./solid/ProjectsGrid";
 
 const fallbackAchievements = [
@@ -7,35 +9,56 @@ const fallbackAchievements = [
     year: "2026",
     title: "Blog Page 1.0",
     metric: "REACT APPWRITE",
-    description: "Designed and implemented a scalable blog platform using React, Appwrite supporting thousands of concurrent users with efficient data handling and responsive UI.",
+    description:
+      "Designed and implemented a scalable blog platform using React, Appwrite supporting thousands of concurrent users with efficient data handling and responsive UI.",
   },
   {
     year: "2025",
     title: "Ransome Frontend",
     metric: "REACT TAILWIND",
-    description: "Developed a social media post scheduling and management tool using React and Tailwind CSS, enabling users to plan, automate, and analyze their social media campaigns with ease.",
+    description:
+      "Developed a social media post scheduling and management tool using React and Tailwind CSS, enabling users to plan, automate, and analyze their social media campaigns with ease.",
   },
   {
     year: "2024",
     title: "NOTES APP",
     metric: "REACT CONTEXT",
-    description: "Built a note-taking application using React Context API for state management, allowing users to create, edit, and organize their notes seamlessly across devices.",
+    description:
+      "Built a note-taking application using React Context API for state management, allowing users to create, edit, and organize their notes seamlessly across devices.",
   },
- ] satisfies AchievementItem[];
----  
+] satisfies AchievementItem[];
+---
 
-<section id="projects" data-bg-layer="projects" class="mt-14 max-md:mt-8 scroll-mt-40">
-  <div class="flex flex-col gap-16 justify-center items-center max-lg:px-6 max-sm:px-4 max-md:gap-10">
+<section
+  id="projects"
+  data-bg-layer="projects"
+  class="mt-14 max-md:mt-8 scroll-mt-40"
+>
+  <div
+    class="flex flex-col gap-16 justify-center items-center max-lg:px-6 max-sm:px-4 max-md:gap-10"
+  >
     <div class="max-sm:w-120">
       <div>
         <div class="flex flex-col mb-2 max-md:mb-6 text-center">
           <div class="headtop">
-              <h2 class="font-semibold text-[#ec7a3d] dark:text-[#ffb84d] max-md:text-sm lg:text-base">My Portfolio</h2>
-              <h3 class="text-4xl font-semibold tracking-tight text-gray-900 dark:text-gray-100 mb-8 max-md:text-3xl max-sm:text-2xl max-md:mb-6">MY WORKS</h3>
+            <h2
+              class="font-semibold text-[#ec7a3d] dark:text-[#ffb84d] max-md:text-sm lg:text-base"
+            >
+              My Portfolio
+            </h2>
+            <h3
+              class="text-4xl font-semibold tracking-tight text-gray-900 dark:text-gray-100 mb-8 max-md:text-3xl max-sm:text-2xl max-md:mb-6"
+            >
+              MY WORKS
+            </h3>
           </div>
           <div class="max-sm:w-3/4 flex mx-auto">
-            <p class="text-gray-700 dark:text-gray-300 max-w-2xl mx-auto max-md:text-sm max-md:leading-relaxed max-sm:text-xs ">
-              A showcase of projects and achievements reflecting my journey as a Frontend engineer,and Full-Stack developer, highlighting my skills, impact, and growth across various domains.
+            <p
+              class="text-gray-700 dark:text-gray-300 max-w-2xl mx-auto max-md:text-sm max-md:leading-relaxed max-sm:text-xs"
+            >
+              A showcase of projects and achievements reflecting my journey as a
+              Frontend engineer,and Full-Stack developer, highlighting my
+              skills, impact, and growth across various domains.
             </p>
           </div>
         </div>
@@ -50,46 +73,50 @@ const fallbackAchievements = [
         </div>
       </div> -->
 
-      <div>
-        <div class="">
-          <AchievementsGrid client:load items={fallbackAchievements} />
-          <div class="" data-scrollbar-for="achievement-grid" data-scrollbar-orientation="vertical">
-            <div class="">
-              <div class=""></div>
+        <div>
+          <div class="">
+            <AchievementsGrid client:load items={fallbackAchievements} />
+            <div
+              class=""
+              data-scrollbar-for="achievement-grid"
+              data-scrollbar-orientation="vertical"
+            >
+              <div class="">
+                <div class=""></div>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
   </div>
+
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Aldrich&family=Bebas+Neue&family=Boldonse&family=Caveat+Brush&family=Comfortaa:wght@300..700&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Lilita+One&family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Raleway:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap");
+
+    .headtop {
+      font-family: "Comfortaa", sans-serif;
+      font-style: normal;
+    }
+
+    @media (max-width: 1024px) {
+      #experience {
+        overflow-x: hidden;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .headtop h2 {
+        /* Ensuring the 4xl doesn't cause overflow on narrow tablets */
+        line-height: 1.2;
+      }
+    }
+
+    @media (max-width: 480px) {
+      /* Scale down spacing for small mobile devices */
+      .custom-scroll-host {
+        padding-right: 0px !important;
+      }
+    }
+  </style>
 </section>
-
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Aldrich&family=Bebas+Neue&family=Boldonse&family=Caveat+Brush&family=Comfortaa:wght@300..700&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Lilita+One&family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Raleway:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
-
-.headtop{
-  font-family: "Comfortaa", sans-serif;
-  font-style: normal;
-}
-
-@media (max-width: 1024px) {
-  #experience {
-    overflow-x: hidden;
-  }
-}
-
-@media (max-width: 768px) {
-  .headtop h2 {
-    /* Ensuring the 4xl doesn't cause overflow on narrow tablets */
-    line-height: 1.2;
-  }
-}
-
-@media (max-width: 480px) {
-  /* Scale down spacing for small mobile devices */
-  .custom-scroll-host {
-    padding-right: 0px !important;
-  }
-}
-
-</style>
