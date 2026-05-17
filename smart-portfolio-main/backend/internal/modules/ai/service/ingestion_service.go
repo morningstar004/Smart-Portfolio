@@ -4,6 +4,8 @@ import (
 	"context"
 	"fmt"
 	"io"
+	"os"
+	"os/exec"
 	"strings"
 	"sync"
 	"time"
@@ -368,9 +370,8 @@ func (s *ingestionService) embedChunksConcurrently(ctx context.Context, chunks [
 // extractTextFromPDF reads a PDF from the io.Reader and returns the
 // concatenated text content of all pages along with the total page count.
 //
-// We read the entire PDF into memory first because the underlying PDF library
-// requires random access (io.ReaderAt). For typical resumes (< 5 MB) this is
-// perfectly acceptable.
+// Uses pdftotext (poppler) for reliable text extraction across diverse PDF formats.
+// Falls back to the pure-Go library if pdftotext is unavailable.
 func extractTextFromPDF(reader io.Reader) (string, int, error) {
 	data, err := io.ReadAll(reader)
 	if err != nil {
@@ -381,14 +382,23 @@ func extractTextFromPDF(reader io.Reader) (string, int, error) {
 		return "", 0, fmt.Errorf("extractTextFromPDF: PDF file is empty")
 	}
 
-	// Use the ledongthuc/pdf library which provides a pure-Go PDF text
-	// extraction without any CGO dependencies.
-	pdfReader, err := openPDFFromBytes(data)
-	if err != nil {
-		return "", 0, fmt.Errorf("extractTextFromPDF: failed to open PDF: %w", err)
+	// Try pdftotext (poppler) first — it handles virtually all PDF encodings
+	text, pageCount, err := extractWithPdftotext(data)
+	if err == nil {
+		return text, pageCount, nil
 	}
 
-	pageCount := pdfReader.NumPage()
+	log.Warn().
+		Err(err).
+		Msg("extractTextFromPDF: pdftotext failed, falling back to pure-Go PDF library")
+
+	// Fallback to the pure-Go ledongthuc/pdf library
+	pdfReader, err := openPDFFromBytes(data)
+	if err != nil {
+		return "", 0, fmt.Errorf("extractTextFromPDF: both pdftotext and pure-Go fallback failed: %w", err)
+	}
+
+	pageCount = pdfReader.NumPage()
 	if pageCount == 0 {
 		return "", 0, fmt.Errorf("extractTextFromPDF: PDF contains no pages")
 	}
@@ -418,6 +428,45 @@ func extractTextFromPDF(reader io.Reader) (string, int, error) {
 	}
 
 	return sb.String(), pageCount, nil
+}
+
+// extractWithPdftotext uses the pdftotext command-line tool (from poppler-utils)
+// to extract text from PDF data. Returns the text, estimated page count, and error.
+func extractWithPdftotext(data []byte) (string, int, error) {
+	// Create a temporary file to store the PDF
+	tmpFile, err := os.CreateTemp("", "resume-*.pdf")
+	if err != nil {
+		return "", 0, fmt.Errorf("extractWithPdftotext: failed to create temp file: %w", err)
+	}
+	defer os.Remove(tmpFile.Name())
+	defer tmpFile.Close()
+
+	// Write PDF data to temp file
+	if _, err := tmpFile.Write(data); err != nil {
+		return "", 0, fmt.Errorf("extractWithPdftotext: failed to write PDF to temp file: %w", err)
+	}
+	tmpFile.Close()
+
+	// Run pdftotext: pdftotext <input> - (output to stdout)
+	cmd := exec.Command("pdftotext", tmpFile.Name(), "-")
+	out, err := cmd.Output()
+	if err != nil {
+		return "", 0, fmt.Errorf("extractWithPdftotext: pdftotext command failed: %w", err)
+	}
+
+	text := string(out)
+	if strings.TrimSpace(text) == "" {
+		return "", 0, fmt.Errorf("extractWithPdftotext: pdftotext extracted no text")
+	}
+
+	// Estimate page count by counting form-feed characters (one per page in pdftotext output)
+	// If no form-feeds, assume single page
+	pageCount := strings.Count(text, "\f") + 1
+	if pageCount < 1 {
+		pageCount = 1
+	}
+
+	return text, pageCount, nil
 }
 
 func openPDFFromBytes(data []byte) (*pdfBytesReader, error) {

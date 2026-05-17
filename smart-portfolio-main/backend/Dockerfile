@@ -30,9 +30,9 @@ RUN CGO_ENABLED=0 GOOS=${TARGETOS:-linux} GOARCH=${TARGETARCH:-amd64} go build \
 # ============================================================================
 FROM alpine:3.20 AS production
 
-# Install ca-certificates for outbound HTTPS (Groq, Jina, Discord, Razorpay)
-# and tzdata for timezone support in Go's time package
-RUN apk add --no-cache ca-certificates tzdata \
+# Install ca-certificates for outbound HTTPS (Groq, Jina, Discord, Razorpay),
+# tzdata for timezone support, and poppler-utils for pdftotext PDF extraction
+RUN apk add --no-cache ca-certificates tzdata poppler-utils \
     && addgroup -S appgroup \
     && adduser -S appuser -G appgroup
 
