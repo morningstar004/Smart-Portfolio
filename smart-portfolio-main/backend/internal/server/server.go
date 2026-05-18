@@ -7,9 +7,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/ZRishu/smart-portfolio/docs"
-	"github.com/ZRishu/smart-portfolio/internal/config"
-	"github.com/ZRishu/smart-portfolio/internal/middleware"
+	"github.com/morningstar004/smart-portfolio/docs"
+	"github.com/morningstar004/smart-portfolio/internal/config"
+	"github.com/morningstar004/smart-portfolio/internal/middleware"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/cors"
 	"github.com/rs/zerolog/log"

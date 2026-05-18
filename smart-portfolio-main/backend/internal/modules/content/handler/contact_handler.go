@@ -3,10 +3,10 @@ package handler
 import (
 	"net/http"
 
-	"github.com/ZRishu/smart-portfolio/internal/httputil"
-	"github.com/ZRishu/smart-portfolio/internal/modules/content/dto"
-	"github.com/ZRishu/smart-portfolio/internal/modules/content/model"
-	"github.com/ZRishu/smart-portfolio/internal/modules/content/service"
+	"github.com/morningstar004/smart-portfolio/internal/httputil"
+	"github.com/morningstar004/smart-portfolio/internal/modules/content/dto"
+	"github.com/morningstar004/smart-portfolio/internal/modules/content/model"
+	"github.com/morningstar004/smart-portfolio/internal/modules/content/service"
 	"github.com/go-chi/chi/v5"
 )
 

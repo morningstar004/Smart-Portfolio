@@ -1,4 +1,4 @@
-module github.com/ZRishu/smart-portfolio
+module github.com/morningstar004/smart-portfolio
 
 go 1.26
 

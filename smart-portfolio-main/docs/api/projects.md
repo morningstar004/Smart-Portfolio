@@ -19,7 +19,7 @@ Returns all portfolio projects ordered by creation date (newest first).
       "title": "Smart Portfolio",
       "description": "A full-stack portfolio with AI chat",
       "tech_stack": "Go, PostgreSQL, pgvector",
-      "github_url": "https://github.com/ZRishu/smart-portfolio",
+      "github_url": "https://github.com/morningstar004/smart-portfolio",
       "live_url": "https://portfolio.example.com",
       "created_at": "2024-03-10T12:00:00Z"
     }
@@ -43,7 +43,7 @@ Retrieves a single project by its UUID.
     "title": "Smart Portfolio",
     "description": "A full-stack portfolio with AI chat",
     "tech_stack": "Go, PostgreSQL, pgvector",
-    "github_url": "https://github.com/ZRishu/smart-portfolio",
+    "github_url": "https://github.com/morningstar004/smart-portfolio",
     "live_url": "https://portfolio.example.com",
     "created_at": "2024-03-10T12:00:00Z"
   }

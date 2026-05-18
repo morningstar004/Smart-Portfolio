@@ -12,11 +12,11 @@ import (
 	"strings"
 	"time"
 
-	"github.com/ZRishu/smart-portfolio/internal/config"
-	airepository "github.com/ZRishu/smart-portfolio/internal/modules/ai/repository"
-	aiservice "github.com/ZRishu/smart-portfolio/internal/modules/ai/service"
-	"github.com/ZRishu/smart-portfolio/internal/modules/content/model"
-	contentrepo "github.com/ZRishu/smart-portfolio/internal/modules/content/repository"
+	"github.com/morningstar004/smart-portfolio/internal/config"
+	airepository "github.com/morningstar004/smart-portfolio/internal/modules/ai/repository"
+	aiservice "github.com/morningstar004/smart-portfolio/internal/modules/ai/service"
+	"github.com/morningstar004/smart-portfolio/internal/modules/content/model"
+	contentrepo "github.com/morningstar004/smart-portfolio/internal/modules/content/repository"
 	"github.com/rs/zerolog/log"
 )
 

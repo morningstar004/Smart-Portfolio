@@ -12,9 +12,9 @@ import (
 	"sync"
 	"time"
 
-	"github.com/ZRishu/smart-portfolio/internal/config"
-	"github.com/ZRishu/smart-portfolio/internal/modules/ai/dto"
-	"github.com/ZRishu/smart-portfolio/internal/modules/ai/repository"
+	"github.com/morningstar004/smart-portfolio/internal/config"
+	"github.com/morningstar004/smart-portfolio/internal/modules/ai/dto"
+	"github.com/morningstar004/smart-portfolio/internal/modules/ai/repository"
 	"github.com/rs/zerolog/log"
 )
 
@@ -253,10 +253,10 @@ func (s *ragService) retrieveContext(ctx context.Context, queryEmbedding []float
 // from the provided resume context. This is the core of the RAG pattern —
 // grounding the LLM's responses in factual, retrieved information.
 func systemPrompt(contextText string) string {
-	return fmt.Sprintf(`You are the personal AI assistant for ZR, a backend developer specializing in Java.
-Your ONLY purpose is to answer questions about ZR using the provided context about his skills, projects, and experience.
+	return fmt.Sprintf(`You are the personal AI assistant for Pranjal, a full-stack programmer.
+Your ONLY purpose is to answer questions about Pranjal using the provided context about their skills, projects, and experience.
 If the answer is not in the context, politely state that you don't have that specific information and encourage them to use the contact form.
-Do not answer general knowledge questions or questions unrelated to ZR.
+Do not answer general knowledge questions or questions unrelated to Pranjal.
 
 Be concise, professional, and helpful. Use markdown formatting when appropriate.
 

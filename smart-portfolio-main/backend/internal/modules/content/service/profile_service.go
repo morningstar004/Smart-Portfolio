@@ -3,8 +3,8 @@ package service
 import (
 	"context"
 
-	"github.com/ZRishu/smart-portfolio/internal/modules/content/model"
-	"github.com/ZRishu/smart-portfolio/internal/modules/content/repository"
+	"github.com/morningstar004/smart-portfolio/internal/modules/content/model"
+	"github.com/morningstar004/smart-portfolio/internal/modules/content/repository"
 )
 
 type ProfileService interface {

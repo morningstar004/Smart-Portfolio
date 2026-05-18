@@ -85,8 +85,8 @@ CREATE TABLE IF NOT EXISTS skills (
 
 -- Profile
 INSERT INTO profile (first_name, last_name, primary_role, specialization, location, summary)
-VALUES ('Rishu', 'Kumar', 'BACKEND_DEV', 'JAVA_AI_RAG', 'Haridwar, Uttarakhand', 
-'Backend Developer specializing in Java, focused on building high-performance scalable systems and microservices architectures with AI integration.')
+VALUES ('Pranjal', 'Kumar', 'FULLSTACK_DEV', 'FULL_STACK_AI_RAG', 'Haridwar, Uttarakhand', 
+'Full-stack programmer focused on building high-performance scalable systems with modern web technologies and AI integration.')
 ON CONFLICT DO NOTHING;
 
 -- Education

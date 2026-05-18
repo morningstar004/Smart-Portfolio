@@ -14,7 +14,7 @@ Built with Go, PostgreSQL + pgvector, Groq LLM, and Jina Embeddings.
 
 [Get Started :material-arrow-right:](guide/index.md){ .md-button .md-button--primary }
 [API Reference :material-book-open-variant:](api/index.md){ .md-button }
-[GitHub :fontawesome-brands-github:](https://github.com/ZRishu/smart-portfolio){ .md-button }
+[GitHub :fontawesome-brands-github:](https://github.com/morningstar004/smart-portfolio){ .md-button }
 
 </div>
 

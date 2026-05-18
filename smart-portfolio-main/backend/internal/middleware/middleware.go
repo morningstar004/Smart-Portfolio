@@ -7,7 +7,7 @@ import (
 	"runtime/debug"
 	"time"
 
-	"github.com/ZRishu/smart-portfolio/internal/httputil"
+	"github.com/morningstar004/smart-portfolio/internal/httputil"
 	"github.com/go-chi/httprate"
 	"github.com/google/uuid"
 	"github.com/rs/zerolog"

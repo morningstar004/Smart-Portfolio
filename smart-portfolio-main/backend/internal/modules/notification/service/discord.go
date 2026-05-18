@@ -11,7 +11,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/ZRishu/smart-portfolio/internal/config"
+	"github.com/morningstar004/smart-portfolio/internal/config"
 	"github.com/rs/zerolog/log"
 )
 

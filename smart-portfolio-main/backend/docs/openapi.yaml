@@ -46,8 +46,8 @@ info:
     A final `event: done\ndata: \n\n` frame signals stream completion.
   version: "1.0.0"
   contact:
-    name: ZRishu
-    url: https://github.com/ZRishu/smart-portfolio
+    name: Pranjal
+    url: https://github.com/morningstar004/smart-portfolio
   license:
     name: MIT
 
@@ -120,7 +120,7 @@ components:
         github_url:
           type: string
           nullable: true
-          example: "https://github.com/ZRishu/smart-portfolio"
+          example: "https://github.com/MorningStar/smart-portfolio"
         live_url:
           type: string
           nullable: true
@@ -152,7 +152,7 @@ components:
         github_url:
           type: string
           nullable: true
-          example: "https://github.com/ZRishu/smart-portfolio"
+          example: "https://github.com/morningstar004/smart-portfolio"
         live_url:
           type: string
           nullable: true

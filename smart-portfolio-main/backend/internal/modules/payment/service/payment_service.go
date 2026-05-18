@@ -14,10 +14,10 @@ import (
 
 	"github.com/google/uuid"
 
-	"github.com/ZRishu/smart-portfolio/internal/config"
-	"github.com/ZRishu/smart-portfolio/internal/modules/payment/dto"
-	"github.com/ZRishu/smart-portfolio/internal/modules/payment/model"
-	"github.com/ZRishu/smart-portfolio/internal/modules/payment/repository"
+	"github.com/morningstar004/smart-portfolio/internal/config"
+	"github.com/morningstar004/smart-portfolio/internal/modules/payment/dto"
+	"github.com/morningstar004/smart-portfolio/internal/modules/payment/model"
+	"github.com/morningstar004/smart-portfolio/internal/modules/payment/repository"
 	"github.com/rs/zerolog/log"
 )
 
@@ -373,8 +373,8 @@ func (s *paymentService) VerifyCheckoutPayment(req dto.VerifyPaymentRequest) (*d
 		ReceiptNumber:     "RCPT-" + strings.ToUpper(strings.TrimPrefix(req.RazorpayPaymentID, "pay_")),
 		SponsorName:       sponsorName,
 		SponsorEmail:      strings.TrimSpace(req.SponsorEmail),
-		RecipientName:     "ZR Systems",
-		RecipientRole:     "Backend Developer",
+		RecipientName:     "Pranjal Kumar",
+		RecipientRole:     "Full-Stack Developer",
 		RecipientLocation: "Remote India",
 		Amount:            req.Amount,
 		Currency:          currency,

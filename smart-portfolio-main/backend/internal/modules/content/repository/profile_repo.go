@@ -3,8 +3,8 @@ package repository
 import (
 	"context"
 
-	"github.com/ZRishu/smart-portfolio/internal/database"
-	"github.com/ZRishu/smart-portfolio/internal/modules/content/model"
+	"github.com/morningstar004/smart-portfolio/internal/database"
+	"github.com/morningstar004/smart-portfolio/internal/modules/content/model"
 )
 
 type ProfileRepository struct {

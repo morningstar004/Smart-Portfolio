@@ -5,8 +5,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/ZRishu/smart-portfolio/internal/modules/payment/repository"
-	"github.com/ZRishu/smart-portfolio/internal/platform/eventbus"
+	"github.com/morningstar004/smart-portfolio/internal/modules/payment/repository"
+	"github.com/morningstar004/smart-portfolio/internal/platform/eventbus"
 	"github.com/rs/zerolog/log"
 )
 

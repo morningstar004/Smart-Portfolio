@@ -11,8 +11,8 @@ import (
 	"time"
 	"unicode"
 
-	"github.com/ZRishu/smart-portfolio/internal/modules/ai/dto"
-	"github.com/ZRishu/smart-portfolio/internal/modules/ai/repository"
+	"github.com/morningstar004/smart-portfolio/internal/modules/ai/dto"
+	"github.com/morningstar004/smart-portfolio/internal/modules/ai/repository"
 	"github.com/rs/zerolog/log"
 )
 

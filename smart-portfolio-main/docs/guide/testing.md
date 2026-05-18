@@ -70,9 +70,9 @@ go tool cover -func=coverage.out
 Example output:
 
 ```
-github.com/ZRishu/smart-portfolio/internal/httputil/response.go:42:    WriteJSON            100.0%
-github.com/ZRishu/smart-portfolio/internal/httputil/response.go:58:    WriteError           100.0%
-github.com/ZRishu/smart-portfolio/internal/httputil/response.go:75:    WriteValidationError 100.0%
+github.com/morningstar004/smart-portfolio/internal/httputil/response.go:42:    WriteJSON            100.0%
+github.com/morningstar004/smart-portfolio/internal/httputil/response.go:58:    WriteError           100.0%
+github.com/morningstar004/smart-portfolio/internal/httputil/response.go:75:    WriteValidationError 100.0%
 ...
 total:                                                                   (statements)         87.3%
 ```

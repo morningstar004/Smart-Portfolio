@@ -5,8 +5,8 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/ZRishu/smart-portfolio/internal/httputil"
-	"github.com/ZRishu/smart-portfolio/internal/modules/payment/service"
+	"github.com/morningstar004/smart-portfolio/internal/httputil"
+	"github.com/morningstar004/smart-portfolio/internal/modules/payment/service"
 	"github.com/go-chi/chi/v5"
 	"github.com/rs/zerolog/log"
 )

@@ -5,11 +5,11 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/ZRishu/smart-portfolio/internal/httputil"
-	"github.com/ZRishu/smart-portfolio/internal/modules/content/dto"
-	"github.com/ZRishu/smart-portfolio/internal/modules/content/model"
-	"github.com/ZRishu/smart-portfolio/internal/modules/content/repository"
-	"github.com/ZRishu/smart-portfolio/internal/platform/cache"
+	"github.com/morningstar004/smart-portfolio/internal/httputil"
+	"github.com/morningstar004/smart-portfolio/internal/modules/content/dto"
+	"github.com/morningstar004/smart-portfolio/internal/modules/content/model"
+	"github.com/morningstar004/smart-portfolio/internal/modules/content/repository"
+	"github.com/morningstar004/smart-portfolio/internal/platform/cache"
 	"github.com/rs/zerolog/log"
 )
 

@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/ZRishu/smart-portfolio/internal/modules/content/service"
+	"github.com/morningstar004/smart-portfolio/internal/modules/content/service"
 	"github.com/rs/zerolog/log"
 )
 

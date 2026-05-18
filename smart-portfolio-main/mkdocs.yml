@@ -8,9 +8,9 @@
 
 site_name: Smart Portfolio
 site_description: A full-stack developer portfolio with AI-powered resume chat, project showcase, contact form, and sponsorship payments.
-site_url: https://zrishu.github.io/smart-portfolio/
-repo_url: https://github.com/ZRishu/smart-portfolio
-repo_name: ZRishu/smart-portfolio
+site_url: https://morningstar004.github.io/smart-portfolio/
+repo_url: https://github.com/morningstar004/smart-portfolio
+repo_name: morningstar004/smart-portfolio
 edit_uri: edit/main/docs/
 
 theme:
@@ -92,14 +92,14 @@ markdown_extensions:
 extra:
   social:
     - icon: fontawesome/brands/github
-      link: https://github.com/ZRishu/smart-portfolio
+      link: https://github.com/morningstar004/smart-portfolio
       name: GitHub Repository
   generator: false
 
 extra_css:
   - assets/extra.css
 
-copyright: Copyright &copy; 2026 ZRishu
+copyright: Copyright &copy; 2026 morningstar004
 
 nav:
   - Welcome: index.md
