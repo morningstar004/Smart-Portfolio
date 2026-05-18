@@ -23,46 +23,46 @@ export default function AchievementsGrid(props: AchievementsGridProps) {
 
   const Ylocate = ["translateY(0px)", "translateY(80px)", "translateY(0px)"];
 
-  // onMount(() => {
-  //   void loadAchievements();
-  // });
+  onMount(() => {
+    void loadAchievements();
+  });
 
-  // async function loadAchievements(): Promise<void> {
-  //   try {
-  //     const res = await fetch(apiUrl("/api/chat"), {
-  //       method: "POST",
-  //       headers: { "Content-Type": "application/json" },
-  //       body: JSON.stringify({
-  //         question:
-  //           "From the resume, return ONLY valid JSON as an array of notable achievement objects. Each object must have: title, metric, description. Keep title and metric short. Keep description to one short sentence. Prefer measurable or high-signal outcomes. If exact metrics are unavailable, summarize conservatively. No markdown. No explanation.",
-  //       }),
-  //     });
+  async function loadAchievements(): Promise<void> {
+    try {
+      const res = await fetch(apiUrl("/api/chat"), {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          question:
+            "From the resume, return ONLY valid JSON as an array of notable achievement objects. Each object must have: title, metric, description. Keep title and metric short. Keep description to one short sentence. Prefer measurable or high-signal outcomes. If exact metrics are unavailable, summarize conservatively. No markdown. No explanation.",
+        }),
+      });
 
-  //     const envelope = await res.json();
-  //     const raw = envelope?.data?.answer;
-  //     if (!envelope.success || !raw) return;
+      const envelope = await res.json();
+      const raw = envelope?.data?.answer;
+      if (!envelope.success || !raw) return;
 
-  //     const parsed = JSON.parse(raw) as AchievementItem[];
-  //     const normalized = parsed
-  //       .filter((item) => item.title && item.description)
-  //       // 2. Limit the API results to 3 items
-  //       .slice(0, 3)
-  //       .map((item) => ({
-  //         year: String(item.year ?? new Date().getFullYear()), // Provide year, fallback to current year if missing
-  //         title: String(item.title).toUpperCase().replace(/\s+/g, "_"),
-  //         metric: String(item.metric || "KEY_SIGNAL")
-  //           .toUpperCase()
-  //           .replace(/\s+/g, "_"),
-  //         description: String(item.description).trim(),
-  //       }));
+      const parsed = JSON.parse(raw) as AchievementItem[];
+      const normalized = parsed
+        .filter((item) => item.title && item.description)
+        // 2. Limit the API results to 3 items
+        .slice(0, 3)
+        .map((item) => ({
+          year: String(item.year ?? new Date().getFullYear()), // Provide year, fallback to current year if missing
+          title: String(item.title).toUpperCase().replace(/\s+/g, "_"),
+          metric: String(item.metric || "KEY_SIGNAL")
+            .toUpperCase()
+            .replace(/\s+/g, "_"),
+          description: String(item.description).trim(),
+        }));
 
-  //     if (normalized.length > 0) {
-  //       setItems(normalized);
-  //     }
-  //   } catch {
-  //     return;
-  //   }
-  // }
+      if (normalized.length > 0) {
+        setItems(normalized);
+      }
+    } catch {
+      return;
+    }
+  }
 
   return (
     <div
