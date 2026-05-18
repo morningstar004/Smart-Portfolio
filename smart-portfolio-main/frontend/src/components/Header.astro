@@ -85,9 +85,9 @@ const { showSectionNav = true } = Astro.props;
         href="#chat"
         className="group active:bg-[#BDDBD0] relative p-[1.2px] max-md:p-px flex items-center justify-center rounded-full overflow-hidden transition-all duration-300"
       >
-        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[200%] aspect-square animate-[spin_4s_linear_infinite] bg-[conic-gradient(from_0deg,transparent_180deg,#ff4d00_270deg,transparent_360deg)]" />
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[200%] aspect-square animate-[spin_4s_linear_infinite] dark:bg-[conic-gradient(from_0deg,transparent_180deg,#ffffff_270deg,transparent_360deg)]  bg-[conic-gradient(from_0deg,transparent_180deg,#ff4d00_270deg,transparent_360deg)]" />
 
-        <div class="relative z-10 w-full h-full bg-white text-black flex items-center gap-2 max-md:gap-1.5 py-4 px-5 max-md:py-2.5 max-md:px-4 max-sm:py-2 max-sm:px-3 font-sans font-bold text-sm max-md:text-xs max-sm:text-[10px] rounded-full transition-all duration-300">
+        <div class="relative z-10 w-full h-full bg-white dark:bg-black dark:border-gray-600 dark:text-white text-black flex items-center gap-2 max-md:gap-1.5 py-4 px-5 max-md:py-2.5 max-md:px-4 max-sm:py-2 max-sm:px-3 font-sans font-bold text-sm max-md:text-xs max-sm:text-[10px] rounded-full transition-all duration-300">
           <!-- STAGGERED ALPHABET SLIDE EFFECT -->
           <span class="inline-flex overflow-hidden">
             {"EXEC AI CHAT".split("").map((char, index) => {
